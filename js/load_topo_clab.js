@@ -93,6 +93,18 @@ function generate_cmt_from_clab_graph_json(c){
         "icon": "router",
     })
   }
+  for (var i =0; i < c.links.length; i++) {
+    var l = c.links[i]
+    cmt.links.push({
+        "id": i,
+        "source": node_id_map[l["source"]],
+        "target": node_id_map[l["target"]],
+        "srcIfName": l["source_endpoint"],
+        "srcDevice": l["source"],
+        "tgtIfName": l["target_endpoint"],
+        "tgtDevice": l["target"],
+    })
+  }
   return cmt
 }
 
