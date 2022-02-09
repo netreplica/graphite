@@ -7,7 +7,10 @@ var clab_graph_json = {
       "group": "hosts",
       "state": "running/Up 2 hours",
       "ipv4_address": "172.20.20.3/24",
-      "ipv6_address": "2001:172:20:20::3/64"
+      "ipv6_address": "2001:172:20:20::3/64",
+      "labels": {
+        "graph-icon": "server"
+      },
     },
     {
       "name": "host2",
@@ -15,7 +18,10 @@ var clab_graph_json = {
       "group": "hosts",
       "state": "running/Up 2 hours",
       "ipv4_address": "172.20.20.5/24",
-      "ipv6_address": "2001:172:20:20::5/64"
+      "ipv6_address": "2001:172:20:20::5/64",
+      "labels": {
+        "graph-icon": "server"
+      },
     },
     {
       "name": "leaf1",
@@ -27,7 +33,7 @@ var clab_graph_json = {
       "labels": {
         "graph-icon": "switch",
         "graph-something": "whatever"
-      }
+      },
     },
     {
       "name": "leaf2",
@@ -38,7 +44,7 @@ var clab_graph_json = {
       "ipv6_address": "2001:172:20:20::6/64",
       "labels": {
         "graph-icon": "switch"
-      }
+      },
     },
     {
       "name": "spine",
@@ -49,8 +55,8 @@ var clab_graph_json = {
       "ipv6_address": "2001:172:20:20::4/64",
       "labels": {
         "graph-icon": "router"
-      }
-    }
+      },
+    },
   ],
   "links": [
     {
@@ -86,11 +92,19 @@ function generate_cmt_from_clab_graph_json(c){
   var node_id_map = {}
   for (var i =0; i < c.nodes.length; i++) {
     var n = c.nodes[i]
+    var icon = "router"
     node_id_map[n.name] = i
+    if (n.hasOwnProperty("labels")) {
+      if (n.labels.hasOwnProperty("graph-icon")) {
+        icon = n.labels["graph-icon"]
+      }
+    }
     cmt.nodes.push({
         "id": i,
         "name": n.name,
-        "icon": "router",
+        "primaryIP": n.ipv4_address,
+        "model": n.kind,
+        "icon": icon,
     })
   }
   for (var i =0; i < c.links.length; i++) {
