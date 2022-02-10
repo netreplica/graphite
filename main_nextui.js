@@ -64,7 +64,7 @@
         linkInstanceClass: 'CustomLinkClass' 
     });
 
-    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
+//    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
 
     var Shell = nx.define(nx.ui.Application, {
         methods: {
@@ -251,8 +251,22 @@
         topo.activateLayout('hierarchicalLayout');
     };
 
-    // Create an application instance
-    var shell = new Shell();
-    // Run the application
-    shell.start();
+    // Load topology model
+    var xmlhttp = new XMLHttpRequest();
+    var url = "examples/5-nodes.clab.json";
+    var topologyData;
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var clab_graph_json = JSON.parse(this.responseText);
+            topologyData = generate_cmt_from_clab_graph_json(clab_graph_json);
+            // Create an application instance
+            var shell = new Shell();
+            // Run the application
+            shell.start();
+        }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
 })(nx);
