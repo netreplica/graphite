@@ -123,18 +123,6 @@
                     props: {
                         "style": "font-size:80%;"
                     }
-                }, {
-                    tag: 'p',
-                    content: [{
-                        tag: 'label',
-                        content: 'S/N: ',
-                    }, {
-                        tag: 'label',
-                        content: '{#node.model.serial_number}',
-                    }],
-                    props: {
-                        "style": "font-size:80%; padding:0"
-                    }
                 },
             ],
             props: {
@@ -256,7 +244,7 @@
     const url_params = new URLSearchParams(queryString);
     var topo_type = "example", topo_name = "3-nodes", topo_base = "examples/", topo_url;
     if (url_params.has('type') && url_params.get('type') == "clab") {
-      topo_type = "clab"; // This is redundant for clab, serves as an example for kne and other non-default types
+      topo_type = "clab";
       topo_base = "../emunets/clab/clab-";
     }
     if (url_params.has('topo')) {
