@@ -251,9 +251,20 @@
         topo.activateLayout('hierarchicalLayout');
     };
 
+    // Identify topology to load
+    const queryString = window.location.search;
+    const url_params = new URLSearchParams(queryString);
+    var topo_url;
+    if (url_params.has('topo')) {
+      var topo_name = url_params.get('topo');
+      topo_url = "../emunets/clab/clab-" + topo_name + "/graph/" + topo_name + ".clab.json";
+    } else {
+      // Load a demo topology if no name is provided
+      topo_url = "examples/3-nodes.clab.json";
+    }
+    
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
-    var url = "../emunets/clab/clab-clos-3node-ceos/graph/clos-3node-ceos.clab.json";
     var topologyData;
 
     xmlhttp.onreadystatechange = function() {
@@ -266,7 +277,7 @@
             shell.start();
         }
     };
-    xmlhttp.open("GET", url, true);
+    xmlhttp.open("GET", topo_url, true);
     xmlhttp.send();
 
 })(nx);

@@ -1,27 +1,15 @@
 {
   "nodes": [
     {
-      "name": "host1",
-      "kind": "linux",
-      "group": "hosts",
+      "name": "spine",
+      "kind": "ceos",
+      "group": "tier-1",
       "state": "running/Up 2 hours",
-      "ipv4_address": "172.20.20.3/24",
-      "ipv6_address": "2001:172:20:20::3/64",
+      "ipv4_address": "172.20.20.4/24",
+      "ipv6_address": "2001:172:20:20::4/64",
       "labels": {
-        "graph-icon": "server",
-        "graph-level": 3
-      }
-    },
-    {
-      "name": "host2",
-      "kind": "linux",
-      "group": "hosts",
-      "state": "running/Up 2 hours",
-      "ipv4_address": "172.20.20.5/24",
-      "ipv6_address": "2001:172:20:20::5/64",
-      "labels": {
-        "graph-icon": "server",
-        "graph-level": 3
+        "graph-icon": "router",
+        "graph-level": 1
       }
     },
     {
@@ -48,18 +36,6 @@
         "graph-icon": "switch",
         "graph-level": 2
       }
-    },
-    {
-      "name": "spine",
-      "kind": "ceos",
-      "group": "tier-1",
-      "state": "running/Up 2 hours",
-      "ipv4_address": "172.20.20.4/24",
-      "ipv6_address": "2001:172:20:20::4/64",
-      "labels": {
-        "graph-icon": "router",
-        "graph-level": 1
-      }
     }
   ],
   "links": [
@@ -76,14 +52,8 @@
       "target_endpoint": "eth2"
     },
     {
-      "source": "host1",
-      "source_endpoint": "eth1",
-      "target": "leaf1",
-      "target_endpoint": "eth2"
-    },
-    {
-      "source": "host2",
-      "source_endpoint": "eth1",
+      "source": "leaf1",
+      "source_endpoint": "eth2",
       "target": "leaf2",
       "target_endpoint": "eth2"
     }
