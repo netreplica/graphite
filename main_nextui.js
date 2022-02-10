@@ -277,8 +277,13 @@
     xmlhttp.onreadystatechange = function() {
       // TODO handle errors
       if (this.readyState == 4 && this.status == 200) {
-        var clab_graph_json = JSON.parse(this.responseText);
-        topologyData = convert_clab_graph_to_cmt(clab_graph_json);
+        var topo_data = JSON.parse(this.responseText);
+        switch (topo_type) {
+        case "clab":
+          topologyData = convert_clab_graph_to_cmt(topo_data);
+        default:
+          topologyData = convert_clab_graph_to_cmt(topo_data);
+        }
         // Create an application instance
         var shell = new Shell();
         // Run the application
