@@ -253,7 +253,7 @@
 
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
-    var url = "examples/5-nodes.clab.json";
+    var url = "../emunets/clab/clab-clos-3node-ceos/graph/clos-3node-ceos.clab.json";
     var topologyData;
 
     xmlhttp.onreadystatechange = function() {
