@@ -259,7 +259,7 @@
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var clab_graph_json = JSON.parse(this.responseText);
-            topologyData = generate_cmt_from_clab_graph_json(clab_graph_json);
+            topologyData = convert_clab_graph_to_cmt(clab_graph_json);
             // Create an application instance
             var shell = new Shell();
             // Run the application

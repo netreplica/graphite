@@ -1,5 +1,5 @@
 // Convert ContainerLab Graph JSON export into CMT JSON topology
-function generate_cmt_from_clab_graph_json(c){
+function convert_clab_graph_to_cmt(c){
   var cmt = {"nodes": [], "links": []}
   var node_id_map = {}
   for (var i =0; i < c.nodes.length; i++) {
