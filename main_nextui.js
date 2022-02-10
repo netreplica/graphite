@@ -254,13 +254,20 @@
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
-    var topo_url;
+    var topo_type = "example", topo_name = "3-nodes", topo_base = "examples/", topo_url;
+    if (url_params.has('type') && url_params.get('type') == "clab") {
+      topo_type = "clab"; // This is redundant for clab, serves as an example for kne and other non-default types
+      topo_base = "../emunets/clab/clab-";
+    }
     if (url_params.has('topo')) {
-      var topo_name = url_params.get('topo');
-      topo_url = "../emunets/clab/clab-" + topo_name + "/graph/" + topo_name + ".clab.json";
-    } else {
-      // Load a demo topology if no name is provided
-      topo_url = "examples/3-nodes.clab.json";
+      topo_name = url_params.get('topo');
+    }
+    switch (topo_type) {
+    case "clab":
+      topo_url = topo_base + topo_name + "/graph/" + topo_name + ".clab.json";
+      break;
+    default:
+      topo_url = topo_base + topo_name + ".clab.json";
     }
     
     // Load topology model
@@ -268,14 +275,15 @@
     var topologyData;
 
     xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var clab_graph_json = JSON.parse(this.responseText);
-            topologyData = convert_clab_graph_to_cmt(clab_graph_json);
-            // Create an application instance
-            var shell = new Shell();
-            // Run the application
-            shell.start();
-        }
+      // TODO handle errors
+      if (this.readyState == 4 && this.status == 200) {
+        var clab_graph_json = JSON.parse(this.responseText);
+        topologyData = convert_clab_graph_to_cmt(clab_graph_json);
+        // Create an application instance
+        var shell = new Shell();
+        // Run the application
+        shell.start();
+      }
     };
     xmlhttp.open("GET", topo_url, true);
     xmlhttp.send();
