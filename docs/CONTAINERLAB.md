@@ -7,14 +7,15 @@
 ```Shell
 multipass launch 20.04 -n clab-graphite -c4 -m8G -d50G
 multipass shell clab-graphite
-sudo apt update && sudo apt install build-essential jq docker.io -y
+sudo apt update && sudo apt install jq docker.io -y
 ````
 
   If you prefer to use any other environment, please make sure it meets ContainerLab [pre-requisites](https://containerlab.srlinux.dev/install/#pre-requisites)
 
-2. Install [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
+2. Install `gcc` and [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
 
 ```Shell
+sudo apt update && sudo apt install build-essential -y
 wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
 sudo bash -c "rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz"
 cat >> ~/.bashrc << EOF
