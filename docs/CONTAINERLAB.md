@@ -217,8 +217,13 @@ sudo $HOME/containerlab/containerlab deploy --topo ${CLAB_TOPO}.clab.yml
 sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.clab.yml
 ````
 
-3. Now refresh the web page in the browser, click on any node icon. You can see a management IP of each node in the tooltip that appears:
+3. Now refresh the web page in the browser, click on any node icon. You can see a management IP of each node in the tooltip that appears. These IPs were dynamically assigned by ContainerLabs when the topology was deployed.
 
 ![clos-3tier Graphite Topology Visualization with management IPs](../images/clos-3tier.clab.mgmt_ip.png)
 
 
+4. To stop running the topology, use
+
+```Shell
+sudo $HOME/containerlab/containerlab destroy --topo ${CLAB_TOPO}.clab.yml
+````
