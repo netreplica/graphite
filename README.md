@@ -5,6 +5,10 @@ Network Visualization for Emulated Topologies
 
 ![NANOG-84 Hackathon Idea](images/clab-graphite.png)
 
+## Visualizing ContainerLab topologies
+
+Follow [step-by-step reference](docs/CONTAINERLAB.md) to learn how to use Graphite with ContainerLab.
+
 ## Copyright notice
 
 Copyright 2022 Netreplica Team
