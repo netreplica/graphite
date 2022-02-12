@@ -76,7 +76,7 @@ sudo systemctl status lighttpd
 
 6. Validate access to Graphite web pages by opening the following URL in the browser: http://<clab-graphite-ip-address>/graphite/main.html. You should be able to see a sample topology:
 
-![Default Graphite Topology Visualization](images/3-nodes.clab.png)
+![Default Graphite Topology Visualization](../images/3-nodes.clab.png)
 
 ## Prepare topology for ContainerLab and export it in JSON format
 
