@@ -208,7 +208,7 @@ topology:
   kinds:
     srl:
       image: ghcr.io/nokia/srlinux
-```Yaml
+````
 
 2. Now deploy the ContainerLab topology and update visualization
 
