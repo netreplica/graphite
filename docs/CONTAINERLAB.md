@@ -62,7 +62,7 @@ git clone https://github.com/netreplica/graphite.git
 git clone https://github.com/netreplica/next-bower.git
 ````
 
-5. Install and configure Lighttpd to server Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference
+5. Install and configure Lighttpd to serve Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference
 
 ```Shell
 sudo apt install lighttpd -y
@@ -70,7 +70,7 @@ echo $HOME/clabs
 sudo vi /etc/lighttpd/lighttpd.conf
 ````
 
-Replace `server.document-root` value with full path to a directory with ContainerLabs topologies and Grahite file (see `echo` output above):
+Replace `server.document-root` value with full path to a directory with ContainerLabs topologies and Grahite file (see `echo` output above). WARNING! This is very basic setup for experimentation without any security measures. DO NOT USE IT AS IS for ContainerLab deployments that contain sensitive device configurations.
 
 ````
 server.document-root        = "/home/ubuntu/clabs" 
