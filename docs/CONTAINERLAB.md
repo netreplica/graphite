@@ -1,16 +1,16 @@
 # Visualizing ContainerLab topologies
 
-## Prerequisites
+## Pre-requisites
 
 1. (Optional) Create an Ubuntu VM for experimentation with Graphite and custom ContainerLab builds, to avoid impacting your working setup. Here is an example with `multipass`:
 
 ```Shell
 multipass launch 20.04 -n clab-graphite -c4 -m8G -d50G
 multipass shell clab-graphite
-sudo apt update && sudo apt install build-essential jq docker.io-y
+sudo apt update && sudo apt install build-essential jq docker.io -y
 ````
 
-  If you prefer to use any other environment, please make sure it meets ContainerLab [prerequisites](https://containerlab.srlinux.dev/install/#pre-requisites)
+  If you prefer to use any other environment, please make sure it meets ContainerLab [pre-requisites](https://containerlab.srlinux.dev/install/#pre-requisites)
 
 2. Install [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
 
