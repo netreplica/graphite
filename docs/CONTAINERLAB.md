@@ -74,11 +74,11 @@ sudo systemctl restart lighttpd
 sudo systemctl status lighttpd
 ````
 
-6. Validate access to Graphite web pages by opening the following URL in the browser: http://<clab-graphite-ip-address>/graphite/main.html. You should be able to see a sample topology:
+6. Validate access to Graphite web pages by opening the following URL in the browser: `http://REPLACE_IP/graphite/main.html`. You should be able to see a sample topology:
 
 ![Default Graphite Topology Visualization](../images/3-nodes.clab.png)
 
-## Prepare topology for ContainerLab and export it in JSON format
+## Visualize a topology for ContainerLab YAML file (offline mode)
 
 1. Create a topology definition file for ContainerLab
 
@@ -105,6 +105,4 @@ clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
 cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json | jq
 ````  
 
-## Visualize the topology in Graphite
-
-1. At this point you should be able to open a topology visualization 
+3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/main.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name.
