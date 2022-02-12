@@ -66,10 +66,19 @@ git clone https://github.com/netreplica/next-bower.git
 
 ```Shell
 sudo apt install lighttpd -y
+echo $HOME/clabs
 sudo vi /etc/lighttpd/lighttpd.conf
-# +++
-server.document-root        = "$HOME/clabs" 
-# ---
+````
+
+Replace server.document-root value with full path to a directory with ContainerLabs topologies and Grahite file (see `echo` output above):
+
+````
+server.document-root        = "/home/ubuntu/clabs" 
+````
+
+Restart the server:
+
+````
 sudo systemctl restart lighttpd
 sudo systemctl status lighttpd
 ````
