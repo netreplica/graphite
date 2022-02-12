@@ -62,7 +62,7 @@ git clone https://github.com/netreplica/graphite.git
 git clone https://github.com/netreplica/next-bower.git
 ````
 
-5. Install and configure Lighthttpd to server Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference
+5. Install and configure Lighttpd to server Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference
 
 ```Shell
 sudo apt install lighttpd -y
@@ -106,3 +106,54 @@ cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json | jq
 3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/main.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
 
 ![clos-3tier Graphite Topology Visualization](../images/clos-3tier.clab.png)
+
+## Improve visualization via custom labels in a ContainerLab YAML file
+
+The visualization we got on the previous step lacks hierarchy. Let's fix that by assigning nodes in the ContainerLab topology YAML file to different levels, using custom labels that Graphite understands.
+
+1. Open the topology YAML file in the text editor and append the following lines to each `node1-*` definition.
+
+```Yaml
+      labels:
+        graph-level: 3
+````
+
+For example, `node1-1` definition should now look the following way:
+
+```Yaml
+topology:
+  nodes:
+    node1-1:
+      kind: srl
+      group: tier-1
+      type: ixrd2
+      labels:
+        graph-level: 3
+````
+
+2. Now assign `graph-level: 2` to every `node2-*` definition.
+
+```Yaml
+      labels:
+        graph-level: 2
+````
+
+3. And, finally, assign `graph-level: 1` to every `node3-*` definition.
+
+```Yaml
+      labels:
+        graph-level: 2
+````
+
+4. Re-export JSON file
+
+```Shell
+clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+````
+
+5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers:
+
+![clos-3tier Graphite Topology Visualization arranged in tiers](../images/clos-3tier.clab.levels.png)
+
+
+
