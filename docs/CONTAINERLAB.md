@@ -70,7 +70,7 @@ echo $HOME/clabs
 sudo vi /etc/lighttpd/lighttpd.conf
 ````
 
-Replace server.document-root value with full path to a directory with ContainerLabs topologies and Grahite file (see `echo` output above):
+Replace `server.document-root` value with full path to a directory with ContainerLabs topologies and Grahite file (see `echo` output above):
 
 ````
 server.document-root        = "/home/ubuntu/clabs" 
