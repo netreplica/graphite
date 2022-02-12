@@ -142,7 +142,7 @@ topology:
 
 ```Yaml
       labels:
-        graph-level: 2
+        graph-level: 1
 ````
 
 4. Re-export JSON file
@@ -151,7 +151,7 @@ topology:
 clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
 ````
 
-5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers:
+5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers. `node3-1` is on the top since it has `graph-level` value of 1.
 
 ![clos-3tier Graphite Topology Visualization arranged in tiers](../images/clos-3tier.clab.levels.png)
 
