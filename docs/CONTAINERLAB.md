@@ -78,16 +78,14 @@ sudo systemctl status lighttpd
 
 ![Default Graphite Topology Visualization](../images/3-nodes.clab.png)
 
-## Visualize a topology for ContainerLab YAML file (offline mode)
+## Visualize a topology generated from a ContainerLab YAML file (offline mode)
 
 1. Create a topology definition file for ContainerLab
 
   You could ctart with one of the examples [published](https://containerlab.srlinux.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
 
 ```Shell
-cd $HOME
-mkdir -p clabs
-cd clabs
+cd $HOME/clabs
 CLAB_TOPO="clos-3tier"
 clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.clab.yml
 ````
@@ -105,4 +103,6 @@ clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
 cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json | jq
 ````  
 
-3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/main.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name.
+3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/main.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
+
+![clos-3tier Graphite Topology Visualization](../images/clos-3tier.clab.png)
