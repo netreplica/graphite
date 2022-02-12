@@ -2,15 +2,17 @@
 
 ## Prerequisites
 
-0. (Optional) Create an Ubuntu VM for experimentation with Graphite and custom ContainerLab builds, to avoid impacting your working setup. Here is an example with `multipass`:
+1. (Optional) Create an Ubuntu VM for experimentation with Graphite and custom ContainerLab builds, to avoid impacting your working setup. Here is an example with `multipass`:
 
 ```Shell
 multipass launch 20.04 -n clab-graphite -c4 -m8G -d50G
 multipass shell clab-graphite
-sudo apt update && sudo apt install build-essential -y
+sudo apt update && sudo apt install build-essential jq docker.io-y
 ````
 
-1. Install [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
+  If you prefer to use any other environment, please make sure it meets ContainerLab [prerequisites](https://containerlab.srlinux.dev/install/#pre-requisites)
+
+2. Install [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
 
 ```Shell
 wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
@@ -31,13 +33,14 @@ source ~/.bashrc
 go version
 ````
 
-2. Build ContainerLab binary with topology export capabilities. Create an alias `clabg` for the binary
+3. Build ContainerLab binary with topology export capabilities. Create an alias `clabg` for the binary
 
-  Currently (Feb'22), standard ContainerLab build doesn't have a capability to export topology data model suitable for Graphite. There is a [proposal](https://github.com/srl-labs/containerlab/issues/703) to introduce such option into the product, as well as a possible [implementation](https://github.com/netreplica/containerlab/tree/graph-json). Current Graphite implementation relies on that implementation.
+  Currently (Feb'22), standard ContainerLab build doesn't have a capability to export topology data model suitable for Graphite. There is a [proposal](https://github.com/srl-labs/containerlab/issues/703) to introduce such option into the product, as well as a possible [implementation](https://github.com/netreplica/containerlab/tree/graph-json). Current Graphite version relies on that implementation.
   
   As a prerequisite, please build a custom ContainerLab binary with topology export capabilities. You can continue using official build for all other ContainerLab operations, and use custom build to export topology data.
   
 ```Shell
+cd $HOME
 git clone https://github.com/netreplica/containerlab.git
 cd containerlab
 git checkout graph-json
@@ -47,3 +50,31 @@ clabg graph -h | grep json
 ````
 
   You should see an output with `--json` option designed to `generate json file instead of launching the web server`.
+  
+## Prepare topology for ContainerLab and export it in JSON format
+
+1. Create a topology definition file for ContainerLab
+
+  You could ctart with one of the examples [published](https://containerlab.srlinux.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
+
+```Shell
+cd $HOME
+mkdir -p clabs
+cd clabs
+CLAB_TOPO="clos-3tier"
+clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.clab.yml
+````
+
+2. Now that you have a topology file, let's export it in JSON format for Graphite. If you are using a different topology name, please save that name in an environmental variable `CLAB_TOPO` before using the examples below as is.
+
+
+```Shell
+clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+````
+
+  If all goes well, that command should've created a file `$HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json`, which we can inspect with `jq` (this is optional, if you don't have `jq` installed):
+  
+```Shell
+cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json | jq
+````  
+
