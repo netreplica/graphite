@@ -52,6 +52,28 @@ clabg graph -h | grep json
 
   You should see an output with `--json` option designed to `generate json file instead of launching the web server`.
   
+
+4. Clone Graphite and NextUI repositories
+
+```Shell
+mkdir -p $HOME/clabs
+cd $HOME/clabs
+git clone https://github.com/netreplica/graphite.git
+git clone https://github.com/netreplica/next-bower.git
+````
+
+5. Install and configure Lighthttpd to server Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference
+
+```Shell
+sudo apt install lighttpd -y
+sudo vi /etc/lighttpd/lighttpd.conf
+# +++
+server.document-root        = "$HOME/clabs" 
+# ---
+sudo systemctl restart lighttpd
+sudo systemctl status lighttpd
+````
+
 ## Prepare topology for ContainerLab and export it in JSON format
 
 1. Create a topology definition file for ContainerLab
@@ -79,3 +101,4 @@ clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
 cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json | jq
 ````  
 
+## Visualize the topology in Graphite
