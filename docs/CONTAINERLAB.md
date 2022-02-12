@@ -155,5 +155,37 @@ clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
 
 ![clos-3tier Graphite Topology Visualization arranged in tiers](../images/clos-3tier.clab.levels.png)
 
+## Changing visualization icons
+
+All the nodes in our visualization so far represented by the same "router" icon. Let's assume that nodes at tier-1 in our Clos topology can act as L2 switches, and we want to reflect that in the visualization. To achieve that, we can use custom label again, with a name `graph-icon`.
 
 
+1. Open the topology YAML file in the text editor and append the following line to each `node1-*` definition.
+
+```Yaml
+        graph-icon: switch
+````
+
+For example, `node1-1` definition should now look the following way:
+
+```Yaml
+topology:
+  nodes:
+    node1-1:
+      kind: srl
+      group: tier-1
+      type: ixrd2
+      labels:
+        graph-level: 3
+        graph-icon: switch
+````
+
+2. Re-export JSON file
+
+```Shell
+clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+````
+
+3. Now refresh the web page in the browser, and click "Vertical Layout". Now the bottom row of nodes uses "switch" icons.
+
+![clos-3tier Graphite Topology Visualization with switch icons](../images/clos-3tier.clab.icons.png)
