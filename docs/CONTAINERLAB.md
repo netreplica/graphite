@@ -219,6 +219,6 @@ sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.clab.yml
 
 3. Now refresh the web page in the browser, click on any node icon. You can see a management IP of each node in the tooltip that appears:
 
-![clos-3tier Graphite Topology Visualization with management IPs](../images/clos-3tier.clab.mgmt_ip_.png)
+![clos-3tier Graphite Topology Visualization with management IPs](../images/clos-3tier.clab.mgmt_ip.png)
 
 
