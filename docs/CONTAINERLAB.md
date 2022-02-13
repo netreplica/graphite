@@ -10,7 +10,7 @@ multipass shell clab-graphite
 sudo apt update && sudo apt install jq docker.io -y
 ````
 
-  If you prefer to use any other environment, please make sure it meets ContainerLab [pre-requisites](https://containerlab.srlinux.dev/install/#pre-requisites)
+  If you prefer to use any other environment, please make sure it meets ContainerLab [prerequisites](https://containerlab.srlinux.dev/install/#pre-requisites)
 
 2. Install `gcc` and [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
 
@@ -38,7 +38,7 @@ go version
 
   Currently (Feb'22), standard ContainerLab build doesn't have a capability to export topology data model suitable for Graphite. There is a [proposal](https://github.com/srl-labs/containerlab/issues/703) to introduce such option into the product, as well as a possible [implementation](https://github.com/netreplica/containerlab/tree/graph-json). Current Graphite version relies on that implementation.
   
-  As a prerequisite, please build a custom ContainerLab binary with topology export capabilities. You can continue using official build for all other ContainerLab operations, and use custom build to export topology data.
+  As a prerequisite, please build a custom ContainerLab binary with topology export capabilities. You can continue using the official build for all other ContainerLab operations, and use this custom build in parallel to export topology data.
   
 ```Shell
 cd $HOME
@@ -70,7 +70,7 @@ echo $HOME/clabs
 sudo vi /etc/lighttpd/lighttpd.conf
 ````
 
-Replace `server.document-root` value with full path to a directory with ContainerLabs topologies and Grahite file (see `echo` output above). WARNING! This is very basic setup for experimentation without any security measures. DO NOT USE IT AS IS for ContainerLab deployments that contain sensitive device configurations.
+Replace `server.document-root` value with full path to a directory with ContainerLabs topologies and Graphite file (see `echo` output above). WARNING! This is very basic setup for experimentation without any security measures. DO NOT USE IT AS IS for ContainerLab deployments that contain sensitive device configurations.
 
 ````
 server.document-root        = "/home/ubuntu/clabs" 
@@ -91,7 +91,7 @@ sudo systemctl status lighttpd
 
 1. Create a topology definition file for ContainerLab
 
-  You could ctart with one of the examples [published](https://containerlab.srlinux.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
+  You could start with one of the examples [published](https://containerlab.srlinux.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
 
 ```Shell
 cd $HOME/clabs
@@ -99,8 +99,11 @@ CLAB_TOPO="clos-3tier"
 clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.yaml
 ````
 
-2. Now that you have a topology file, let's export it in JSON format for Graphite. If you are using a different topology name, please save that name in an environmental variable `CLAB_TOPO` before using the examples below as is.
+  Alternatively, if you have an existing topology in a yaml file, you can skip this step and make a note of the caveats in the next step.
 
+2. Now that you have a topology file, let's export it in JSON format for Graphite. Or, if you are using a different topology name, please save that name in an environment variable `CLAB_TOPO` before using the examples below as is.
+
+   Note: If you are using an existing topology in a yaml file, simply ensure that the file is of the format ${CLAB_TOPO}.yml (or .yaml).  Also make sure that "name:" on the first line of the yaml file matches ${CLAB_TOPO}.
 
 ```Shell
 clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
@@ -188,6 +191,16 @@ topology:
         graph-level: 3
         graph-icon: switch
 ````
+
+  Possible graph-icon types are (from ![Cisco API](https://developer.cisco.com/site/neXt/document/api-reference-manual/files/src_js_graphic_svg_Icons.js/#l11):
+
+|   |   |   |
+|---|---|---|
+|switch|router|wlc|
+|server|phone|nexus5000|
+|ipphone|host|camera|
+|accesspoint|cloud|unlinked|
+|firewall|hostgroup|wirelesshost|
 
 2. Re-export JSON file
 
