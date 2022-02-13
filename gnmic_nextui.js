@@ -301,11 +301,30 @@
     xmlhttp_gnmic.onreadystatechange = function() {
       // TODO handle errors
       if (this.readyState == 4 && this.status == 200) {
-        gnmic_data = JSON.parse(this.responseText);
-        //console.log(gnmic_data);
+        var gnmic_data_array = this.responseText.split("\n");
+        for (var i = 0; i < gnmic_data_array.length; i++) {
+          var line = gnmic_data_array[i];
+          if (line.length > 2) {
+            gnmic_data = JSON.parse(line);
+          }
         
-        // Replace interface names with their IP addresses in the CMT topology
-        topologyData = replace_ifname_with_ipaddr_in_cmt(topologyData, gnmic_data.tags.source, gnmic_data.tags.interface_name, gnmic_data.tags.address_ip);
+          // Replace interface names with their IP addresses in the CMT topology
+          var source, ifname, ipaddr;
+          switch (gnmic_data[0].name) {
+          case "ceos_interface_addresses":
+            source = gnmic_data[0].tags.source;
+            ifname = gnmic_data[0].tags.interface_name;
+            ipaddr = gnmic_data[0].tags.address_ip;
+            break;
+          case "srl_interface_addresses":
+            source = gnmic_data[0].tags.source;
+            ifname = gnmic_data[0].tags.interface_name;
+            ipaddr = gnmic_data[0].tags["address_ip-prefix"];
+            break;
+          }
+          
+          topologyData = replace_ifname_with_ipaddr_in_cmt(topologyData, source, ifname, ipaddr);
+        }
         
         // Create an application instance
         var shell = new Shell();
