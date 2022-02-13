@@ -15,6 +15,7 @@
 */
 
 const interface_full_name_map = {
+  'e1-': 'ethernet1-',
   'Eth': 'Ethernet',
   'Fa' : 'FastEthernet',
   'Gi' : 'GigabitEthernet',

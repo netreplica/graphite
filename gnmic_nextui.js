@@ -318,7 +318,7 @@
             break;
           case "srl_interface_addresses":
             source = gnmic_data[0].tags.source;
-            ifname = gnmic_data[0].tags.interface_name;
+            ifname = gnmic_data[0].tags.interface_name.replace('-','').replace('/','-');
             ipaddr = gnmic_data[0].tags["address_ip-prefix"];
             break;
           }
