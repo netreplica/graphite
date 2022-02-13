@@ -309,22 +309,25 @@
           }
         
           // Replace interface names with their IP addresses in the CMT topology
-          var source, ifname, ipaddr;
-          switch (gnmic_data[0].name) {
-          case "ceos_interface_addresses":
-            source = gnmic_data[0].tags.source;
-            ifname = gnmic_data[0].tags.interface_name;
-            var prefix = gnmic_data[0].values["/interfaces/interface/subinterfaces/subinterface/ipv4/addresses/address/state/prefix-length"];
-            ipaddr = gnmic_data[0].tags.address_ip + "/" + prefix;
-            break;
-          case "srl_interface_addresses":
-            source = gnmic_data[0].tags.source;
-            ifname = gnmic_data[0].tags.interface_name.replace('-','').replace('/','-');
-            ipaddr = gnmic_data[0].tags["address_ip-prefix"];
-            break;
+          var source, ifname, ipaddr, prefix;
+          for (d of gnmic_data) {
+            switch (d.name) {
+            case "ceos_interface_addresses":
+              source = d.tags.source;
+              ifname = d.tags.interface_name;
+              prefix = d.values["/interfaces/interface/subinterfaces/subinterface/ipv4/addresses/address/state/prefix-length"];
+              ipaddr = d.tags.address_ip + "/" + prefix;
+              break;
+            case "srl_interface_addresses":
+              source = d.tags.source;
+              ifname = d.tags.interface_name.replace('-','').replace('/','-');
+              ipaddr = d.tags["address_ip-prefix"];
+              break;
+            }
+          
+            topologyData = replace_ifname_with_ipaddr_in_cmt(topologyData, source, ifname, ipaddr);
           }
           
-          topologyData = replace_ifname_with_ipaddr_in_cmt(topologyData, source, ifname, ipaddr);
         }
         
         // Create an application instance
