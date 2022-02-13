@@ -302,11 +302,10 @@
       // TODO handle errors
       if (this.readyState == 4 && this.status == 200) {
         gnmic_data = JSON.parse(this.responseText);
-        console.log(gnmic_data);
-        console.log(gnmic_data.tags.address_ip);
+        //console.log(gnmic_data);
         
-        // TODO add data to topology
-        topologyData = replace_ifname_with_ipaddr_in_cmt(topologyData,"any",gnmic_data.tags.address_ip);
+        // Replace interface names with their IP addresses in the CMT topology
+        topologyData = replace_ifname_with_ipaddr_in_cmt(topologyData, gnmic_data.tags.source, gnmic_data.tags.interface_name, gnmic_data.tags.address_ip);
         
         // Create an application instance
         var shell = new Shell();
