@@ -14,6 +14,37 @@
    limitations under the License.
 */
 
+const interface_full_name_map = {
+  'e1-': 'ethernet1-',
+  'Eth': 'Ethernet',
+  'Fa' : 'FastEthernet',
+  'Gi' : 'GigabitEthernet',
+  'Te' : 'TenGigabitEthernet',
+  'Ma' : 'Management'
+};
+
+function if_fullname(ifname) {
+  //TODO ifname = dequote(ifname)
+  for (k in interface_full_name_map){
+    var v = interface_full_name_map[k];
+    if (ifname.toLowerCase().startsWith(k.toLowerCase())) {
+      return ifname.toLowerCase().replace(k.toLowerCase(), v);
+    }
+  }
+  return ifname;
+}
+
+function if_shortname(ifname) {
+  //TODO ifname = dequote(ifname)
+  for (k in interface_full_name_map){
+    var v = interface_full_name_map[k];
+    if (ifname.toLowerCase().startsWith(v.toLowerCase())) {
+      return ifname.toLowerCase().replace(v.toLowerCase(), k);
+    }
+  }
+  return ifname;
+}
+
 // Convert ContainerLab Graph JSON export into CMT JSON topology
 function convert_clab_graph_to_cmt(c){
   var cmt = {"nodes": [], "links": []};
@@ -55,6 +86,23 @@ function convert_clab_graph_to_cmt(c){
       "tgtIfName": l["target_endpoint"],
       "tgtDevice": l["target"],
     })
+  }
+  return cmt;
+}
+
+// Replace interface names with IP addresses in CMT JSON topology
+function replace_ifname_with_ipaddr_in_cmt(cmtin, device, ifname, ipaddr){
+  var cmt = {"nodes": [], "links": []};
+  for (n of cmtin.nodes) {
+    cmt.nodes.push(n);
+  }
+  for (l of cmtin.links) {
+    if (device.endsWith(l.srcDevice) && if_shortname(l.srcIfName).toLowerCase() == if_shortname(ifname).toLowerCase()) {
+      l.srcIfName = ipaddr;
+    } else if (device.endsWith(l.tgtDevice) && if_shortname(l.tgtIfName).toLowerCase() == if_shortname(ifname).toLowerCase()) {
+      l.tgtIfName = ipaddr;
+    }
+    cmt.links.push(l);
   }
   return cmt;
 }
