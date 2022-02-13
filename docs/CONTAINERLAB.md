@@ -192,7 +192,7 @@ topology:
         graph-icon: switch
 ````
 
-  Possible graph-icon types are (from [Cisco DevNet NeXT UI API doc](https://developer.cisco.com/site/neXt/document/api-reference-manual/files/src_js_graphic_svg_Icons.js/#l11):
+  Possible graph-icon types are (from [Cisco DevNet NeXT UI API doc](https://developer.cisco.com/site/neXt/document/api-reference-manual/files/src_js_graphic_svg_Icons.js/#l11)):
 
 |   |   |   |
 |---|---|---|
