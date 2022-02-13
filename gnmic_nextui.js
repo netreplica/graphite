@@ -314,7 +314,8 @@
           case "ceos_interface_addresses":
             source = gnmic_data[0].tags.source;
             ifname = gnmic_data[0].tags.interface_name;
-            ipaddr = gnmic_data[0].tags.address_ip;
+            var prefix = gnmic_data[0].values["/interfaces/interface/subinterfaces/subinterface/ipv4/addresses/address/state/prefix-length"];
+            ipaddr = gnmic_data[0].tags.address_ip + "/" + prefix;
             break;
           case "srl_interface_addresses":
             source = gnmic_data[0].tags.source;
