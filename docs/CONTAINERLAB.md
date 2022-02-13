@@ -157,7 +157,7 @@ topology:
 4. Re-export JSON file
 
 ```Shell
-clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 ````
 
 5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers. `node3-1` is on the top since it has `graph-level` value of 1.
@@ -192,7 +192,7 @@ topology:
 2. Re-export JSON file
 
 ```Shell
-clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 ````
 
 3. Now refresh the web page in the browser, and click "Vertical Layout". Now the bottom row of nodes uses "switch" icons.
@@ -213,8 +213,8 @@ topology:
 2. Now deploy the ContainerLab topology and update visualization
 
 ```Shell
-sudo $HOME/containerlab/containerlab deploy --topo ${CLAB_TOPO}.clab.yml
-sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.clab.yml
+sudo $HOME/containerlab/containerlab deploy --topo ${CLAB_TOPO}.yaml
+sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.yaml
 ````
 
 3. Now refresh the web page in the browser, click on any node icon. You can see a management IP of each node in the tooltip that appears. These IPs were dynamically assigned by ContainerLabs when the topology was deployed.
@@ -225,5 +225,5 @@ sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.clab.yml
 4. To stop running the topology, use
 
 ```Shell
-sudo $HOME/containerlab/containerlab destroy --topo ${CLAB_TOPO}.clab.yml
+sudo $HOME/containerlab/containerlab destroy --topo ${CLAB_TOPO}.yaml
 ````
