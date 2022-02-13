@@ -58,3 +58,16 @@ function convert_clab_graph_to_cmt(c){
   }
   return cmt;
 }
+
+// Replace interface names with IP addresses in CMT JSON topology
+function replace_ifname_with_ipaddr_in_cmt(cmtin, ifname, ipaddr){
+  var cmt = {"nodes": [], "links": []};
+  for (n of cmtin.nodes) {
+    cmt.nodes.push(n);
+  }
+  for (l of cmtin.links) {
+    l.srcIfName = ipaddr;
+    cmt.links.push(l);
+  }
+ return cmt 
+}
