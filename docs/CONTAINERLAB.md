@@ -96,20 +96,20 @@ sudo systemctl status lighttpd
 ```Shell
 cd $HOME/clabs
 CLAB_TOPO="clos-3tier"
-clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.clab.yml
+clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.yaml
 ````
 
 2. Now that you have a topology file, let's export it in JSON format for Graphite. If you are using a different topology name, please save that name in an environmental variable `CLAB_TOPO` before using the examples below as is.
 
 
 ```Shell
-clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 ````
 
-  If all goes well, that command should've created a file `$HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json`, which we can inspect with `jq` (this is optional, if you don't have `jq` installed):
+  If all goes well, that command should've created a file `$HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json`, which we can inspect with `jq` (this is optional, if you don't have `jq` installed):
   
 ```Shell
-cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.clab.json | jq
+cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json | jq
 ````  
 
 3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/main.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
@@ -157,7 +157,7 @@ topology:
 4. Re-export JSON file
 
 ```Shell
-clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 ````
 
 5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers. `node3-1` is on the top since it has `graph-level` value of 1.
@@ -192,7 +192,7 @@ topology:
 2. Re-export JSON file
 
 ```Shell
-clabg graph --json --topo ${CLAB_TOPO}.clab.yml --offline
+clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 ````
 
 3. Now refresh the web page in the browser, and click "Vertical Layout". Now the bottom row of nodes uses "switch" icons.
@@ -213,8 +213,8 @@ topology:
 2. Now deploy the ContainerLab topology and update visualization
 
 ```Shell
-sudo $HOME/containerlab/containerlab deploy --topo ${CLAB_TOPO}.clab.yml
-sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.clab.yml
+sudo $HOME/containerlab/containerlab deploy --topo ${CLAB_TOPO}.yaml
+sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.yaml
 ````
 
 3. Now refresh the web page in the browser, click on any node icon. You can see a management IP of each node in the tooltip that appears. These IPs were dynamically assigned by ContainerLabs when the topology was deployed.
@@ -225,5 +225,5 @@ sudo $HOME/containerlab/containerlab graph --json --topo ${CLAB_TOPO}.clab.yml
 4. To stop running the topology, use
 
 ```Shell
-sudo $HOME/containerlab/containerlab destroy --topo ${CLAB_TOPO}.clab.yml
+sudo $HOME/containerlab/containerlab destroy --topo ${CLAB_TOPO}.yaml
 ````

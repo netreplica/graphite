@@ -257,7 +257,7 @@
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
-    var topo_type = "example", topo_name = "3-nodes", topo_base = "examples/", topo_url;
+    var topo_type = "example", topo_name = "3-nodes.clab", topo_base = "examples/", topo_url;
     if (url_params.has('type') && url_params.get('type') == "clab") {
       topo_type = "clab";
       topo_base = "../clab-";
@@ -267,10 +267,10 @@
     }
     switch (topo_type) {
     case "clab":
-      topo_url = topo_base + topo_name + "/graph/" + topo_name + ".clab.json";
+      topo_url = topo_base + topo_name + "/graph/" + topo_name + ".json";
       break;
     default:
-      topo_url = topo_base + topo_name + ".clab.json";
+      topo_url = topo_base + topo_name + ".json";
     }
     
     // Load topology model
