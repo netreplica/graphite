@@ -57,7 +57,7 @@ docker run --rm -it --privileged \
     ghcr.io/srl-labs/clab bash
 ````
 
-  Now you should get a `bash-5.1# ` prompt, which means you are in the container for the custom graphite-ready build of containerlab that you just created.  We'll alias that to "clabg" so that it does not conflict with the vanilla clab directory that should also exist in $HOME if you installed that before.
+  Now you should get a `bash-5.1# ` prompt, which means you are in the container for the custom graphite-ready build of containerlab that you just created.  We'll alias that to "clabg" for short (the long "containerlab" directory name was used so that it does not conflict with the vanilla "clab" directory that should also exist in $HOME if you installed that before).
 
 ```Shell
 alias clabg="`pwd`/containerlab"
