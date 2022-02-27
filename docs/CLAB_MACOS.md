@@ -39,8 +39,7 @@ go build
  - At this point in the macOS installation, an `undefined: netlink.FAMILY_V4` error and a similar V6 error was encountered. This is evidently a limitation in the macOS go implementation; to work around this, cross-compile for linux as follows (of course, you may be able to set this environment variable in the first place before the "go build" above, but it was not tested).
 
 ```shell
-GOOS=linux
-go build
+GOOS=linux go build
 ```
 
  - This is the point where we need Docker Desktop running as mentioned in the [clab docs](https://containerlab.srlinux.dev/install/#mac-os), so go ahead and start it up if it wasn't up already.  Once it's running, minimize it and return to Terminal to continue starting up the shell for the custom clabg:
