@@ -1,6 +1,6 @@
-# Visualizing ContainerLab topologies on MacOS
+# Visualizing ContainerLab topologies on macOS
 
-  According to the [ContainerLab documentation](https://containerlab.srlinux.dev/install/#mac-os), running vanilla clab on MacOS is possible using Docker Desktop.  Testing revealed that this does not work with new M1 silicon[^1], however, and was successful only on an older Intel-based chipset[^2]. It will also not support vrnetlab-based nodes; see clab docs linked above for full details.  The following instructions assume you already have Docker Desktop and vanilla clab installed and running.
+  According to the [ContainerLab documentation](https://containerlab.srlinux.dev/install/#mac-os), running vanilla clab on macOS is possible using Docker Desktop.  Testing revealed that this does not work with new M1 silicon[^1], however, and was successful only on an older Intel-based chipset[^2]. It will also not support vrnetlab-based nodes; see clab docs linked above for full details.  The following instructions assume you already have Docker Desktop and vanilla clab installed and running.
 
 ## Install Instructions
 
@@ -25,7 +25,7 @@ go version
 
 3. Build a new, custom ContainerLab binary with topology export capabilities. Create an alias `clabg` for the binary.
 
-  Currently (Feb'22), the standard ContainerLab build doesn't have the capability to export a topology data model suitable for Graphite. There is a [proposal](https://github.com/srl-labs/containerlab/issues/703) to introduce such an option into the product, as well as a possible [implementation](https://github.com/netreplica/containerlab/tree/graph-json). The current Graphite version relies on that implementation.
+  Currently (Feb '22), the standard ContainerLab build doesn't have the capability to export a topology data model suitable for Graphite. There is a [proposal](https://github.com/srl-labs/containerlab/issues/703) to introduce such an option into the product, as well as a possible [implementation](https://github.com/netreplica/containerlab/tree/graph-json). The current Graphite version relies on that implementation.
   
   As a prerequisite, please build a custom ContainerLab binary with topology export capabilities. You can continue using the official build for all other ContainerLab operations, and use this custom build in parallel to export topology data.
   
