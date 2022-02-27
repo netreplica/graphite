@@ -118,7 +118,7 @@ lighttpd started yourname ~/Library/LaunchAgents/homebrew.mxcl.lighttpd.plist
 [^1]: Although [Linux can finally run on Apple's M1 chipset](https://www.linux-magazine.com/Online/News/Linux-Can-Now-Run-on-Apple-s-M1-Chipset), the maintainer of ContainerLab, Roman Dodin, has said that it's "painful" to get Go apps to work on darwin/arm64, and even if they did get it working, thus far no NOS vendors have rebuilt their containerized images (such as srlinux and ceos) for the new Apple silicon. 
 
 [^2]: Test system details:
-  - macOS Catalina (10.15.7)
-  - MacBook Pro (Retina, 13-inch, Late 2013)
-  - Processor: 2.4 GHz Dual-core Intel Core i5
-  - Memory: 8GB 1600 MHz DDR3
+    - macOS Catalina (10.15.7)
+    - MacBook Pro (Retina, 13-inch, Late 2013)
+    - Processor: 2.4 GHz Dual-core Intel Core i5
+    - Memory: 8GB 1600 MHz DDR3
