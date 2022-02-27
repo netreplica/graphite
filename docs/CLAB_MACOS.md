@@ -1,8 +1,8 @@
 # Visualizing ContainerLab topologies on MacOS
 
-  According to [ContainerLab documentation](https://containerlab.srlinux.dev/install/#mac-os), running vanilla clab on MacOS is possible using Docker Desktop.  Testing revealed that this does not work with new M1 silicon[^1], however, and was successful only on an older Intel-based chipset[^2]. It will also not support vrnetlab-based nodes; see clab docs linked above for full details.  The following instructions assume you already have Docker Desktop and vanilla clab installed and running.
+  According to the [ContainerLab documentation](https://containerlab.srlinux.dev/install/#mac-os), running vanilla clab on MacOS is possible using Docker Desktop.  Testing revealed that this does not work with new M1 silicon[^1], however, and was successful only on an older Intel-based chipset[^2]. It will also not support vrnetlab-based nodes; see clab docs linked above for full details.  The following instructions assume you already have Docker Desktop and vanilla clab installed and running.
 
-## Prerequisites
+## Install Instructions
 
 1. (Optional) The creation of a VM for experimentation with Graphite and custom ContainerLab builds was not tested for this macOS case, since a dedicated MacBook was available.  There is probably a way to do this; in fact there is evidently a way to [use multipass with hyperkit or VirtualBox](https://multipass.run/docs/installing-on-macos), to emulate step 1 in the [main ubuntu example](CONTAINERLAB.md). Please let us know what steps worked if anyone is successful on macOS.
 
@@ -96,7 +96,6 @@ Restart the server using `brew services restart` (you will have to use `brew tap
 ````
 brew tap homebrew/services
 brew services restart lighttpd
-brew services list
 ````
 
 You should see something like the following if lighttpd has started successfully:
