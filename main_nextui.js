@@ -260,7 +260,7 @@
     var topo_type = "example", topo_name = "3-nodes.clab", topo_base = "examples/", topo_url;
     if (url_params.has('type') && url_params.get('type') == "clab") {
       topo_type = "clab";
-      topo_base = "../clab-";
+      topo_base = "../data/clab-";
     }
     if (url_params.has('topo')) {
       topo_name = url_params.get('topo');

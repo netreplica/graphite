@@ -1,11 +1,13 @@
 FROM alpine:latest
 
-# lighttpd version to use
 ENV LIGHTTPD_VERSION=1.4.64-r0
+ENV WWW_HOME=/var/www/localhost/htdocs
 
-# Install lighttpd
+# Install lighttpd and git
 
-RUN apk add --no-cache lighttpd=${LIGHTTPD_VERSION} \
+RUN apk add --no-cache \
+  lighttpd=${LIGHTTPD_VERSION} \
+  git \
   && rm -rf /var/cache/apk/*
 
 # Default configuration
@@ -19,7 +21,12 @@ EXPOSE 80/tcp
 #VOLUME /etc/lighttpd
 
 # Volume with files to serve
-VOLUME /var/www/localhost/htdocs
+VOLUME ${WWW_HOME}/data
+
+# Clone Graphite repo and dependencies
+RUN git clone --single-branch https://github.com/netreplica/next-bower.git ${WWW_HOME}/next-bower
+# TODO remove -b before merging into main
+RUN git clone -b docker --single-branch https://github.com/netreplica/graphite.git ${WWW_HOME}/graphite
 
 # Run lighttpd webserver
 

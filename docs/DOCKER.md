@@ -31,7 +31,7 @@
 ```Shell
 cd graphite/docker/graphite
 docker image build -t netreplica/graphite:latest .
-docker tag netreplica/graphite:latest netreplica/graphite:0.01
+docker tag netreplica/graphite:latest netreplica/graphite:0.02
 ````
 
 ## Running
@@ -41,7 +41,7 @@ docker tag netreplica/graphite:latest netreplica/graphite:0.01
 ```Shell
 WWWDIR=`pwdr`
 docker run --rm -t \
-  -v $WWWDIR:/var/www/localhost/htdocs \
+  -v $WWWDIR:/var/www/localhost/htdocs/data \
   -p 8080:80 \
   --name graphite \
   netreplica/graphite
