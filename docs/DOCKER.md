@@ -36,13 +36,20 @@ docker tag netreplica/graphite:latest netreplica/graphite:0.02
 
 ## Running
 
-1. Navigate to the directory with assets for Graphite visualization and launch the container
+1. Navigate to the directory with assets for Graphite visualization. Graphite will use the following assets:
+
+    * Containterlab JSON data: `./clab-<topology_name>/graph/<topology_name>.json`
+
+2. Launch Graphite as a Docker container
 
 ```Shell
-WWWDIR=`pwdr`
+WWWDIR=`pwd`
 docker run --rm -t \
   -v $WWWDIR:/var/www/localhost/htdocs/data \
   -p 8080:80 \
   --name graphite \
   netreplica/graphite
 ````
+
+3. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
+
