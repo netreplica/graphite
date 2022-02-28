@@ -6,7 +6,7 @@
 
 ## Building a Docker image from source
 
-1. Clone lighttpd 1.4 sources and build configuration files from copies provided with the sources
+1. Clone [lighttpd 1.4](https://git.lighttpd.net/lighttpd/lighttpd1.4) sources and build configuration files from copies provided
 
   ```Shell
   mkdir -p src
@@ -22,8 +22,6 @@
   grep -v "server.use-ipv6" | \
   grep -v "debug.conf" \
   > graphite/docker/graphite/etc/lighttpd/lighttpd.conf
-  
-  echo '' >> graphite/docker/graphite/etc/lighttpd/lighttpd.conf
   ````
 
 2. Build
@@ -51,5 +49,5 @@ docker run --rm -t \
   netreplica/graphite
 ````
 
-3. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
+3. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
 
