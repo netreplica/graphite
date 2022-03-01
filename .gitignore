@@ -131,3 +131,4 @@ dmypy.json
 docker/graphite/etc/lighttpd/lighttpd.conf
 docker/graphite/etc/lighttpd/conf.d/dirlisting.conf
 docker/graphite/etc/lighttpd/conf.d/mime.conf
+docker/graphite/clabg

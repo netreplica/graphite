@@ -1,5 +1,9 @@
 FROM alpine:latest
 
+# Patched Containerlab version with useful scripts
+COPY clabg /usr/local/bin/
+COPY generate_all_offline_graphs.sh /usr/local/bin/
+
 ENV LIGHTTPD_VERSION=1.4.64-r0
 ENV WWW_HOME=/var/www/localhost/htdocs
 

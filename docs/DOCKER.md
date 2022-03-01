@@ -3,6 +3,7 @@
 ## Pre-requisites
 
 1. Docker
+2. Patched [version](https://github.com/netreplica/containerlab/tree/graph-json) of [Containerlab](https://github.com/srl-labs/containerlab) with capabilities to export topology data as a JSON object. Follow steps 1-3 from [CONTAINERLAB.md](docs/CONTAINERLAB.md) to build this patched binary.
 
 ## Building a Docker image from source
 
@@ -28,8 +29,16 @@
 
 ```Shell
 cd graphite/docker/graphite
+cp ../../../containerlab/containerlab clabg
 docker image build -t netreplica/graphite:latest .
-docker tag netreplica/graphite:latest netreplica/graphite:0.02
+docker tag netreplica/graphite:latest netreplica/graphite:0.03
+````
+
+3. Publish the image to the repository
+
+```Shell
+docker push netreplica/graphite:latest
+docker push netreplica/graphite:0.03
 ````
 
 ## Running
@@ -49,5 +58,11 @@ docker run -d -t \
   netreplica/graphite
 ````
 
-3. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
+3. (Optional) If you never exported Containerlab topology graphs in JSON, you can do that for all topologies with the following command:
+
+```Shell
+docker exec -t graphite generate_all_offline_graphs.sh
+````
+
+4. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
 

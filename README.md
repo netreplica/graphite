@@ -1,13 +1,19 @@
 # Netreplica Graphite
 Network Visualization for Emulated Topologies
 
+## Running Graphite in Docker 
+
+The easiest way of adding Graphite to your environment is to run it as a Docker container. Follow [the guide](docs/DOCKER.md) to learn how.
+
+## Detailed instructions on using Graphite to visualize Containerlab topologies
+
+Follow [step-by-step reference](docs/CONTAINERLAB.md) to learn how to use Graphite with ContainerLab.
+
+## NANOG-84 Hackathon
+
 [NANOG-84 Hackathon](https://www.nanog.org/events/nanog-84-hackathon/) Idea
 
 ![NANOG-84 Hackathon Idea](images/clab-graphite.png)
-
-## Visualizing ContainerLab topologies
-
-Follow [step-by-step reference](docs/CONTAINERLAB.md) to learn how to use Graphite with ContainerLab.
 
 ## Copyright notice
 
