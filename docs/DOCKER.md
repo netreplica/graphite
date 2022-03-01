@@ -64,5 +64,11 @@ docker run -d -t \
 docker exec -t graphite generate_all_offline_graphs.sh
 ````
 
+  Alternatively, to export graph data for a speficic topology, use
+  
+```Shell
+docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml
+````
+
 4. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
 
