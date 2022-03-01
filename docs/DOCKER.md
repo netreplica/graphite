@@ -36,14 +36,14 @@ docker tag netreplica/graphite:latest netreplica/graphite:0.02
 
 1. Navigate to the directory with assets for Graphite visualization. Graphite will use the following assets:
 
-    * Containterlab JSON data: `./clab-<topology_name>/graph/<topology_name>.json`
+    * Containterlab JSON data: `./clab-<topology_name>/graph/<topology_name>.json`. Map this folder to `/var/www/localhost/htdocs/clab` image volume
 
 2. Launch Graphite as a Docker container
 
 ```Shell
-WWWDIR=`pwd`
-docker run --rm -t \
-  -v $WWWDIR:/var/www/localhost/htdocs/data \
+CLABDIR=`pwd`
+docker run -d -t \
+  -v $CLABDIR:/var/www/localhost/htdocs/clab \
   -p 8080:80 \
   --name graphite \
   netreplica/graphite

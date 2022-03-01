@@ -20,8 +20,8 @@ EXPOSE 80/tcp
 # Volume with configuration
 #VOLUME /etc/lighttpd
 
-# Volume with files to serve
-VOLUME ${WWW_HOME}/data
+# Volume with Containerlab topology assets
+VOLUME ${WWW_HOME}/clab
 
 # Clone Graphite repo and dependencies
 RUN git clone --single-branch https://github.com/netreplica/next-bower.git ${WWW_HOME}/next-bower
