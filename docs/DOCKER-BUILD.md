@@ -3,7 +3,7 @@
 ## Pre-requisites
 
 1. Docker
-2. Patched [version](https://github.com/netreplica/containerlab/tree/graph-json) of [Containerlab](https://github.com/srl-labs/containerlab) with capabilities to export topology data as a JSON object. Follow steps 1-3 from [CONTAINERLAB.md](docs/CONTAINERLAB.md) to build this patched binary.
+2. Patched [version](https://github.com/netreplica/containerlab/tree/graph-json) of [Containerlab](https://github.com/srl-labs/containerlab) with capabilities to export topology data as a JSON object. Follow steps 1-3 from [CONTAINERLAB.md](CONTAINERLAB.md) to build this patched binary.
 
 ## Building a Docker image from source
 
