@@ -36,4 +36,4 @@ docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml
 
 ## Docker Image Build Instructions
 
-Follow this guide [DOCKER-BUILD.md](docs/DOCKER-BUILD.md)
+Follow this guide [DOCKER-BUILD.md](DOCKER-BUILD.md)
