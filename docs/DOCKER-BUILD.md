@@ -1,4 +1,4 @@
-# Building and running Graphite as a Docker container
+# Building Graphite as a Docker container
 
 ## Pre-requisites
 
@@ -34,7 +34,7 @@ docker image build -t netreplica/graphite:latest .
 docker tag netreplica/graphite:latest netreplica/graphite:0.03
 ````
 
-3. Publish the image to the repository
+## Publish the image to the repository
 
 ```Shell
 docker push netreplica/graphite:latest
