@@ -30,7 +30,7 @@
 ```Shell
 cd graphite/docker/graphite
 cp ../../../containerlab/containerlab clabg
-docker image build -t netreplica/graphite:latest .
+docker image build --no-cache=true -t netreplica/graphite:latest .
 docker tag netreplica/graphite:latest netreplica/graphite:0.05
 ````
 
