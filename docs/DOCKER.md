@@ -47,7 +47,7 @@ You can also launch Graphite automatically whenever you deploy a topology with `
   clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
   ````
   
-2. Open the topology file in text editor (`vi ${CLAB_TOPO}.yaml`, for out example), and insert the following snippet right before the line `links:`. Make sure to replace the name of the topology in `GRAPHITE_DEFAULT_TOPO` variable to the topology name you are using.
+2. Open the topology file in text editor (`vi ${CLAB_TOPO}.yaml`), and insert the following snippet right before the line `links:`. Make sure to replace the name of the topology in `GRAPHITE_DEFAULT_TOPO` variable to the topology name you are using.
 
   ```Shell
     graphite:
