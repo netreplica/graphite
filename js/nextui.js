@@ -257,10 +257,10 @@
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
-    var topo_type = "example", topo_name = "3-nodes.clab", topo_base = "examples/", topo_url;
+    var topo_type = "default", topo_name = "default", topo_base = "/default/", topo_url;
     if (url_params.has('type') && url_params.get('type') == "clab") {
       topo_type = "clab";
-      topo_base = "../clab-";
+      topo_base = "../clab/clab-";
     }
     if (url_params.has('topo')) {
       topo_name = url_params.get('topo');

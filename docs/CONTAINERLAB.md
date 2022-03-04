@@ -56,8 +56,8 @@ clabg graph -h | grep json
 4. Clone Graphite and NextUI repositories
 
 ```Shell
-mkdir -p $HOME/clabs
-cd $HOME/clabs
+mkdir -p $HOME/netreplica/clab
+cd $HOME/netreplica
 git clone https://github.com/netreplica/graphite.git
 git clone https://github.com/netreplica/next-bower.git
 ````
@@ -66,14 +66,14 @@ git clone https://github.com/netreplica/next-bower.git
 
 ```Shell
 sudo apt install lighttpd -y
-echo $HOME/clabs
+echo $HOME/netreplica
 sudo vi /etc/lighttpd/lighttpd.conf
 ````
 
 Replace `server.document-root` value with full path to a directory with ContainerLabs topologies and Graphite file (see `echo` output above). WARNING! This is very basic setup for experimentation without any security measures. DO NOT USE IT AS IS for ContainerLab deployments that contain sensitive device configurations.
 
 ````
-server.document-root        = "/home/ubuntu/clabs" 
+server.document-root        = "/home/ubuntu/netreplica" 
 ````
 
 Restart the server:
@@ -83,7 +83,7 @@ sudo systemctl restart lighttpd
 sudo systemctl status lighttpd
 ````
 
-6. Validate access to Graphite web pages by opening the following URL in the browser: `http://REPLACE_IP/graphite/main.html`. You should be able to see a sample topology:
+6. Validate access to Graphite web pages by opening the following URL in the browser: `http://REPLACE_IP/graphite/index.html`. You should be able to see a sample topology:
 
 ![Default Graphite Topology Visualization](../images/3-nodes.clab.png)
 
@@ -94,7 +94,7 @@ sudo systemctl status lighttpd
   You could start with one of the examples [published](https://containerlab.srlinux.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
 
 ```Shell
-cd $HOME/clabs
+cd $HOME/netreplica/clab
 CLAB_TOPO="clos-3tier"
 clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.yaml
 ````
@@ -109,13 +109,13 @@ clabg generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.yaml
 clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 ````
 
-  If all goes well, that command should've created a file `$HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json`, which we can inspect with `jq` (this is optional, if you don't have `jq` installed):
+  If all goes well, that command should've created a file `$HOME/netreplica/clab/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json`, which we can inspect with `jq` (this is optional, if you don't have `jq` installed):
   
 ```Shell
-cat $HOME/clabs/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json | jq
+cat $HOME/netreplica/clab/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json | jq
 ````  
 
-3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/main.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
+3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/index.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
 
 ![clos-3tier Graphite Topology Visualization](../images/clos-3tier.clab.png)
 

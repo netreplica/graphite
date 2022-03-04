@@ -45,6 +45,27 @@ function if_shortname(ifname) {
   return ifname;
 }
 
+// Evaluate object's values for possible representation of boolean TRUE
+function equals_true(obj) {
+  switch (typeof obj) {
+  case 'string':
+    switch (obj.toLowerCase()) {
+    case 'yes':
+    case 'y':
+    case 'true':
+      return true;
+    default:
+      return false;
+    }
+    break;
+  case 'boolean':
+    return obj;
+    break;
+  default:
+    return false;
+  }
+}
+
 // Convert ContainerLab Graph JSON export into CMT JSON topology
 function convert_clab_graph_to_cmt(c){
   var cmt = {"nodes": [], "links": []};
@@ -54,11 +75,13 @@ function convert_clab_graph_to_cmt(c){
     var primaryIP;
     var icon = "router";
     var level;
-    node_id_map[n.name] = i;
     if (n.hasOwnProperty("ipv4_address")) {
       primaryIP = n.ipv4_address;
     }
     if (n.hasOwnProperty("labels")) {
+      if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
+        continue;
+      }
       if (n.labels.hasOwnProperty("graph-icon")) {
         icon = n.labels["graph-icon"];
       }
@@ -66,6 +89,7 @@ function convert_clab_graph_to_cmt(c){
         level = n.labels["graph-level"];
       }
     }
+    node_id_map[n.name] = i;
     cmt.nodes.push({
       "id": i,
       "name": n.name,
