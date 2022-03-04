@@ -17,6 +17,8 @@ RUN apk add --no-cache \
 
 # Default configuration
 COPY etc/lighttpd/ /etc/lighttpd/
+RUN mkdir -p $WWW_HOME/default
+COPY default/ $WWW_HOME/default/
 COPY start.sh /usr/local/bin/
 
 # Ports to listen

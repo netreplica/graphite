@@ -23,6 +23,8 @@
   grep -v "server.use-ipv6" | \
   grep -v "debug.conf" \
   > graphite/docker/graphite/etc/lighttpd/lighttpd.conf
+  
+  cp ../../examples/3-nodes.clab.json default/default.json
   ````
 
 2. Build
@@ -31,12 +33,12 @@
 cd graphite/docker/graphite
 cp ../../../containerlab/containerlab clabg
 docker image build --no-cache=true -t netreplica/graphite:latest .
-docker tag netreplica/graphite:latest netreplica/graphite:0.06
+docker tag netreplica/graphite:latest netreplica/graphite:0.07
 ````
 
 ## Publish the image to the repository
 
 ```Shell
 docker push netreplica/graphite:latest
-docker push netreplica/graphite:0.06
+docker push netreplica/graphite:0.07
 ````

@@ -40,16 +40,16 @@ You can also launch Graphite automatically whenever you deploy a topology with `
 
 1. First, let's create a topology file. If you have one already, you can use it instead.
 
-  ```Shell
-  mkdir -p $HOME/netreplica/clab
-  cd $HOME/netreplica/clab
-  CLAB_TOPO="clos-2tier"
-  clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
-  ````
+```Shell
+mkdir -p $HOME/netreplica/clab
+cd $HOME/netreplica/clab
+CLAB_TOPO="clos-2tier"
+clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
+````
   
 2. Open the topology file in text editor (`vi ${CLAB_TOPO}.yaml`), and insert the following snippet right before the line `links:`. Make sure to replace the name of the topology in `GRAPHITE_DEFAULT_TOPO` variable to the topology name you are using.
 
-  ```Shell
+```Yaml
     graphite:
       kind: linux
       image: netreplica/graphite
@@ -59,15 +59,17 @@ You can also launch Graphite automatically whenever you deploy a topology with `
       binds:
         - .:/var/www/localhost/htdocs/clab
       ports:
-        - 8080:80'
-  ````
+        - 8080:80
+      labels:
+        graph-hide: yes
+````
 
 3. Deploy the topolology and generate the graph.
 
-  ```Shell
-  sudo clab deploy -t ${CLAB_TOPO}.yaml
-  docker exec -t clab-${CLAB_TOPO}-graphite generate_offline_graph.sh ${CLAB_TOPO}.yaml
-  ````
+```Shell
+sudo clab deploy -t ${CLAB_TOPO}.yaml
+docker exec -t clab-${CLAB_TOPO}-graphite generate_offline_graph.sh ${CLAB_TOPO}.yaml
+````
 
 4. Now you can open the visualization via URL: [`http://localhost:8080/graphite/index.html`](http://localhost:8080/graphite/index.html). If you are using this method, there is no need to specify any parameters with topology name in the URL, as you provided them via env variables in the topology file. You might need to replace `localhost` with proper FQDN or IP address.
 
