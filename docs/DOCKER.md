@@ -32,7 +32,7 @@ docker exec -t graphite generate_all_offline_graphs.sh
 docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml
 ````
 
-4. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/main.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
+4. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/index.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/index.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
 
 ## Lanching Graphite as part of CONTAINERlab deployment
 
@@ -69,7 +69,7 @@ You can also launch Graphite automatically whenever you deploy a topology with `
   docker exec -t clab-${CLAB_TOPO}-graphite generate_offline_graph.sh ${CLAB_TOPO}.yaml
   ````
 
-4. Now you can open the visualization via URL: [`http://localhost:8080/graphite/main.html`](http://localhost:8080/graphite/main.html). If you are using this method, there is no need to specify any parameters with topology name in the URL, as you provided them via env variables in the topology file. You might need to replace `localhost` with proper FQDN or IP address.
+4. Now you can open the visualization via URL: [`http://localhost:8080/graphite/index.html`](http://localhost:8080/graphite/index.html). If you are using this method, there is no need to specify any parameters with topology name in the URL, as you provided them via env variables in the topology file. You might need to replace `localhost` with proper FQDN or IP address.
 
 ## Docker Image Build Instructions
 
