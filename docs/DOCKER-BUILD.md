@@ -33,12 +33,12 @@
 cd graphite/docker/graphite
 cp ../../../containerlab/containerlab clabg
 docker image build --no-cache=true -t netreplica/graphite:latest .
-docker tag netreplica/graphite:latest netreplica/graphite:0.07
+docker tag netreplica/graphite:latest netreplica/graphite:0.08
 ````
 
 ## Publish the image to the repository
 
 ```Shell
 docker push netreplica/graphite:latest
-docker push netreplica/graphite:0.07
+docker push netreplica/graphite:0.08
 ````
