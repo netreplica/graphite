@@ -293,7 +293,7 @@
         shell.start();
       }
     };
-    xmlhttp.open("GET", topo_url, true);
+    xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
     xmlhttp.send();
 
 })(nx);
