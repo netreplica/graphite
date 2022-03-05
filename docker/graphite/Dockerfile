@@ -33,7 +33,7 @@ VOLUME ${WWW_HOME}/clab
 # Clone Graphite repo and dependencies
 RUN git clone --single-branch https://github.com/netreplica/next-bower.git ${WWW_HOME}/next-bower
 # TODO remove -b before merging into main
-RUN git clone -b docker --single-branch https://github.com/netreplica/graphite.git ${WWW_HOME}/graphite
+RUN git clone --single-branch https://github.com/netreplica/graphite.git ${WWW_HOME}/graphite
 
 # Run lighttpd webserver
 
