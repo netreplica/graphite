@@ -67,7 +67,7 @@ function equals_true(obj) {
 }
 
 function getWebsshDeviceLink(n, a) {
-  return "window.open('http://" + window.location.hostname + ":2222/ssh/host/" + a + "?header=" + n + "&headerBackground=blue'" + ",'popup','width=600,height=600'); return false;"
+  return "window.open('/ssh/host/" + a + "?header=" + n + "&headerBackground=blue'" + ",'popup','width=600,height=600'); return false;"
 }
 
 // Convert ContainerLab Graph JSON export into CMT JSON topology
