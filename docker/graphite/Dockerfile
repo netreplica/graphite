@@ -7,22 +7,31 @@ COPY generate_offline_graph.sh /usr/local/bin/
 
 ENV LIGHTTPD_VERSION=1.4.64-r0
 ENV WWW_HOME=/var/www/localhost/htdocs
+ENV WEBSSH2=/usr/local/webssh2
 
-# Install lighttpd and git
-
+# Install packages
 RUN apk add --no-cache \
   lighttpd=${LIGHTTPD_VERSION} \
   git \
+  npm \
   && rm -rf /var/cache/apk/*
 
 # Default configuration
 COPY etc/lighttpd/ /etc/lighttpd/
 RUN mkdir -p $WWW_HOME/default
 COPY default/ $WWW_HOME/default/
+# webssh2
+RUN mkdir -p ${WEBSSH2} 
+WORKDIR ${WEBSSH2}
+COPY webssh2/app/ ${WEBSSH2}/
+RUN npm install --production
+
+# Startup script
 COPY start.sh /usr/local/bin/
 
 # Ports to listen
 EXPOSE 80/tcp
+EXPOSE 2222/tcp
 
 # Volume with configuration
 #VOLUME /etc/lighttpd

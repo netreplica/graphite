@@ -16,6 +16,7 @@ CLABDIR=`pwd`
 docker run -d -t \
   -v "${CLABDIR}":/var/www/localhost/htdocs/clab \
   -p 8080:80 \
+  -p 2222:2222 \
   --name graphite \
   netreplica/graphite
 ````

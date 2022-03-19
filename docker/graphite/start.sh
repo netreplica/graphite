@@ -11,4 +11,5 @@ if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]
   fi
 fi
 
+nohup /usr/bin/node index.js &
 exec lighttpd -D -f /etc/lighttpd/lighttpd.conf

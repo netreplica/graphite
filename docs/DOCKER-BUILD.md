@@ -24,21 +24,32 @@
   grep -v "debug.conf" \
   > graphite/docker/graphite/etc/lighttpd/lighttpd.conf
   
-  cp ../../examples/3-nodes.clab.json default/default.json
+  mkdir -p graphite/docker/graphite/default
+  cp graphite/examples/3-nodes.clab.json graphite/docker/graphite/default/default.json
+  ````
+  
+2. Clone [webssh2](https://github.com/billchurch/WebSSH2)
+
+  ```Shell
+  mkdir -p src
+  git clone https://github.com/billchurch/webssh2.git src/webssh2
+  mkdir -p graphite/docker/graphite/webssh2
+
+  cp -R src/webssh2/app graphite/docker/graphite/webssh2
   ````
 
 2. Build
 
-```Shell
-cd graphite/docker/graphite
-cp ../../../containerlab/containerlab clabg
-docker image build --no-cache=true -t netreplica/graphite:latest .
-docker tag netreplica/graphite:latest netreplica/graphite:0.08
-````
+  ```Shell
+  cd graphite/docker/graphite
+  cp ../../../containerlab/containerlab clabg
+  docker image build --no-cache=true -t netreplica/graphite:webssh2 .
+  # docker tag netreplica/graphite:latest netreplica/graphite:0.08
+  ````
 
 ## Publish the image to the repository
 
-```Shell
-docker push netreplica/graphite:latest
-docker push netreplica/graphite:0.08
-````
+  ```Shell
+  docker push netreplica/graphite:latest
+  docker push netreplica/graphite:0.08
+  ````
