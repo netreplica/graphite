@@ -104,8 +104,11 @@
                 content: [{
                     tag: 'h5',
                     content: [{
-                        tag: 'label',
+                        tag: 'a',
                         content: '{#node.model.name}',
+                        props: {"href": "#", 
+                                "onClick": "{#node.model.websshDeviceLink}"
+                        }
                     }],
                     props: {
                         "style": "border-bottom: dotted 1px; font-size:90%; word-wrap:normal; color:#003688"

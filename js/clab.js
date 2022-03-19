@@ -66,6 +66,10 @@ function equals_true(obj) {
   }
 }
 
+function getWebsshDeviceLink(n, a) {
+  return "window.open('http://" + window.location.hostname + ":2222/ssh/host/" + a + "?header=" + n + "&headerBackground=blue'" + ",'popup','width=600,height=600'); return false;"
+}
+
 // Convert ContainerLab Graph JSON export into CMT JSON topology
 function convert_clab_graph_to_cmt(c){
   var cmt = {"nodes": [], "links": []};
@@ -73,10 +77,12 @@ function convert_clab_graph_to_cmt(c){
   for (var i =0; i < c.nodes.length; i++) {
     var n = c.nodes[i];
     var primaryIP;
+    var websshDeviceLink;
     var icon = "router";
     var level;
     if (n.hasOwnProperty("ipv4_address")) {
       primaryIP = n.ipv4_address;
+      websshDeviceLink = getWebsshDeviceLink(n.name, primaryIP);
     }
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
@@ -93,6 +99,7 @@ function convert_clab_graph_to_cmt(c){
     cmt.nodes.push({
       "id": i,
       "name": n.name,
+      "websshDeviceLink": websshDeviceLink,
       "model": n.kind,
       "primaryIP": primaryIP,
       "icon": icon,
