@@ -1,6 +1,6 @@
 #!/bin/sh
 
-chmod a+w /dev/pts/0
+chmod a+w /dev/stderr
 
 if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
   TOPO="${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
@@ -11,5 +11,5 @@ if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]
   fi
 fi
 
-nohup /usr/bin/node index.js &
+nohup /usr/bin/node index.js 1>&2 &
 exec lighttpd -D -f /etc/lighttpd/lighttpd.conf

@@ -19,7 +19,7 @@
 
   cat src/lighttpd1.4/doc/config/lighttpd.conf | \
   sed "s/^var.server_root.*$/var.server_root = \"\/var\/www\/localhost\"/" | \
-  sed "s/^server.errorlog.*$/server.errorlog = \"\/dev\/pts\/0\"/" | \
+  sed "s/^server.errorlog.*$/server.errorlog = \"\/dev\/stderr\"/" | \
   grep -v "server.use-ipv6" | \
   grep -v "debug.conf" \
   > graphite/docker/graphite/etc/lighttpd/lighttpd.conf

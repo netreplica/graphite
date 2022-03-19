@@ -24,6 +24,7 @@ COPY default/ $WWW_HOME/default/
 RUN mkdir -p ${WEBSSH2} 
 WORKDIR ${WEBSSH2}
 COPY webssh2/app/ ${WEBSSH2}/
+COPY webssh2.config.json ${WEBSSH2}/config.json
 RUN npm install --production
 
 # Startup script
@@ -31,7 +32,6 @@ COPY start.sh /usr/local/bin/
 
 # Ports to listen
 EXPOSE 80/tcp
-EXPOSE 2222/tcp
 
 # Volume with configuration
 #VOLUME /etc/lighttpd
