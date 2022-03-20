@@ -20,6 +20,9 @@ RUN apk add --no-cache \
 COPY etc/lighttpd/ /etc/lighttpd/
 RUN mkdir -p $WWW_HOME/default
 COPY default/ $WWW_HOME/default/
+# Bootstrap
+RUN mkdir -p $WWW_HOME/bootstrap-3.4.1-dist
+COPY bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
 # webssh2
 RUN mkdir -p ${WEBSSH2} 
 WORKDIR ${WEBSSH2}

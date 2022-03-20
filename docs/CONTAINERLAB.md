@@ -53,13 +53,15 @@ clabg graph -h | grep json
   You should see an output with `--json` option designed to `generate json file instead of launching the web server`.
   
 
-4. Clone Graphite and NextUI repositories
+4. Clone Graphite and NextUI repositories, download Bootstrap
 
 ```Shell
 mkdir -p $HOME/netreplica/clab
 cd $HOME/netreplica
 git clone https://github.com/netreplica/graphite.git
 git clone https://github.com/netreplica/next-bower.git
+wget https://github.com/twbs/bootstrap/releases/download/v3.4.1/bootstrap-3.4.1-dist.zip
+unzip bootstrap-3.4.1-dist.zip
 ````
 
 5. Install and configure Lighttpd to serve Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference

@@ -24,6 +24,10 @@
   grep -v "debug.conf" \
   > graphite/docker/graphite/etc/lighttpd/lighttpd.conf
   
+  wget -O src/bootstrap-3.4.1-dist.zip https://github.com/twbs/bootstrap/releases/download/v3.4.1/bootstrap-3.4.1-dist.zip
+  unzip src/bootstrap-3.4.1-dist.zip -d src/
+  cp -R src/bootstrap-3.4.1-dist graphite/docker/graphite
+
   mkdir -p graphite/docker/graphite/default
   cp graphite/examples/3-nodes.clab.json graphite/docker/graphite/default/default.json
   ````
