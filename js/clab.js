@@ -66,8 +66,11 @@ function equals_true(obj) {
   }
 }
 
-function getWebsshDeviceLink(n, a) {
-  return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', '${n}','width=800,height=600'); return false;`;
+function getWebsshDeviceLink(n, a, i) {
+  var offset = i * 25;
+  var l_off = window.screen.availWidth / 2 + offset;
+  var t_off = offset;
+  return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', 'webssh.${n}','width=800,height=600,left=${l_off},top=${t_off}'); return false;`;
 }
 
 // Convert ContainerLab Graph JSON export into CMT JSON topology
@@ -82,7 +85,7 @@ function convert_clab_graph_to_cmt(c){
     var level;
     if (n.hasOwnProperty("ipv4_address")) {
       primaryIP = n.ipv4_address;
-      websshDeviceLink = getWebsshDeviceLink(n.name, primaryIP);
+      websshDeviceLink = getWebsshDeviceLink(n.name, primaryIP, i);
     }
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
