@@ -306,6 +306,7 @@
         var shell = new Shell();
         // Run the application
         shell.start();
+        shell.container(document.getElementById("topology-container"));
       }
     };
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
