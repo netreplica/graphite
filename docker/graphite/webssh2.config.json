@@ -39,7 +39,7 @@
   },
   "options": {
     "challengeButton": true,
-    "allowreauth": false
+    "allowreauth": true
   },
   "algorithms": {
     "kex": [
