@@ -67,10 +67,12 @@ function equals_true(obj) {
 }
 
 function getWebsshDeviceLink(n, a, i) {
+  var w = 800;
+  var h = 600;
   var offset = i * 25;
-  var l_off = window.screen.availWidth / 2 + offset;
-  var t_off = offset;
-  return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', 'webssh.${n}','width=800,height=600,left=${l_off},top=${t_off}'); return false;`;
+  var l_off = (window.screenX + window.outerWidth) - w / 2 + offset;
+  var t_off = window.screenY + offset;
+  return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', 'webssh.${n}','width=${w},height=${h},left=${l_off},top=${t_off}'); return false;`;
 }
 
 // Convert ContainerLab Graph JSON export into CMT JSON topology
