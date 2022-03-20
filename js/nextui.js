@@ -101,52 +101,64 @@
         view: {
             content: [{
                 tag: 'div',
+                props: {
+                    "style": "width: 150px;",
+                    "class": "popover-textarea"
+                },
                 content: [{
                     tag: 'h5',
-                    content: [{
-                        tag: 'a',
-                        content: '{#node.model.name}',
-                        props: {"href": "#", 
-                                "onClick": "{#node.model.websshDeviceLink}"
-                        }
-                    }],
                     props: {
-                        "style": "border-bottom: dotted 1px; font-size:90%; word-wrap:normal; color:#003688"
-                    }
+                        "style": "border-bottom: dotted 1px; font-size:90%; word-wrap:normal; color:#003688; padding-bottom: 5px"
+                    },
+                    content: [{
+                        tag: 'span',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: '{#node.model.name}'
+                    }, {
+                        tag: 'a',
+                        props: {
+                            "onClick": "{#node.model.websshDeviceLink}",
+                        },
+                        content: [{
+                            tag: 'span',
+                            props: {"class": "glyphicon glyphicon-new-window"}
+                        }]
+                    }]
                 }, {
-                    tag: 'p',
+                    tag: 'div',
+                    props: {
+                        "style": "font-size:80%;"
+                    },
                     content: [
                         {
                         tag: 'label',
-                        content: 'IP: ',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'IP:',
                     }, {
                         tag: 'label',
                         content: '{#node.model.primaryIP}',
-                    }
-                    ],
+                    }]
+                }, {
+                    tag: 'div',
                     props: {
                         "style": "font-size:80%;"
-                    }
-                },{
-                    tag: 'p',
-                    content: [
-                        {
+                    },
+                    content: [{
                         tag: 'label',
-                        content: 'Model: ',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'Model:',
                     }, {
                         tag: 'label',
                         content: '{#node.model.model}',
-                    }
-                    ],
-                    props: {
-                        "style": "font-size:80%;"
-                    }
-                },
-            ],
-            props: {
-                "style": "width: 150px;"
-            }
-        }]
+                    }]
+                }]
+            }]
         }
     });
 
