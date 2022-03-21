@@ -56,22 +56,25 @@ clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
       env:
         GRAPHITE_DEFAULT_TYPE: clab
         GRAPHITE_DEFAULT_TOPO: clos-2tier
+        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
       binds:
         - .:/var/www/localhost/htdocs/clab
       ports:
         - 8080:80
+      exec:
+        - sh -c 'generate_offline_graph.sh'
+        - sh -c 'graphite_motd.sh 8080'
       labels:
         graph-hide: yes
 ````
 
-3. Deploy the topolology and generate the graph.
+3. Deploy the topolology and generate the graph. NOTE: `sudo -E` helps Graphite receive `SSH_CONNECTION` env variable to display working URL to connect with `graphite_motd.sh` command.
 
 ```Shell
-sudo clab deploy -t ${CLAB_TOPO}.yaml
-docker exec -t clab-${CLAB_TOPO}-graphite generate_offline_graph.sh ${CLAB_TOPO}.yaml
+sudo -E clab deploy -t ${CLAB_TOPO}.yaml
 ````
 
-4. Now you can open the visualization via URL: [`http://localhost:8080/graphite/index.html`](http://localhost:8080/graphite/index.html). If you are using this method, there is no need to specify any parameters with topology name in the URL, as you provided them via env variables in the topology file. You might need to replace `localhost` with proper FQDN or IP address.
+4. Look for `Graphite visualization URL: http://<ip_address>:8080/graphite` output as Containerlab deploys the topology. If you are running Containerlab on a VM via an SSH session, the `<ip_address>` in the URL should be the one reachable from a browser on you computer. If not, you might need to replace `<ip_address>` with proper one to connect to Graphite.
 
 ## Docker Image Build Instructions
 
