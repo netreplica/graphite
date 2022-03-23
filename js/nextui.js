@@ -254,6 +254,9 @@
             return model.get('layerSortPreference');
         });
         topo.activateLayout('hierarchicalLayout');
+        document.getElementById("navbar-auto-layout").className = "";
+        document.getElementById("navbar-horizontal-layout").className = "active";
+        document.getElementById("navbar-vertical-layout").className = "";
     };
 
     vertical = function() {
@@ -267,6 +270,9 @@
           return model.get('layerSortPreference');
         });
         topo.activateLayout('hierarchicalLayout');
+        document.getElementById("navbar-auto-layout").className = "";
+        document.getElementById("navbar-horizontal-layout").className = "";
+        document.getElementById("navbar-vertical-layout").className = "active";
     };
 
     // Identify topology to load

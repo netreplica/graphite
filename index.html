@@ -11,10 +11,36 @@
     <link rel="stylesheet" href="../next-bower/css/next.min.css">
   </head>
   <body>
+    
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Graphite</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li id="navbar-auto-layout" class="active">
+              <a href="#" onClick="window.location.reload();">Autolayout</a>
+            </li>
+            <li id="navbar-horizontal-layout">
+              <a href="#" onclick="horizontal()">Horizontal Layout</a>
+            </li>
+            <li id="navbar-vertical-layout">
+              <a href="#" onclick="vertical()">Vertical Layout</a>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+    
     <div id="topology-layout-buttons">
-      <button onClick="window.location.reload();">Refresh Autolayout</button>
-      <button onclick="horizontal()">Horizontal Layout</button>
-      <button onclick="vertical()">Vertical Layout</button>
     </div>
     <div id="topology-container"></div>
     <script src="../next-bower/js/next.min.js"></script>
