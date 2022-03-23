@@ -18,5 +18,5 @@ if ! [ -f ${WEBSSH2}/config.json ]; then
 fi
 
 
-nohup /usr/bin/node index.js 1>&2 &
+su webssh2 -c "nohup /usr/bin/node index.js 1>&2 &"
 exec lighttpd -D -f /etc/lighttpd/lighttpd.conf

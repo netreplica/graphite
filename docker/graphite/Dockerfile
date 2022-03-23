@@ -50,7 +50,11 @@ RUN git clone --single-branch https://github.com/netreplica/next-bower.git ${WWW
 # TODO remove -b before merging into main
 RUN git clone --single-branch -b webssh2 https://github.com/netreplica/graphite.git ${WWW_HOME}/graphite
 
-# Run lighttpd webserver
+# Add webssh2 user to run node.js
+RUN addgroup --system webssh2
+RUN adduser -S -G webssh2 -H -s /bin/sh -h ${WEBSSH2} webssh2
+RUN chown webssh2:webssh2 ${WEBSSH2}
 
+# Run lighttpd webserver
 CMD ["start.sh"]
 
