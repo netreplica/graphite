@@ -136,3 +136,4 @@ docker/graphite/clabg
 docker/graphite/default/default.json
 docker/graphite/webssh2/
 docker/graphite/bootstrap-3.4.1-dist
+docker/graphite/envsubst

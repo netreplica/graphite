@@ -34,8 +34,8 @@
     "background": "green"
   },
   "session": {
-    "name": "WebSSH2",
-    "secret": "mysecret"
+    "name": "${WEBSSH2_SESSION_NAME}",
+    "secret": "${WEBSSH2_SESSION_SECRET}"
   },
   "options": {
     "challengeButton": true,

@@ -47,6 +47,9 @@
   ```Shell
   cd graphite/docker/graphite
   cp ../../../containerlab/containerlab clabg
+  # Current envsubst version in alpine has bugs, use a go implementation instead
+  curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-Linux-x86_64 -o envsubst
+  chmod +x envsubst
   docker image build --no-cache=true -t netreplica/graphite:webssh2 .
   # docker tag netreplica/graphite:latest netreplica/graphite:0.08
   ````

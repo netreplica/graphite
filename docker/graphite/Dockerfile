@@ -22,7 +22,7 @@ COPY bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
 RUN mkdir -p ${WEBSSH2} 
 WORKDIR ${WEBSSH2}
 COPY webssh2/app/ ${WEBSSH2}/
-COPY webssh2.config.json ${WEBSSH2}/config.json
+COPY webssh2.config.template ${WEBSSH2}/config.template
 RUN npm install --production
 
 # Patched Containerlab version with useful scripts
@@ -31,6 +31,7 @@ COPY generate_all_offline_graphs.sh /usr/local/bin/
 COPY generate_offline_graph.sh /usr/local/bin/
 COPY graphite_url.sh /usr/local/bin/
 COPY graphite_motd.sh /usr/local/bin/
+COPY envsubst /usr/local/bin
 
 # Startup script
 COPY start.sh /usr/local/bin/
