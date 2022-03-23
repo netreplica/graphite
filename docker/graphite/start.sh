@@ -11,10 +11,12 @@ if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]
   fi
 fi
 
-export WEBSSH2_SESSION_NAME="graphite-webssh2"
-export WEBSSH2_SESSION_SECRET=`cat /dev/urandom | tr -dc '[:alnum:]' | fold -w ${1:-24} | head -n 1`
+if ! [ -f ${WEBSSH2}/config.json ]; then
+  export WEBSSH2_SESSION_NAME="graphite-webssh2"
+  export WEBSSH2_SESSION_SECRET=`cat /dev/urandom | tr -dc '[:alnum:]' | fold -w ${1:-24} | head -n 1`
+  cat ${WEBSSH2}/config.template | envsubst > ${WEBSSH2}/config.json
+fi
 
-cat ${WEBSSH2}/config.template | envsubst > ${WEBSSH2}/config.json
 
 nohup /usr/bin/node index.js 1>&2 &
 exec lighttpd -D -f /etc/lighttpd/lighttpd.conf
