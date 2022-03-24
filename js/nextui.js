@@ -219,7 +219,7 @@
                 var stageScale = this.stageScale();
                 
                 // pad line
-                line = line.pad(18 * stageScale, 18 * stageScale);
+                line = line.pad(24 * stageScale, 24 * stageScale);
                 
                 if (this.sourcelabel()) {
                     el = this.view('source');
@@ -230,7 +230,6 @@
                     el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
                     el.setStyle('font-size', 12 * stageScale);
                 }
-                
                 
                 if (this.targetlabel()) {
                     el = this.view('target');
