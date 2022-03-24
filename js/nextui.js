@@ -79,6 +79,8 @@
         showIcon: true,
         linkInstanceClass: 'CustomLinkClass' 
     });
+    
+    var actionPanel = new ActionPanel();
 
 //    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
 
@@ -89,6 +91,8 @@
                 topo.data(topologyData);
                 // Attach it to the document
                 topo.attach(this);
+                // add action panel to the view
+                actionPanel.attach(this);
             }
         }
     });
@@ -254,9 +258,6 @@
             return model.get('layerSortPreference');
         });
         topo.activateLayout('hierarchicalLayout');
-        document.getElementById("navbar-auto-layout").className = "";
-        document.getElementById("navbar-horizontal-layout").className = "active";
-        document.getElementById("navbar-vertical-layout").className = "";
     };
 
     vertical = function() {
@@ -270,9 +271,6 @@
           return model.get('layerSortPreference');
         });
         topo.activateLayout('hierarchicalLayout');
-        document.getElementById("navbar-auto-layout").className = "";
-        document.getElementById("navbar-horizontal-layout").className = "";
-        document.getElementById("navbar-vertical-layout").className = "active";
     };
 
     // Identify topology to load
