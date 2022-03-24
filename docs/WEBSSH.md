@@ -2,7 +2,7 @@
 
 ## Pre-release information
 
-WebSSH capability is a new feature that is not yet included in the main Graphite build. The easiest way to use WebSSH is by running Graphite as a docker container. Please see [DOCKER.md](/docs/DOCKER.md) for instructions. Note the container image to use is `netreplica/graphite:webssh2`.
+WebSSH capability is a new feature that is not yet included in the main Graphite build. The easiest way to use WebSSH is by running Graphite as a docker container. Please see [DOCKER.md](/docs/DOCKER.md#lanching-graphite-as-part-of-containerlab-deployment) for instructions. Note the container image to use is `netreplica/graphite:webssh2`.
 
 ## Limitations
 
