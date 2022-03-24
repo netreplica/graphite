@@ -52,7 +52,7 @@ clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
 ```Yaml
     graphite:
       kind: linux
-      image: netreplica/graphite
+      image: netreplica/graphite:webssh2
       env:
         GRAPHITE_DEFAULT_TYPE: clab
         GRAPHITE_DEFAULT_TOPO: clos-2tier
