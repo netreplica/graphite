@@ -3,7 +3,14 @@
 chmod a+w /dev/stderr
 
 if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
-  TOPO="${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
+  TOPODATA="${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+  
+  if [ -e "${TOPODATA}" ]; then
+    TOPO="${TOPODATA}"
+  else
+    TOPO="${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
+  fi
+
   if ! [ -e "${TOPO}" ]; then
     generate_offline_graph.sh
   fi
@@ -11,7 +18,7 @@ if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]
   if [ -e "${TOPO}" ]; then
     mkdir -p ${WWW_HOME}/default
     rm ${WWW_HOME}/default/default.json
-    ln -s ${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json ${WWW_HOME}/default/default.json
+    ln -s ${TOPO} ${WWW_HOME}/default/default.json
   fi
 fi
 

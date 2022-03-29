@@ -75,6 +75,76 @@ function getWebsshDeviceLink(n, a, i) {
   return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', 'webssh.${n}','width=${w},height=${h},left=${l_off},top=${t_off}'); return false;`;
 }
 
+// Convert ContainerLab topology into CMT JSON topology
+function convert_clab_to_cmt(c){
+  if (c.hasOwnProperty("type") && c.type == "clab") {
+    return convert_clab_topology_data_to_cmt(c);
+  } else {
+    return convert_clab_graph_to_cmt(c);
+  }
+}
+
+// Convert ContainerLab topology-data.json export into CMT JSON topology
+function convert_clab_topology_data_to_cmt(c){
+  var cmt = {"nodes": [], "links": []};
+  var node_id_map = {};
+  
+  if (!c.hasOwnProperty("nodes")) {
+    return cmt;
+  }
+  
+  var i = -1; // We will increment the index to 0 right away in the cycle below
+  for (var node in c.nodes) {
+    i++;
+    var n = c.nodes[node];
+    var primaryIP;
+    var websshDeviceLink;
+    var icon = "router";
+    var level;
+    
+    if (n.hasOwnProperty("mgmtipv4address")) {
+      primaryIP = n.mgmtipv4address;
+      websshDeviceLink = getWebsshDeviceLink(node, primaryIP, i);
+    }
+
+    if (n.hasOwnProperty("labels")) {
+      if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
+        continue;
+      }
+      if (n.labels.hasOwnProperty("graph-icon")) {
+        icon = n.labels["graph-icon"];
+      }
+      if (n.labels.hasOwnProperty("graph-level")) {
+        level = n.labels["graph-level"];
+      }
+    }
+    node_id_map[node] = i;
+    cmt.nodes.push({
+      "id": i,
+      "name": node,
+      "websshDeviceLink": websshDeviceLink,
+      "model": n.kind,
+      "primaryIP": primaryIP,
+      "icon": icon,
+      "layerSortPreference": level,
+    })
+  }
+  
+  for (var i =0; i < c.links.length; i++) {
+    var l = c.links[i];
+    cmt.links.push({
+      "id": i,
+      "source": node_id_map[l["source"]],
+      "target": node_id_map[l["target"]],
+      "srcIfName": l["source_endpoint"],
+      "srcDevice": l["source"],
+      "tgtIfName": l["target_endpoint"],
+      "tgtDevice": l["target"],
+    })
+  }
+  return cmt;
+}
+
 // Convert ContainerLab Graph JSON export into CMT JSON topology
 function convert_clab_graph_to_cmt(c){
   var cmt = {"nodes": [], "links": []};
