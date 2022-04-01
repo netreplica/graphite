@@ -134,12 +134,12 @@ function convert_clab_topology_data_to_cmt(c){
     var l = c.links[i];
     cmt.links.push({
       "id": i,
-      "source": node_id_map[l["source"]],
-      "target": node_id_map[l["target"]],
-      "srcIfName": l["source_endpoint"],
-      "srcDevice": l["source"],
-      "tgtIfName": l["target_endpoint"],
-      "tgtDevice": l["target"],
+      "source": node_id_map[l["a"]["node"]],
+      "target": node_id_map[l["z"]["node"]],
+      "srcIfName": l["a"]["interface"],
+      "srcDevice": l["a"]["node"],
+      "tgtIfName": l["z"]["interface"],
+      "tgtDevice": l["z"]["node"],
     })
   }
   return cmt;
