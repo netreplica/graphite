@@ -2,20 +2,23 @@
 
 chmod a+w /dev/stderr
 
-if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
-  TOPODATA="${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
-  
-  if [ -e "${TOPODATA}" ]; then
-    TOPO="${TOPODATA}"
-  else
-    TOPO="${WWW_HOME}/${GRAPHITE_DEFAULT_TYPE}/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
+if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ]; then
+  # check if topology-data.json is directly mounted under clab directory
+  TOPO="${WWW_HOME}/clab/topology-data.json"
+  if ! [ -e "${TOPO}" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
+    # check if topology-data.json is in the mounted clab-<topo> directory
+    TOPO="${WWW_HOME}/clab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+    if ! [ -e "${TOPO}" ]; then
+      # there is no topology-data.json in the mounted clab-<topo>, last resource is legacy implementation with generating clab-<topo>/graph/<topo>.json
+      TOPO="${WWW_HOME}/clab/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
+      if ! [ -e "${TOPO}" ]; then
+        generate_offline_graph.sh
+      fi
+    fi
   fi
 
-  if ! [ -e "${TOPO}" ]; then
-    generate_offline_graph.sh
-  fi
-  
   if [ -e "${TOPO}" ]; then
+    # link topology data as a default source for visualization
     mkdir -p ${WWW_HOME}/default
     rm ${WWW_HOME}/default/default.json
     ln -s ${TOPO} ${WWW_HOME}/default/default.json
