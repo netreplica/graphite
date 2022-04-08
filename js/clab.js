@@ -102,8 +102,8 @@ function convert_clab_topology_data_to_cmt(c){
     var icon = "router";
     var level;
     
-    if (n.hasOwnProperty("mgmtipv4address")) {
-      primaryIP = n.mgmtipv4address;
+    if (n.hasOwnProperty("mgmt-ipv4-address")) {
+      primaryIP = n.mgmt-ipv4-address;
       websshDeviceLink = getWebsshDeviceLink(node, primaryIP, i);
     }
 
