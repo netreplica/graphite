@@ -103,7 +103,7 @@ function convert_clab_topology_data_to_cmt(c){
     var level;
     
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
-      primaryIP = n.mgmt-ipv4-address;
+      primaryIP = n["mgmt-ipv4-address"];
       websshDeviceLink = getWebsshDeviceLink(node, primaryIP, i);
     }
 
