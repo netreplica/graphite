@@ -39,7 +39,8 @@
   git clone https://github.com/billchurch/webssh2.git src/webssh2
   mkdir -p graphite/docker/webssh2
 
-  cp -R src/webssh2/app graphite/docker/webssh2
+  rm -rf graphite/docker/webssh2
+  cp -R src/webssh2/app graphite/docker/webssh2/
   ````
 
 3. Build custom containerlab binary – this step was tested on Linux Ubuntu 20.04 LTS
@@ -49,9 +50,7 @@
   git clone --single-branch -b graph-json https://github.com/netreplica/containerlab.git src/clabg
   cd src/clabg
   go build
-  mv containerlab clabg
-
-  cp clabg ../../graphite/docker/bin/
+  cp containerlab ../../graphite/docker/bin/clabg
   cd ../..
   ````
 

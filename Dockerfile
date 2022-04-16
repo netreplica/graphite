@@ -31,7 +31,7 @@ WORKDIR ${WEBSSH2}
 RUN addgroup --system webssh2
 RUN adduser -S -G webssh2 -H -s /bin/sh -h ${WEBSSH2} webssh2
 RUN chown webssh2:webssh2 ${WEBSSH2}
-COPY docker/webssh2/app/ ${WEBSSH2}/
+COPY docker/webssh2/ ${WEBSSH2}/
 COPY docker/webssh2.config.template ${WEBSSH2}/config.template
 RUN npm install --production
 
