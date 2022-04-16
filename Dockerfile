@@ -6,35 +6,28 @@ ENV WEBSSH2=/usr/local/webssh2
 
 # Install packages
 RUN apk add --no-cache \
+  gcompat # required by clabg \
   lighttpd=${LIGHTTPD_VERSION} \
   git \
   npm \
   && rm -rf /var/cache/apk/*
 
 # Default configuration
-COPY etc/lighttpd/ /etc/lighttpd/
+COPY docker/etc/lighttpd/ /etc/lighttpd/
 RUN mkdir -p $WWW_HOME/default
-COPY default/ $WWW_HOME/default/
+COPY docker/default/ $WWW_HOME/default/
 # Bootstrap
 RUN mkdir -p $WWW_HOME/bootstrap-3.4.1-dist
-COPY bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
+COPY docker/bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
 # webssh2
 RUN mkdir -p ${WEBSSH2} 
 WORKDIR ${WEBSSH2}
-COPY webssh2/app/ ${WEBSSH2}/
-COPY webssh2.config.template ${WEBSSH2}/config.template
+COPY docker/webssh2/app/ ${WEBSSH2}/
+COPY docker/webssh2.config.template ${WEBSSH2}/config.template
 RUN npm install --production
 
-# Patched Containerlab version with useful scripts
-COPY clabg /usr/local/bin/
-COPY generate_all_offline_graphs.sh /usr/local/bin/
-COPY generate_offline_graph.sh /usr/local/bin/
-COPY graphite_url.sh /usr/local/bin/
-COPY graphite_motd.sh /usr/local/bin/
-COPY envsubst /usr/local/bin
-
-# Startup script
-COPY start.sh /usr/local/bin/
+# Scripts and binaries
+COPY docker/bin/ /usr/local/bin/
 
 # Ports to listen
 EXPOSE 80/tcp

@@ -55,15 +55,12 @@ clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
       image: netreplica/graphite:webssh2
       env:
         GRAPHITE_DEFAULT_TYPE: clab
-        GRAPHITE_DEFAULT_TOPO: clos-2tier
         CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
       binds:
         - __clabDir__/topology-data.json:/var/www/localhost/htdocs/clab/topology-data.json:ro
-        - .:/var/www/localhost/htdocs/clab
       ports:
         - 8080:80
       exec:
-        - sh -c 'generate_offline_graph.sh'
         - sh -c 'graphite_motd.sh 8080'
       labels:
         graph-hide: yes

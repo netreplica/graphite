@@ -12,24 +12,24 @@
   ```Shell
   mkdir -p src
   git clone https://git.lighttpd.net/lighttpd/lighttpd1.4.git src/lighttpd1.4
-  mkdir -p graphite/docker/graphite/etc/lighttpd/conf.d
+  mkdir -p graphite/docker/etc/lighttpd/conf.d
 
-  cp src/lighttpd1.4/doc/config/conf.d/mime.conf graphite/docker/graphite/etc/lighttpd/conf.d
-  cp src/lighttpd1.4/doc/config/conf.d/dirlisting.conf graphite/docker/graphite/etc/lighttpd/conf.d
+  cp src/lighttpd1.4/doc/config/conf.d/mime.conf graphite/docker/etc/lighttpd/conf.d
+  cp src/lighttpd1.4/doc/config/conf.d/dirlisting.conf graphite/docker/etc/lighttpd/conf.d
 
   cat src/lighttpd1.4/doc/config/lighttpd.conf | \
   sed "s/^var.server_root.*$/var.server_root = \"\/var\/www\/localhost\"/" | \
   sed "s/^server.errorlog.*$/server.errorlog = \"\/dev\/stderr\"/" | \
   grep -v "server.use-ipv6" | \
   grep -v "debug.conf" \
-  > graphite/docker/graphite/etc/lighttpd/lighttpd.conf
+  > graphite/docker/etc/lighttpd/lighttpd.conf
   
   wget -O src/bootstrap-3.4.1-dist.zip https://github.com/twbs/bootstrap/releases/download/v3.4.1/bootstrap-3.4.1-dist.zip
   unzip src/bootstrap-3.4.1-dist.zip -d src/
-  cp -R src/bootstrap-3.4.1-dist graphite/docker/graphite
+  cp -R src/bootstrap-3.4.1-dist graphite/docker
 
-  mkdir -p graphite/docker/graphite/default
-  cp graphite/examples/3-nodes.clab.json graphite/docker/graphite/default/default.json
+  mkdir -p graphite/docker/default
+  cp graphite/examples/3-nodes.clab.json graphite/docker/default/default.json
   ````
   
 2. Clone [webssh2](https://github.com/billchurch/WebSSH2)
@@ -37,21 +37,33 @@
   ```Shell
   mkdir -p src
   git clone https://github.com/billchurch/webssh2.git src/webssh2
-  mkdir -p graphite/docker/graphite/webssh2
+  mkdir -p graphite/docker/webssh2
 
-  cp -R src/webssh2/app graphite/docker/graphite/webssh2
+  cp -R src/webssh2/app graphite/docker/webssh2
   ````
 
-2. Build
+3. Build custom containerlab binary – this step was tested on Linux Ubuntu 20.04 LTS
 
   ```Shell
-  cd graphite/docker/graphite
-  cp ../../../containerlab/containerlab clabg
+  mkdir -p src
+  git clone --single-branch -b graph-json https://github.com/netreplica/containerlab.git src/clabg
+  cd src/clabg
+  go build
+  mv containerlab clabg
+
+  cp clabg ../../graphite/docker/bin/
+  cd ../..
+  ````
+
+4. Build
+
+  ```Shell
+  cd graphite
   # Current envsubst version in alpine has bugs, use a go implementation instead
-  curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-Linux-x86_64 -o envsubst
-  chmod +x envsubst
+  curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-Linux-x86_64 -o docker/bin/envsubst
+  chmod +x docker/bin/envsubst
   docker image build --no-cache=true -t netreplica/graphite:webssh2 .
-  # docker tag netreplica/graphite:latest netreplica/graphite:0.08
+  # docker tag netreplica/graphite:latest netreplica/graphite:0.09
   ````
 
 ## Publish the image to the repository
