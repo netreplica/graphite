@@ -5,8 +5,9 @@ ENV WWW_HOME=/var/www/localhost/htdocs
 ENV WEBSSH2=/usr/local/webssh2
 
 # Install packages
+# gcompat - required by clabg
 RUN apk add --no-cache \
-  gcompat # required by clabg \
+  gcompat \
   lighttpd=${LIGHTTPD_VERSION} \
   git \
   npm \
