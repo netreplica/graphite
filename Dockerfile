@@ -1,8 +1,6 @@
 FROM alpine:latest
 
 ENV LIGHTTPD_VERSION=1.4.64-r0
-ENV WWW_HOME=/var/www/localhost/htdocs
-ENV WEBSSH2=/usr/local/webssh2
 
 # Install packages
 # gcompat - required by clabg
@@ -14,6 +12,7 @@ RUN apk add --no-cache \
   && rm -rf /var/cache/apk/*
 
 # Clone Graphite dependencies
+ENV WWW_HOME=/htdocs
 RUN git clone --single-branch https://github.com/netreplica/next-bower.git ${WWW_HOME}/next-bower
 
 # Default configuration
@@ -25,6 +24,7 @@ RUN mkdir -p $WWW_HOME/bootstrap-3.4.1-dist
 COPY docker/bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
 
 # webssh2
+ENV WEBSSH2=/usr/local/webssh2
 RUN mkdir -p ${WEBSSH2} 
 WORKDIR ${WEBSSH2}
 # Add webssh2 user to run node.js
