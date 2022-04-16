@@ -284,11 +284,11 @@
     }
     switch (topo_type) {
     case "clab":
-      topo_base = "../clab/clab-";
+      topo_base = "/clab/clab-";
       topo_url = topo_base + topo_name + "/graph/" + topo_name + ".json";
       break;
     case "clabdata":
-      topo_base = "../clab/clab-";
+      topo_base = "/clab/clab-";
       topo_url = topo_base + topo_name + "/topology-data.json";
       break;
     default:
