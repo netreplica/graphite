@@ -37,10 +37,10 @@
   ```Shell
   mkdir -p src
   git clone https://github.com/billchurch/webssh2.git src/webssh2
-  mkdir -p graphite/docker/webssh2
 
   rm -rf graphite/docker/webssh2
-  cp -R src/webssh2/app graphite/docker/webssh2/
+  mkdir -p graphite/docker/webssh2
+  cp -R src/webssh2/app/* graphite/docker/webssh2/
   ````
 
 3. Build custom containerlab binary – this step was tested on Linux Ubuntu 20.04 LTS
@@ -63,6 +63,15 @@
   chmod +x docker/bin/envsubst
   docker image build --no-cache=true -t netreplica/graphite:webssh2 .
   # docker tag netreplica/graphite:latest netreplica/graphite:0.09
+  ````
+  
+5. Audit
+
+  ```Shell
+  docker run --rm -d --name graphite netreplica/graphite:webssh2
+  docker logs graphite
+  docker exec -t graphite npm audit
+  docker stop graphite
   ````
 
 ## Publish the image to the repository
