@@ -1,4 +1,4 @@
-<p align=center>![netreplica](images/netreplica.png)</p>
+<p align=center><img src=https://github.com/netreplica/graphite/blob/bd4cdec84048b6c4762a929ec37b7a21841c453d/images/netreplica.png/></p>
 
 ---
 # Netreplica Graphite
