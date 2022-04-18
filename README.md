@@ -1,4 +1,4 @@
-<p align=center><img src=https://github.com/netreplica/graphite/blob/cbb6ef4d443c029554ffecf5424141e5d2ca5ca3/images/graphite.png width="150px" height="150px" style="margin-right:25px"/><img src=https://github.com/netreplica/graphite/blob/bd4cdec84048b6c4762a929ec37b7a21841c453d/images/netreplica.png  width="500px"/></p>
+<p align=center><img src=https://github.com/netreplica/graphite/blob/cbb6ef4d443c029554ffecf5424141e5d2ca5ca3/images/graphite.png width="150px" height="150px"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src=https://github.com/netreplica/graphite/blob/bd4cdec84048b6c4762a929ec37b7a21841c453d/images/netreplica.png  width="500px"/></p>
 
 ---
 # Netreplica Graphite
