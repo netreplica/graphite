@@ -8,16 +8,14 @@ Network Visualization for Emulated Topologies
 
 ### CONTAINERlab
 
-[Containerlab](https://containerlab.dev/) provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them to create lab topologies of users choice and manages labs lifecycle.
+[Containerlab](https://containerlab.dev/) is a open-source network emulation software that provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them to create lab topologies of users choice and manages labs lifecycle.
 
-Graphite support for Containerlab network emulation includes:
+Graphite support for Containerlab includes:
 
 * Visualization of live topologies, including dynamic information about network nodes – for example, management IP addresses.
 * Offline visualization of static topology YAML files.
 * WebSSH access to running Containerlab nodes from the topology visualization.
 * Launching Graphite as part of Containerlab topology by including it as a node in the topology YAML file.
-
-Launching Graphite as part of Containerlab topology
 
 The easiest way to use Graphite with Containerlab is to add the following code to a topology YAML file under the `nodes:` section.
 
