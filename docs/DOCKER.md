@@ -34,46 +34,6 @@ docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml
 
 4. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/index.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/index.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
 
-## Lanching Graphite as part of CONTAINERlab deployment
-
-You can also launch Graphite automatically whenever you deploy a topology with `clab deploy` command. Here is an example of how to create a topology file with Graphite node as part of it. With this method the visualization is avaliable only while the topology is running.
-
-1. First, let's create a topology file. If you have one already, you can use it instead.
-
-```Shell
-mkdir -p $HOME/netreplica/clab
-cd $HOME/netreplica/clab
-CLAB_TOPO="clos-2tier"
-clab generate --name ${CLAB_TOPO} --nodes 2,1 > ${CLAB_TOPO}.yaml
-````
-  
-2. Open the topology file in text editor (`vi ${CLAB_TOPO}.yaml`), and insert the following snippet right before the line `links:`. Make sure to replace the name of the topology in `GRAPHITE_DEFAULT_TOPO` variable to the topology name you are using.
-
-```Yaml
-    graphite:
-      kind: linux
-      image: netreplica/graphite:webssh2
-      env:
-        GRAPHITE_DEFAULT_TYPE: clab
-        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
-      binds:
-        - __clabDir__/topology-data.json:/var/www/localhost/htdocs/clab/topology-data.json:ro
-      ports:
-        - 8080:80
-      exec:
-        - sh -c 'graphite_motd.sh 8080'
-      labels:
-        graph-hide: yes
-````
-
-3. Deploy the topolology. NOTE: `sudo -E` helps Graphite receive `SSH_CONNECTION` env variable to display working URL for you to connect to.
-
-```Shell
-sudo -E clab deploy -t ${CLAB_TOPO}.yaml
-````
-
-4. Look for `Graphite visualization URL: http://<ip_address>:8080/graphite` output as Containerlab deploys the topology. If you are running Containerlab on a VM via an SSH session, the `<ip_address>` in the URL should be the one reachable by a browser on you computer. If not, you might need to replace `<ip_address>` with proper one to connect to Graphite.
-
 ## Docker Image Build Instructions
 
 Follow this guide [DOCKER-BUILD.md](DOCKER-BUILD.md)
