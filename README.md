@@ -17,7 +17,7 @@ Graphite support for Containerlab includes:
 * WebSSH access to running Containerlab nodes from the topology visualization.
 * Launching Graphite as part of Containerlab topology by including it as a node in the topology YAML file.
 
-The easiest way to use Graphite with Containerlab is to add the following code to a topology YAML file under the `nodes:` section.
+The easiest way to use Graphite with Containerlab is to add the following code to a topology YAML file under the `nodes:` section. For a full topology example see [examples/2host.yaml](examples/2host.yaml).
 
 ```Yaml
     graphite:
