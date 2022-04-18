@@ -1,3 +1,6 @@
+<p align=center>![netreplica](images/netreplica.png)</p>
+
+---
 # Netreplica Graphite
 Network Visualization for Emulated Topologies
 
