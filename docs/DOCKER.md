@@ -14,19 +14,19 @@
 ```Shell
 CLABDIR=`pwd`
 docker run -d \
-  -v "${CLABDIR}":/var/www/localhost/htdocs/clab \
+  -v "${CLABDIR}":/htdocs/clab \
   -p 8080:80 \
   --name graphite \
   netreplica/graphite
 ````
 
-3. If you never exported Containerlab topology graphs in JSON, you can do that for all topologies in the folder at once with the following command:
+3. If you never exported Containerlab topology graphs into JSON, you can do that for all topologies in the folder at once with the following command:
 
 ```Shell
 docker exec -t graphite generate_all_offline_graphs.sh
 ````
 
-  Alternatively, to export graph data for a speficic topology, use
+  Alternatively, to export graph data for a specific topology, use
   
 ```Shell
 docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml

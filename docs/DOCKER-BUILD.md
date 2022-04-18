@@ -61,8 +61,8 @@
   # Current envsubst version in alpine has bugs, use a go implementation instead
   curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-Linux-x86_64 -o docker/bin/envsubst
   chmod +x docker/bin/envsubst
-  docker image build --no-cache=true -t netreplica/graphite:webssh2 .
-  # docker tag netreplica/graphite:latest netreplica/graphite:0.09
+  # You might need to add --no-cache=true parameter if latest changes in the dependencies are not propagating to the build
+  docker image build -t netreplica/graphite:local .
   ````
   
 5. Audit
@@ -72,11 +72,4 @@
   docker logs graphite
   docker exec -t graphite npm audit
   docker stop graphite
-  ````
-
-## Publish the image to the repository
-
-  ```Shell
-  docker push netreplica/graphite:latest
-  docker push netreplica/graphite:0.08
   ````
