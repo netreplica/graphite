@@ -8,7 +8,7 @@ Network Visualization for Emulated Topologies
 
 ### CONTAINERlab
 
-[Containerlab](https://containerlab.dev/) is a open-source network emulation software that provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them to create lab topologies of users choice and manages labs lifecycle.
+[Containerlab](https://containerlab.dev/) is an open-source network emulation software that provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them to create lab topologies of users choice and manages labs lifecycle.
 
 Graphite support for Containerlab includes:
 
