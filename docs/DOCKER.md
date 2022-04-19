@@ -13,7 +13,7 @@
 
 ```Shell
 CLABDIR=`pwd`
-docker run -d \
+docker run -d -t \
   -v "${CLABDIR}":/htdocs/clab \
   -p 8080:80 \
   --name graphite \

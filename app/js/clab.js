@@ -86,7 +86,7 @@ function convert_clab_to_cmt(c){
 
 // Convert ContainerLab topology-data.json export into CMT JSON topology
 function convert_clab_topology_data_to_cmt(c){
-  var cmt = {"nodes": [], "links": []};
+  var cmt = {"nodes": [], "links": [], "type": "clab"};
   var node_id_map = {};
   
   if (!c.hasOwnProperty("nodes")) {

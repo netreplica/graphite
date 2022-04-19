@@ -309,11 +309,24 @@
         default:
           topologyData = convert_clab_to_cmt(topo_data);
         }
-        // Create an application instance
-        var shell = new Shell();
-        // Run the application
-        shell.start();
-        shell.container(document.getElementById("topology-container"));
+        if (topologyData.nodes.length > 0) {
+          // Create an application instance
+          var shell = new Shell();
+          // Run the application
+          shell.start();
+          shell.container(document.getElementById("topology-container"));
+        } else {
+          if (topologyData.type == "clab") {
+            // data came from containerlab topology-data.json
+            var notice = document.createElement("div");
+            var notice_html = '<strong>There are no nodes in <code><a href="__topo_url__">topology-data.json</a></code> exported by Containerlab. Please check a template file used for export.</strong><br/>\
+            Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
+            notice.className = "alert alert-warning fade in";
+            notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
+            var topology_diagram = document.getElementById("topology-diagram");
+            topology_diagram.insertBefore(notice, topology_diagram.firstChild);
+          }
+        }
       }
     };
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
