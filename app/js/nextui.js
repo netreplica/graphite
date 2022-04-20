@@ -315,6 +315,9 @@
           // Run the application
           shell.start();
           shell.container(document.getElementById("topology-container"));
+          if (topologyData.hasOwnProperty("type") && topologyData.type == "clab" && topologyData.hasOwnProperty("name")) {
+            document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
+          }
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
