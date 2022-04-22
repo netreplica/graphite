@@ -13,7 +13,7 @@
   </head>
   <body>
     
-    <nav class="navbar navbar-inverse navbar-default">
+    <nav class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="#">Graphite</a>
@@ -21,7 +21,7 @@
         <div id="navbar">
           <ul class="nav navbar-nav">
             <li id="navbar-auto-layout" class="active">
-              <a href="#" onClick="window.location.reload();">Topology Diagram</a>
+              <a href="#" onClick="window.location.reload();">Diagram</a>
             </li>
           </ul>
         </div><!--/.nav -->
@@ -31,7 +31,12 @@
     
     <div id="topology-diagram" class="container"> 
       <div class="row">
-        <div id="topology-container"></div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title" >Topology: <span id="topology-name"></span></h3>
+          </div>
+          <div class="panel-body" id="topology-container"></div>
+        </div>
       </div>
     </div>
     <script src="/next-bower/js/next.min.js"></script>
