@@ -313,6 +313,7 @@
         }
         if (topologyData.hasOwnProperty("type") && topologyData.type == "clab" && topologyData.hasOwnProperty("name")) {
           document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
+          document.getElementById("topology-type").innerHTML = "ContainerLab Topology";
           document.getElementById("topology-name").innerHTML = topologyData.name;
         }
         if (topologyData.nodes.length > 0) {
@@ -325,7 +326,7 @@
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
             var notice = document.createElement("div");
-            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by Containerlab. Please check a template file used for export.</strong><br/>\
+            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
             Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
             notice.className = "alert alert-warning fade in";
             notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
