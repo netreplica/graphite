@@ -80,8 +80,6 @@
         linkInstanceClass: 'CustomLinkClass' 
     });
     
-    var actionPanel = new ActionPanel();
-
 //    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
 
     var Shell = nx.define(nx.ui.Application, {
@@ -91,8 +89,6 @@
                 topo.data(topologyData);
                 // Attach it to the document
                 topo.attach(this);
-                // add action panel to the view
-                actionPanel.attach(this);
             }
         }
     });
@@ -251,6 +247,9 @@
             return;
         };
         currentLayout = 'horizontal';
+        document.getElementById("nav-auto").className = "";
+        document.getElementById("nav-horizontal").className = "active";
+        document.getElementById("nav-vertical").className = "";
         var layout = topo.getLayout('hierarchicalLayout');
         layout.direction('horizontal');
         layout.levelBy(function(node, model) {
@@ -264,6 +263,9 @@
             return;
         };
         currentLayout = 'vertical';
+        document.getElementById("nav-auto").className = "";
+        document.getElementById("nav-horizontal").className = "";
+        document.getElementById("nav-vertical").className = "active";
         var layout = topo.getLayout('hierarchicalLayout');
         layout.direction('vertical');
         layout.levelBy(function(node, model) {
