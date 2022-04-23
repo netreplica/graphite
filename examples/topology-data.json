@@ -1,0 +1,56 @@
+{
+  "name": "3-node-clos-example",
+  "type": "clab",
+  "nodes": {
+    "node1-1": {
+      "index": "0",
+      "shortname": "node1-1",
+      "fqdn": "node1-1.clos-2tier.io",
+      "group": "tier-1",
+      "kind": "srl",
+      "image": "ghcr.io/nokia/srlinux"
+    },
+    "node1-2": {
+      "index": "1",
+      "shortname": "node1-2",
+      "fqdn": "node1-2.clos-2tier.io",
+      "group": "tier-1",
+      "kind": "srl",
+      "image": "ghcr.io/nokia/srlinux"
+    },
+    "node2-1": {
+      "index": "2",
+      "shortname": "node2-1",
+      "fqdn": "node2-1.clos-2tier.io",
+      "group": "tier-2",
+      "kind": "srl",
+      "image": "ghcr.io/nokia/srlinux"
+    }
+  },
+  "links": [
+    {
+      "a": {
+        "node": "node1-1",
+        "interface": "e1-1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "node2-1",
+        "interface": "e1-1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "node1-2",
+        "interface": "e1-1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "node2-1",
+        "interface": "e1-2",
+        "peer": "a"
+      }
+    }
+  ]
+}

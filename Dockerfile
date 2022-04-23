@@ -18,7 +18,6 @@ RUN git clone --single-branch https://github.com/netreplica/next-bower.git ${WWW
 # Default configuration
 COPY docker/etc/lighttpd/ /etc/lighttpd/
 RUN mkdir -p $WWW_HOME/default
-COPY docker/default/ $WWW_HOME/default/
 # Bootstrap
 RUN mkdir -p $WWW_HOME/bootstrap-3.4.1-dist
 COPY docker/bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
@@ -34,6 +33,9 @@ RUN chown webssh2:webssh2 ${WEBSSH2}
 COPY docker/webssh2/ ${WEBSSH2}/
 COPY docker/webssh2.config.template ${WEBSSH2}/config.template
 RUN npm install --production
+
+# Default data
+COPY docker/default/ $WWW_HOME/default/
 
 # Scripts and binaries
 COPY docker/bin/ /usr/local/bin/
