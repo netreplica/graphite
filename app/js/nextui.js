@@ -314,7 +314,11 @@
         if (topologyData.hasOwnProperty("type") && topologyData.type == "clab" && topologyData.hasOwnProperty("name")) {
           document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
           document.getElementById("topology-type").innerHTML = "ContainerLab Topology";
-          document.getElementById("topology-name").innerHTML = topologyData.name;
+          if (topologyData.name != "") {
+            document.getElementById("topology-name").innerHTML = topologyData.name;
+          } else {
+            document.getElementById("topology-name").innerHTML = topo_name;
+          }
         }
         if (topologyData.nodes.length > 0) {
           // Create an application instance

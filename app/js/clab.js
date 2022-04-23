@@ -151,7 +151,7 @@ function convert_clab_topology_data_to_cmt(c){
 
 // Convert ContainerLab Graph JSON export into CMT JSON topology
 function convert_clab_graph_to_cmt(c){
-  var cmt = {"nodes": [], "links": []};
+  var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
   var node_id_map = {};
   for (var i =0; i < c.nodes.length; i++) {
     var n = c.nodes[i];
