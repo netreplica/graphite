@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Graphite</title>
+    <!-- Bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/bootstrap-3.4.1-dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <!-- NextUI -->
+    <link rel="stylesheet" href="/next-bower/css/next.min.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+  </head>
+  <body>
+    
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Graphite</a>
+        </div>
+        <div id="navbar">
+          <ul class="nav navbar-nav">
+            <li id="navbar-auto-layout" class="active">
+              <a href="#" onClick="window.location.reload();">Diagram</a>
+            </li>
+          </ul>
+        </div><!--/.navbar -->
+        <div class="navbar-header navbar-right">
+          <div class="navbar-brand">
+            <a class="github-button" href="https://github.com/netreplica/graphite" data-icon="octicon-star" data-show-count="true" aria-label="Star netreplica/graphite on GitHub">Star</a>
+            <a class="github-button" href="https://github.com/netreplica/graphite/issues" data-icon="octicon-issue-opened" data-show-count="true" aria-label="Issue netreplica/graphite on GitHub">Issue</a>
+         </div>
+        </div>
+      </div>
+    </nav>
+    
+    
+    <div id="topology-diagram" class="container"> 
+      <div class="row">
+        <div class="col-md-14">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  <ul class="nav nav-pills">
+                    <li role="presentation" class="disabled"><a id="topology-type" href="#">Topology</a></li>
+                    <li role="presentation" class="active"><a id="topology-name" href="#" onClick="window.location.reload();">unknown</a></li>
+                  </ul>
+                </h3>
+              </div>
+            </div>
+            <div class="panel-body" id="topology-container"></div>
+            <div class="panel-footer">
+              <ul class="nav nav-pills">
+                <li role="presentation" class="disabled"><a href="#">Layout</a></li>
+                <li role="presentation" id="nav-auto" class="active"><a href="#" onClick="window.location.reload();">Auto</a></li>
+                <li role="presentation" id="nav-horizontal"><a href="#" onClick='horizontal()'>Horizontal</a></li>
+                <li role="presentation" id="nav-vertical"><a href="#" onClick='vertical()'>Vertical</a></li>
+              </ul>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="footnote" class="container"> 
+      <div class="row">
+        <p class="text-muted pull-right">Copyright (c) 2022 <a href="https://twitter.com/netreplica" target="_blank">Netreplica</a></p>
+      </div>
+    </div>
+
+    <script src="/next-bower/js/next.min.js"></script>
+    <script src="js/clab.js"></script>
+    <script src="js/nextui.js"></script>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+  </body>
+</html>

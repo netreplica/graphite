@@ -1,0 +1,41 @@
+name: 2host
+
+mgmt:
+  network: mgmt
+  ipv4_subnet: 172.22.0.0/24
+
+topology:
+  kinds:
+    linux:
+      image: netreplica/ubuntu-host:1.1
+      labels:
+        graph-level: 3
+        graph-icon: server
+  nodes:
+    host1:
+      kind: linux
+      cmd: /start.sh -S
+      exec:
+        - bash -c "echo root:root | chpasswd"
+    host2:
+      kind: linux
+      cmd: /start.sh -S
+      exec:
+        - bash -c "echo root:root | chpasswd"
+    graphite:
+      kind: linux
+      image: netreplica/graphite
+      env:
+        GRAPHITE_DEFAULT_TYPE: clab
+        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+      binds:
+        - __clabDir__/topology-data.json:/htdocs/clab/topology-data.json:ro
+      ports:
+        - 8080:80
+      exec:
+        - sh -c 'graphite_motd.sh 8080'
+      labels:
+        graph-hide: yes
+
+  links:
+    - endpoints: ["host1:eth1", "host2:eth1"]

@@ -22,7 +22,7 @@
     // Initialize topology
     var topo = new nx.graphic.Topology({
         // View dimensions
-        width: 1200,
+        width: 1138,
         height: 700,
         // Dataprocessor is responsible for spreading 
         // the Nodes across the view.
@@ -79,7 +79,7 @@
         showIcon: true,
         linkInstanceClass: 'CustomLinkClass' 
     });
-
+    
 //    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
 
     var Shell = nx.define(nx.ui.Application, {
@@ -101,49 +101,139 @@
         view: {
             content: [{
                 tag: 'div',
+                props: {
+                    "style": "width: 220px;",
+                    "class": "popover-textarea"
+                },
                 content: [{
                     tag: 'h5',
+                    props: {
+                        "style": "border-bottom: dotted 1px; font-size:90%; word-wrap:normal; color:#003688; padding-bottom: 5px"
+                    },
+                    content: [{
+                        tag: 'span',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: '{#node.model.name}'
+                    }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Model:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.model}',
+                      }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Image:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.image}',
+                      }]
+                }, {
+                    tag: 'div',
+                    props: {
+                        "style": "font-size:80%;"
+                    },
                     content: [{
                         tag: 'label',
-                        content: '{#node.model.name}',
-                    }],
-                    props: {
-                        "style": "border-bottom: dotted 1px; font-size:90%; word-wrap:normal; color:#003688"
-                    }
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'Group:',
+                    }, {
+                        tag: 'span',
+                        content: '{#node.model.group}',
+                    }]
                 }, {
-                    tag: 'p',
+                    tag: 'div',
+                    props: {
+                        "style": "font-size:80%;"
+                    },
                     content: [
                         {
                         tag: 'label',
-                        content: 'IP: ',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'IPv4:',
                     }, {
-                        tag: 'label',
-                        content: '{#node.model.primaryIP}',
-                    }
-                    ],
+                        tag: 'span',
+                        content: '{#node.model.mgmtIPv4}',
+                    }, {
+                        tag: 'span',
+                        content: '{#node.model.mgmtIPv4PrefixMask}',
+                    }, {
+                        tag: 'a',
+                        props: {
+                            "onClick": "{#node.model.websshDeviceLink}",
+                            "class": "pull-right"
+                        },
+                        content: [{
+                            tag: 'label',
+                            props: {
+                                "style": "padding-right: 5px"
+                            },
+                            content: 'SSH',
+                        }, {
+                            tag: 'span',
+                            props: {"class": "glyphicon glyphicon-new-window"}
+                        }]
+                    }]
+                }, {
+                    tag: 'div',
                     props: {
                         "style": "font-size:80%;"
-                    }
-                },{
-                    tag: 'p',
+                    },
                     content: [
                         {
                         tag: 'label',
-                        content: 'Model: ',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'IPv6:',
                     }, {
-                        tag: 'label',
-                        content: '{#node.model.model}',
-                    }
-                    ],
-                    props: {
-                        "style": "font-size:80%;"
-                    }
-                },
-            ],
-            props: {
-                "style": "width: 150px;"
-            }
-        }]
+                        tag: 'span',
+                        content: '{#node.model.mgmtIPv6}',
+                    }, {
+                        tag: 'span',
+                        content: '{#node.model.mgmtIPv6PrefixMask}',
+                    }, {
+                        tag: 'a',
+                        props: {
+                            "onClick": "{#node.model.websshDeviceLinkIPv6}",
+                            "class": "pull-right"
+                        },
+                        content: [{
+                            tag: 'label',
+                            props: {
+                                "style": "padding-right: 5px"
+                            },
+                            content: 'SSH',
+                        }, {
+                            tag: 'span',
+                            props: {"class": "glyphicon glyphicon-new-window"}
+                        }]
+                    }]
+              }]
+            }]
         }
     });
 
@@ -200,7 +290,7 @@
                 var stageScale = this.stageScale();
                 
                 // pad line
-                line = line.pad(18 * stageScale, 18 * stageScale);
+                line = line.pad(24 * stageScale, 24 * stageScale);
                 
                 if (this.sourcelabel()) {
                     el = this.view('source');
@@ -211,7 +301,6 @@
                     el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
                     el.setStyle('font-size', 12 * stageScale);
                 }
-                
                 
                 if (this.targetlabel()) {
                     el = this.view('target');
@@ -233,6 +322,9 @@
             return;
         };
         currentLayout = 'horizontal';
+        document.getElementById("nav-auto").className = "";
+        document.getElementById("nav-horizontal").className = "active";
+        document.getElementById("nav-vertical").className = "";
         var layout = topo.getLayout('hierarchicalLayout');
         layout.direction('horizontal');
         layout.levelBy(function(node, model) {
@@ -246,6 +338,9 @@
             return;
         };
         currentLayout = 'vertical';
+        document.getElementById("nav-auto").className = "";
+        document.getElementById("nav-horizontal").className = "";
+        document.getElementById("nav-vertical").className = "active";
         var layout = topo.getLayout('hierarchicalLayout');
         layout.direction('vertical');
         layout.levelBy(function(node, model) {
@@ -258,16 +353,20 @@
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
     var topo_type = "default", topo_name = "default", topo_base = "/default/", topo_url;
-    if (url_params.has('type') && url_params.get('type') == "clab") {
-      topo_type = "clab";
-      topo_base = "../clab/clab-";
+    if (url_params.has('type')) {
+      topo_type = url_params.get('type');
     }
     if (url_params.has('topo')) {
       topo_name = url_params.get('topo');
     }
     switch (topo_type) {
     case "clab":
+      topo_base = "/clab/clab-";
       topo_url = topo_base + topo_name + "/graph/" + topo_name + ".json";
+      break;
+    case "clabdata":
+      topo_base = "/clab/clab-";
+      topo_url = topo_base + topo_name + "/topology-data.json";
       break;
     default:
       topo_url = topo_base + topo_name + ".json";
@@ -283,14 +382,37 @@
         var topo_data = JSON.parse(this.responseText);
         switch (topo_type) {
         case "clab":
-          topologyData = convert_clab_graph_to_cmt(topo_data);
+          topologyData = convert_clab_to_cmt(topo_data);
         default:
-          topologyData = convert_clab_graph_to_cmt(topo_data);
+          topologyData = convert_clab_to_cmt(topo_data);
         }
-        // Create an application instance
-        var shell = new Shell();
-        // Run the application
-        shell.start();
+        if (topologyData.hasOwnProperty("type") && topologyData.type == "clab" && topologyData.hasOwnProperty("name")) {
+          document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
+          document.getElementById("topology-type").innerHTML = "ContainerLab Topology";
+          if (topologyData.name != "") {
+            document.getElementById("topology-name").innerHTML = topologyData.name;
+          } else {
+            document.getElementById("topology-name").innerHTML = topo_name;
+          }
+        }
+        if (topologyData.nodes.length > 0) {
+          // Create an application instance
+          var shell = new Shell();
+          // Run the application
+          shell.start();
+          shell.container(document.getElementById("topology-container"));
+        } else {
+          if (topologyData.type == "clab") {
+            // data came from containerlab topology-data.json
+            var notice = document.createElement("div");
+            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
+            Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
+            notice.className = "alert alert-warning fade in";
+            notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
+            var topology_diagram = document.getElementById("topology-container");
+            topology_diagram.insertBefore(notice, topology_diagram.firstChild);
+          }
+        }
       }
     };
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);

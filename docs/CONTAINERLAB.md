@@ -53,13 +53,15 @@ clabg graph -h | grep json
   You should see an output with `--json` option designed to `generate json file instead of launching the web server`.
   
 
-4. Clone Graphite and NextUI repositories
+4. Clone Graphite and NextUI repositories, download Bootstrap
 
 ```Shell
 mkdir -p $HOME/netreplica/clab
 cd $HOME/netreplica
 git clone https://github.com/netreplica/graphite.git
 git clone https://github.com/netreplica/next-bower.git
+wget https://github.com/twbs/bootstrap/releases/download/v3.4.1/bootstrap-3.4.1-dist.zip
+unzip bootstrap-3.4.1-dist.zip
 ````
 
 5. Install and configure Lighttpd to serve Graphite web pages. You can use any other web server you prefer, please use configuration below as a reference
@@ -83,7 +85,7 @@ sudo systemctl restart lighttpd
 sudo systemctl status lighttpd
 ````
 
-6. Validate access to Graphite web pages by opening the following URL in the browser: `http://REPLACE_IP/graphite/index.html`. You should be able to see a sample topology:
+6. Validate access to Graphite web pages by opening the following URL in the browser: `http://REPLACE_IP/graphite/app/index.html`. You should be able to see a sample topology:
 
 ![Default Graphite Topology Visualization](../images/3-nodes.clab.png)
 
@@ -115,7 +117,7 @@ clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 cat $HOME/netreplica/clab/clab-${CLAB_TOPO}/graph/${CLAB_TOPO}.json | jq
 ````  
 
-3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/index.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
+3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/app/index.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
 
 ![clos-3tier Graphite Topology Visualization](../images/clos-3tier.clab.png)
 
