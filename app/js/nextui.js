@@ -102,7 +102,7 @@
             content: [{
                 tag: 'div',
                 props: {
-                    "style": "width: 150px;",
+                    "style": "width: 200px;",
                     "class": "popover-textarea"
                 },
                 content: [{
@@ -126,6 +126,51 @@
                             props: {"class": "glyphicon glyphicon-new-window"}
                         }]
                     }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Model:',
+                      }, {
+                          tag: 'label',
+                          content: '{#node.model.model}',
+                      }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Image:',
+                      }, {
+                          tag: 'label',
+                          content: '{#node.model.image}',
+                      }]
+                }, {
+                    tag: 'div',
+                    props: {
+                        "style": "font-size:80%;"
+                    },
+                    content: [{
+                        tag: 'label',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'Group:',
+                    }, {
+                        tag: 'label',
+                        content: '{#node.model.group}',
+                    }]
                 }, {
                     tag: 'div',
                     props: {
@@ -137,27 +182,28 @@
                         props: {
                             "style": "padding-right: 5px"
                         },
-                        content: 'IP:',
+                        content: 'IPv4:',
                     }, {
                         tag: 'label',
-                        content: '{#node.model.primaryIP}',
+                        content: '{#node.model.mgmtIPv4}',
                     }]
                 }, {
                     tag: 'div',
                     props: {
                         "style": "font-size:80%;"
                     },
-                    content: [{
+                    content: [
+                        {
                         tag: 'label',
                         props: {
                             "style": "padding-right: 5px"
                         },
-                        content: 'Model:',
+                        content: 'IPv6:',
                     }, {
                         tag: 'label',
-                        content: '{#node.model.model}',
+                        content: '{#node.model.mgmtIPv6}',
                     }]
-                }]
+              }]
             }]
         }
     });

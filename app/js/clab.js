@@ -101,14 +101,19 @@ function convert_clab_topology_data_to_cmt(c){
   for (var node in c.nodes) {
     i++;
     var n = c.nodes[node];
-    var primaryIP;
+    var mgmtIPv4;
+    var mgmtIPv6;
     var websshDeviceLink;
     var icon = "router";
     var level;
     
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
-      primaryIP = n["mgmt-ipv4-address"];
-      websshDeviceLink = getWebsshDeviceLink(node, primaryIP, i);
+      mgmtIPv4 = n["mgmt-ipv4-address"];
+      websshDeviceLink = getWebsshDeviceLink(node, mgmtIPv4, i);
+    }
+
+    if (n.hasOwnProperty("mgmt-ipv6-address")) {
+      mgmtIPv6 = n["mgmt-ipv6-address"];
     }
 
     if (n.hasOwnProperty("labels")) {
@@ -128,7 +133,10 @@ function convert_clab_topology_data_to_cmt(c){
       "name": node,
       "websshDeviceLink": websshDeviceLink,
       "model": n.kind,
-      "primaryIP": primaryIP,
+      "image": n.image,
+      "group": n.group,
+      "mgmtIPv4": mgmtIPv4,
+      "mgmtIPv6": mgmtIPv6,
       "icon": icon,
       "layerSortPreference": level,
     })
@@ -155,13 +163,17 @@ function convert_clab_graph_to_cmt(c){
   var node_id_map = {};
   for (var i =0; i < c.nodes.length; i++) {
     var n = c.nodes[i];
-    var primaryIP;
+    var mgmtIPv4;
+    var mgmtIPv6;
     var websshDeviceLink;
     var icon = "router";
     var level;
     if (n.hasOwnProperty("ipv4_address")) {
-      primaryIP = n.ipv4_address;
-      websshDeviceLink = getWebsshDeviceLink(n.name, primaryIP, i);
+      mgmtIPv4 = n.ipv4_address;
+      websshDeviceLink = getWebsshDeviceLink(n.name, mgmtIPv4, i);
+    }
+    if (n.hasOwnProperty("ipv6_address")) {
+      mgmtIPv6 = n.ipv6_address;
     }
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
@@ -180,7 +192,10 @@ function convert_clab_graph_to_cmt(c){
       "name": n.name,
       "websshDeviceLink": websshDeviceLink,
       "model": n.kind,
-      "primaryIP": primaryIP,
+      "image": n.image,
+      "group": n.group,
+      "mgmtIPv4": mgmtIPv4,
+      "mgmtIPv6": mgmtIPv6,
       "icon": icon,
       "layerSortPreference": level,
     })
