@@ -102,7 +102,7 @@
             content: [{
                 tag: 'div',
                 props: {
-                    "style": "width: 200px;",
+                    "style": "width: 220px;",
                     "class": "popover-textarea"
                 },
                 content: [{
@@ -116,15 +116,6 @@
                             "style": "padding-right: 5px"
                         },
                         content: '{#node.model.name}'
-                    }, {
-                        tag: 'a',
-                        props: {
-                            "onClick": "{#node.model.websshDeviceLink}",
-                        },
-                        content: [{
-                            tag: 'span',
-                            props: {"class": "glyphicon glyphicon-new-window"}
-                        }]
                     }]
                   }, {
                       tag: 'div',
@@ -138,7 +129,7 @@
                           },
                           content: 'Model:',
                       }, {
-                          tag: 'label',
+                          tag: 'span',
                           content: '{#node.model.model}',
                       }]
                   }, {
@@ -153,7 +144,7 @@
                           },
                           content: 'Image:',
                       }, {
-                          tag: 'label',
+                          tag: 'span',
                           content: '{#node.model.image}',
                       }]
                 }, {
@@ -168,7 +159,7 @@
                         },
                         content: 'Group:',
                     }, {
-                        tag: 'label',
+                        tag: 'span',
                         content: '{#node.model.group}',
                     }]
                 }, {
@@ -184,8 +175,24 @@
                         },
                         content: 'IPv4:',
                     }, {
-                        tag: 'label',
+                        tag: 'span',
                         content: '{#node.model.mgmtIPv4}',
+                    }, {
+                        tag: 'a',
+                        props: {
+                            "onClick": "{#node.model.websshDeviceLink}",
+                            "class": "pull-right"
+                        },
+                        content: [{
+                            tag: 'label',
+                            props: {
+                                "style": "padding-right: 5px"
+                            },
+                            content: 'SSH',
+                        }, {
+                            tag: 'span',
+                            props: {"class": "glyphicon glyphicon-new-window"}
+                        }]
                     }]
                 }, {
                     tag: 'div',
@@ -200,8 +207,24 @@
                         },
                         content: 'IPv6:',
                     }, {
-                        tag: 'label',
+                        tag: 'span',
                         content: '{#node.model.mgmtIPv6}',
+                    }, {
+                        tag: 'a',
+                        props: {
+                            "onClick": "{#node.model.websshDeviceLinkIPv6}",
+                            "class": "pull-right"
+                        },
+                        content: [{
+                            tag: 'label',
+                            props: {
+                                "style": "padding-right: 5px"
+                            },
+                            content: 'SSH',
+                        }, {
+                            tag: 'span',
+                            props: {"class": "glyphicon glyphicon-new-window"}
+                        }]
                     }]
               }]
             }]

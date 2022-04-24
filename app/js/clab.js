@@ -67,12 +67,16 @@ function equals_true(obj) {
 }
 
 function getWebsshDeviceLink(n, a, i) {
-  var w = 800;
-  var h = 600;
-  var offset = i * 25;
-  var l_off = (window.screenX + window.outerWidth) - w / 2 + offset;
-  var t_off = window.screenY + offset;
-  return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', 'webssh.${n}','width=${w},height=${h},left=${l_off},top=${t_off}'); return false;`;
+  if (a != "") {
+    var w = 800;
+    var h = 600;
+    var offset = i * 25;
+    var l_off = (window.screenX + window.outerWidth) - w / 2 + offset;
+    var t_off = window.screenY + offset;
+    return `window.open('/ssh/host/${a}?header=${n}&headerBackground=blue', 'webssh.${n}','width=${w},height=${h},left=${l_off},top=${t_off}'); return false;`;
+  } else {
+    return "";
+  }
 }
 
 // Convert ContainerLab topology into CMT JSON topology
@@ -104,6 +108,7 @@ function convert_clab_topology_data_to_cmt(c){
     var mgmtIPv4;
     var mgmtIPv6;
     var websshDeviceLink;
+    var websshDeviceLinkIPv6;
     var icon = "router";
     var level;
     
@@ -114,6 +119,7 @@ function convert_clab_topology_data_to_cmt(c){
 
     if (n.hasOwnProperty("mgmt-ipv6-address")) {
       mgmtIPv6 = n["mgmt-ipv6-address"];
+      websshDeviceLinkIPv6 = getWebsshDeviceLink(node, mgmtIPv6, i);
     }
 
     if (n.hasOwnProperty("labels")) {
@@ -132,6 +138,7 @@ function convert_clab_topology_data_to_cmt(c){
       "id": i,
       "name": node,
       "websshDeviceLink": websshDeviceLink,
+      "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
       "model": n.kind,
       "image": n.image,
       "group": n.group,
@@ -166,6 +173,7 @@ function convert_clab_graph_to_cmt(c){
     var mgmtIPv4;
     var mgmtIPv6;
     var websshDeviceLink;
+    var websshDeviceLinkIPv6;
     var icon = "router";
     var level;
     if (n.hasOwnProperty("ipv4_address")) {
@@ -174,6 +182,7 @@ function convert_clab_graph_to_cmt(c){
     }
     if (n.hasOwnProperty("ipv6_address")) {
       mgmtIPv6 = n.ipv6_address;
+      websshDeviceLinkIPv6 = getWebsshDeviceLink(n.name, mgmtIPv6, i);
     }
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
@@ -191,6 +200,7 @@ function convert_clab_graph_to_cmt(c){
       "id": i,
       "name": n.name,
       "websshDeviceLink": websshDeviceLink,
+      "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
       "model": n.kind,
       "image": n.image,
       "group": n.group,
