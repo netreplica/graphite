@@ -105,21 +105,29 @@ function convert_clab_topology_data_to_cmt(c){
   for (var node in c.nodes) {
     i++;
     var n = c.nodes[node];
-    var mgmtIPv4;
-    var mgmtIPv6;
-    var websshDeviceLink;
-    var websshDeviceLinkIPv6;
+    var mgmtIPv4 = "";
+    var mgmtIPv6 = "";
+    var mgmtIPv4PrefixMask = "";
+    var mgmtIPv6PrefixMask = "";
+    var websshDeviceLink = "";
+    var websshDeviceLinkIPv6 = "";
     var icon = "router";
     var level;
     
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
       mgmtIPv4 = n["mgmt-ipv4-address"];
       websshDeviceLink = getWebsshDeviceLink(node, mgmtIPv4, i);
+      if (mgmtIPv4 != "" && n["mgmt-ipv4-prefix-length"] > 0) {
+        mgmtIPv4PrefixMask = "/" + n["mgmt-ipv4-prefix-length"].toString();
+      }
     }
 
     if (n.hasOwnProperty("mgmt-ipv6-address")) {
       mgmtIPv6 = n["mgmt-ipv6-address"];
       websshDeviceLinkIPv6 = getWebsshDeviceLink(node, mgmtIPv6, i);
+      if (mgmtIPv6 != "" && n["mgmt-ipv6-prefix-length"] > 0) {
+        mgmtIPv6PrefixMask = "/" + n["mgmt-ipv6-prefix-length"].toString();
+      }
     }
 
     if (n.hasOwnProperty("labels")) {
@@ -143,7 +151,9 @@ function convert_clab_topology_data_to_cmt(c){
       "image": n.image,
       "group": n.group,
       "mgmtIPv4": mgmtIPv4,
+      "mgmtIPv4PrefixMask": mgmtIPv4PrefixMask,
       "mgmtIPv6": mgmtIPv6,
+      "mgmtIPv6PrefixMask": mgmtIPv6PrefixMask,
       "icon": icon,
       "layerSortPreference": level,
     })

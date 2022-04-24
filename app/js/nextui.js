@@ -178,6 +178,9 @@
                         tag: 'span',
                         content: '{#node.model.mgmtIPv4}',
                     }, {
+                        tag: 'span',
+                        content: '{#node.model.mgmtIPv4PrefixMask}',
+                    }, {
                         tag: 'a',
                         props: {
                             "onClick": "{#node.model.websshDeviceLink}",
@@ -209,6 +212,9 @@
                     }, {
                         tag: 'span',
                         content: '{#node.model.mgmtIPv6}',
+                    }, {
+                        tag: 'span',
+                        content: '{#node.model.mgmtIPv6PrefixMask}',
                     }, {
                         tag: 'a',
                         props: {
