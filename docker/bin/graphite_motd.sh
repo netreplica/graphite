@@ -8,4 +8,4 @@ else
   GPORT="$1"
 fi
 
-echo "Graphite visualization URL: `graphite_url.sh ${GPORT}`"
+echo "Graphite visualization 🎨 `graphite_url.sh ${GPORT}`"
