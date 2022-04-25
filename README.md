@@ -22,7 +22,7 @@ The easiest way to use Graphite with Containerlab is to add the following code t
 ```Yaml
     graphite:
       kind: linux
-      image: netreplica/graphite:webssh2
+      image: netreplica/graphite
       env:
         GRAPHITE_DEFAULT_TYPE: clab
         CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
@@ -38,7 +38,9 @@ The easiest way to use Graphite with Containerlab is to add the following code t
 
 Once added, deploy the topology with `sudo -E containerlab deploy -t <topology.yaml>`. Note `-E` parameter for `sudo` – it is needed to pass `SSH_CONNECTION` variable.
 
-Look for `Graphite visualization URL: http://<ip_address>:8080/graphite` Containerlab output. If you are running Containerlab on a VM via an SSH session, the `<ip_address>` in the URL should be the one you are using to connect to the VM, so there is a good chance the link will just work. If not, you might need to replace `<ip_address>` with proper address to connect to Graphite.
+Look for `Graphite visualization 🎨 http://<ip_address>:8080/graphite` Containerlab output. If you are running Containerlab on a VM via an SSH session, the `<ip_address>` in the URL should be the one you are using to connect to the VM, so there is a good chance the link will just work. If not, you might need to replace `<ip_address>` with proper address to connect to Graphite.
+
+![Graphite visualization 🎨 link](images/clab-deploy-graphite-url-2host.png)
 
 ## Running Graphite as a standalone Docker container
 

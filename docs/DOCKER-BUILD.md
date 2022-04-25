@@ -68,7 +68,7 @@
 5. Audit
 
   ```Shell
-  docker run --rm -d --name graphite netreplica/graphite:webssh2
+  docker run --rm -d --name graphite netreplica/graphite:local
   docker logs graphite
   docker exec -t graphite npm audit
   docker stop graphite
