@@ -194,20 +194,28 @@ function convert_clab_topology_data_to_cmt(c){
     var l = c.links[i];
     var src_i = node_id_map[l["a"]["node"]];
     var tgt_i = node_id_map[l["z"]["node"]];
+    var src_d_name = l["a"]["node"];
+    var tgt_d_name = l["z"]["node"];
+    var src_i_name = l["a"]["interface"];
+    var tgt_i_name = l["z"]["interface"];
     if (node_id_map.hasOwnProperty(port_mode_node_name(l["a"]["node"], l["a"]["interface"]))) {
       src_i = node_id_map[port_mode_node_name(l["a"]["node"], l["a"]["interface"])];
+      src_i_name = "";
+      src_d_name = port_mode_node_name(l["a"]["node"], l["a"]["interface"]);
     }
     if (node_id_map.hasOwnProperty(port_mode_node_name(l["z"]["node"], l["z"]["interface"]))) {
       tgt_i = node_id_map[port_mode_node_name(l["z"]["node"], l["z"]["interface"])];
+      tgt_i_name = "";
+      tgt_d_name = port_mode_node_name(l["z"]["node"], l["z"]["interface"]);
     }
     cmt.links.push({
       "id": i,
       "source": src_i,
       "target": tgt_i,
-      "srcIfName": l["a"]["interface"],
-      "srcDevice": l["a"]["node"],
-      "tgtIfName": l["z"]["interface"],
-      "tgtDevice": l["z"]["node"],
+      "srcIfName": src_i_name,
+      "srcDevice": src_d_name,
+      "tgtIfName": tgt_i_name,
+      "tgtDevice": tgt_d_name,
     })
   }
   return cmt;
