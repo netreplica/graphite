@@ -139,7 +139,7 @@ function convert_clab_topology_data_to_cmt(c){
         cmt_node["icon"] = n.labels["graph-icon"];
       }
       if (n.labels.hasOwnProperty("graph-level")) {
-        cmt_node["level"] = n.labels["graph-level"];
+        cmt_node["layerSortPreference"] = n.labels["graph-level"];
       }
     }
     
