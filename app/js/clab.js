@@ -45,6 +45,10 @@ function if_shortname(ifname) {
   return ifname;
 }
 
+function port_mode_node_name(n, i) {
+  return i + "@" + n;
+}
+
 // Evaluate object's values for possible representation of boolean TRUE
 function equals_true(obj) {
   switch (typeof obj) {
@@ -168,14 +172,14 @@ function convert_clab_topology_data_to_cmt(c){
           var cmt_node_l = structuredClone(cmt_node); // copy for further modifications
           i++;
           cmt_node_l["id"] = i;
-          cmt_node_l["name"] = node + "-" + l["a"]["interface"];
+          cmt_node_l["name"] = port_mode_node_name(node, l["a"]["interface"]);
           cmt.nodes.push(cmt_node_l);
           node_id_map[cmt_node_l.name] = cmt_node_l["id"];
         } else if (l["z"]["node"] == node) { // TODO back-2-back case
           var cmt_node_l = structuredClone(cmt_node); // copy for further modifications
           i++;
           cmt_node_l["id"] = i;
-          cmt_node_l["name"] = node + "-" + l["z"]["interface"];
+          cmt_node_l["name"] = port_mode_node_name(node, l["z"]["interface"]);
           cmt.nodes.push(cmt_node_l);
           node_id_map[cmt_node_l.name] = cmt_node_l["id"];
         }
@@ -190,11 +194,11 @@ function convert_clab_topology_data_to_cmt(c){
     var l = c.links[i];
     var src_i = node_id_map[l["a"]["node"]];
     var tgt_i = node_id_map[l["z"]["node"]];
-    if (node_id_map.hasOwnProperty(l["a"]["node"] + "-" + l["a"]["interface"])) {
-      src_i = node_id_map[l["a"]["node"] + "-" + l["a"]["interface"]];
+    if (node_id_map.hasOwnProperty(port_mode_node_name(l["a"]["node"], l["a"]["interface"]))) {
+      src_i = node_id_map[port_mode_node_name(l["a"]["node"], l["a"]["interface"])];
     }
-    if (node_id_map.hasOwnProperty(l["z"]["node"] + "-" + l["z"]["interface"])) {
-      tgt_i = node_id_map[l["z"]["node"] + "-" + l["z"]["interface"]];
+    if (node_id_map.hasOwnProperty(port_mode_node_name(l["z"]["node"], l["z"]["interface"]))) {
+      tgt_i = node_id_map[port_mode_node_name(l["z"]["node"], l["z"]["interface"])];
     }
     cmt.links.push({
       "id": i,
