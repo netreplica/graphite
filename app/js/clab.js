@@ -141,30 +141,84 @@ function convert_clab_topology_data_to_cmt(c){
         level = n.labels["graph-level"];
       }
     }
-    node_id_map[node] = i;
-    cmt.nodes.push({
-      "id": i,
-      "name": node,
-      "websshDeviceLink": websshDeviceLink,
-      "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
-      "model": n.kind,
-      "image": n.image,
-      "group": n.group,
-      "mgmtIPv4": mgmtIPv4,
-      "mgmtIPv4PrefixMask": mgmtIPv4PrefixMask,
-      "mgmtIPv6": mgmtIPv6,
-      "mgmtIPv6PrefixMask": mgmtIPv6PrefixMask,
-      "icon": icon,
-      "layerSortPreference": level,
-    })
+    
+    if (n.labels.hasOwnProperty("graph-mode") && n.labels["graph-mode"] == "port") {
+      // display each port of this node as it's own individual node
+      for (var i =0; i < c.links.length; i++) {
+        var l = c.links[i];
+        // TODO handle when the same interface is encountered more than once
+        if (l["a"]["node"] == n.shortname) {
+          // copy node object as new "node-interface" object
+          node_id_map[n.shortname + "-" + l["a"]["interface"]] = i;
+          cmt.nodes.push({
+            "id": i,
+            "name": n.shortname + "-" + l["a"]["interface"],
+            "websshDeviceLink": websshDeviceLink,
+            "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
+            "model": n.kind,
+            "image": n.image,
+            "group": n.group,
+            "mgmtIPv4": mgmtIPv4,
+            "mgmtIPv4PrefixMask": mgmtIPv4PrefixMask,
+            "mgmtIPv6": mgmtIPv6,
+            "mgmtIPv6PrefixMask": mgmtIPv6PrefixMask,
+            "icon": icon,
+            "layerSortPreference": level,
+          })
+        } else if (l["z"]["node"] == n.shortname) { // TODO back-2-back case
+          // copy node object as new "node-interface" object
+          node_id_map[n.shortname + "-" + l["z"]["interface"]] = i;
+          cmt.nodes.push({
+            "id": i,
+            "name": n.shortname + "-" + l["z"]["interface"],
+            "websshDeviceLink": websshDeviceLink,
+            "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
+            "model": n.kind,
+            "image": n.image,
+            "group": n.group,
+            "mgmtIPv4": mgmtIPv4,
+            "mgmtIPv4PrefixMask": mgmtIPv4PrefixMask,
+            "mgmtIPv6": mgmtIPv6,
+            "mgmtIPv6PrefixMask": mgmtIPv6PrefixMask,
+            "icon": icon,
+            "layerSortPreference": level,
+          })
+        }
+      }
+    } else {
+      node_id_map[node] = i;
+      cmt.nodes.push({
+        "id": i,
+        "name": node,
+        "websshDeviceLink": websshDeviceLink,
+        "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
+        "model": n.kind,
+        "image": n.image,
+        "group": n.group,
+        "mgmtIPv4": mgmtIPv4,
+        "mgmtIPv4PrefixMask": mgmtIPv4PrefixMask,
+        "mgmtIPv6": mgmtIPv6,
+        "mgmtIPv6PrefixMask": mgmtIPv6PrefixMask,
+        "icon": icon,
+        "layerSortPreference": level,
+      })
+    }
   }
   
   for (var i =0; i < c.links.length; i++) {
     var l = c.links[i];
+    var src_i = node_id_map[l["a"]["node"]];
+    var tgt_i = node_id_map[l["z"]["node"]];
+    if (node_id_map.hasOwnProperty(l["a"]["node"] + "-" + l["a"]["interface"])) {
+      src_i = node_id_map[l["a"]["node"] + "-" + l["a"]["interface"]];
+    }
+    if (node_id_map.hasOwnProperty(l["z"]["node"] + "-" + l["z"]["interface"])) {
+      tgt_i = node_id_map[l["z"]["node"] + "-" + l["z"]["interface"]];
+    }
     cmt.links.push({
       "id": i,
-      "source": node_id_map[l["a"]["node"]],
-      "target": node_id_map[l["z"]["node"]],
+      "source": src_i,
+      "target": tgt_i,
       "srcIfName": l["a"]["interface"],
       "srcDevice": l["a"]["node"],
       "tgtIfName": l["z"]["interface"],
