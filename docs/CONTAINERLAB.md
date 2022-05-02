@@ -238,7 +238,7 @@ If such node has multiple interfaces connected to the emulated topology, its vis
 
 The `ixia` node will be visualized as two icons `eth1@ixia` and `eth2@ixia`:
 
-![Ixia-c-one node visualized in port mode](images/clab-graphite-ixia-ports.png)
+![Ixia-c-one node visualized in port mode](/images/clab-graphite-ixia-ports.png)
 
 ## Visualize running ContainerLab topology
 
