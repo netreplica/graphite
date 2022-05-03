@@ -221,7 +221,7 @@ Some nodes that can be used within ContainerLab topology may not act as regular 
   * Linux hosts with disabled IP forwarding,
   * Traffic Generators. 
 
-If such node has multiple interfaces connected to the emulated topology, its visualization might not represent their role well. To address this, there is a special `port` visuzalization mode available in Graphite. With such mode enabled for a node, each its interface would be displayed as a separate icon with a name "<interface-name>@<node-name>". Below is an example of using `port` mode for `ixia-c-one` traffic generator, together with a "cloud" icon:
+If such node has multiple interfaces connected to the emulated topology, its visualization might not represent their role well. To address this, there is a special `port` visuzalization mode available in Graphite. With such mode enabled for a node, each its interface would be displayed as a separate icon with a name "interface-name@node-name". Below is an example of using `port` mode for `ixia-c-one` traffic generator, together with a "cloud" icon:
 
 ```Yaml
     ixia:
