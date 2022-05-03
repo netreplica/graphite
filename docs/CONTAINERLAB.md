@@ -216,7 +216,7 @@ clabg graph --json --topo ${CLAB_TOPO}.yaml --offline
 
 ## Using `port` visualization mode
 
-Some nodes that can be used within ContainerLab topology are not acting as regular network devices. Examples of such nodes could be 
+Some nodes that can be used within ContainerLab topology may not act as regular network devices. Examples of such nodes could be 
 
   * Linux hosts with disabled IP forwarding,
   * Traffic Generators. 
