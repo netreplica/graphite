@@ -15,85 +15,63 @@
 */
 
 (function (nx) {
-    /**
-     * NeXt UI base application
-     * Source: https://raw.githubusercontent.com/netreplica/devnet_marathon_endgame/master/next_app.js
-     */
-    // Initialize topology
-    var topo = new nx.graphic.Topology({
-        // View dimensions
-        width: 1138,
-        height: 700,
-        // Dataprocessor is responsible for spreading 
-        // the Nodes across the view.
-        // 'force' dataprocessor spreads the Nodes so
-        // they would be as distant from each other
-        // as possible. Follow social distancing and stay healthy.
-        // 'quick' dataprocessor picks random positions
-        // for the Nodes.
-        dataProcessor: 'force',
-        // Node and Link identity key attribute name
-        identityKey: 'id',
-        // Node settings
-        nodeConfig: {
-            label: 'model.name',
-            iconType:'model.icon',
-            color: function(model) {
-                if (model._data.is_new === 'yes') {
-                    return '#148D09'
-                }
-            },
-        },
-        // Node Set settings (for future use)
-        nodeSetConfig: {
-            label: 'model.name',
-            iconType: 'model.iconType'
-        },
-        // Tooltip content settings
-        tooltipManagerConfig: {
-            nodeTooltipContentClass: 'CustomNodeTooltip'
-        },
-        // Link settings
-        linkConfig: {
-            // Display Links as curves in case of 
-            //multiple links between Node Pairs.
-            // Set to 'parallel' to use parallel links.
-            linkType: 'curve',
-            sourcelabel: 'model.srcIfName',
-            targetlabel: 'model.tgtIfName',
-            style: function(model) {
-                if (model._data.is_dead === 'yes') {
-                    return { 'stroke-dasharray': '5' }
-                }
-            },
-            color: function(model) {
-                if (model._data.is_dead === 'yes') {
-                    return '#E40039'
-                }
-                if (model._data.is_new === 'yes') {
-                    return '#148D09'
-                }
-            },
-        },
-        // Display Node icon. Displays a dot if set to 'false'.
-        showIcon: true,
-        linkInstanceClass: 'CustomLinkClass' 
-    });
-    
-//    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
-
-    var Shell = nx.define(nx.ui.Application, {
-        methods: {
-            start: function () {
-                // Read topology data from variable
-                topo.data(topologyData);
-                // Attach it to the document
-                topo.attach(this);
-            }
+  nx.define('TopologyContainer', nx.ui.Component, {
+    // we use this trick to use this object as a nx.ui.Component and display topology at the same time
+    properties: {
+      topology: {
+        get: function () {
+          return this.view('topology');
         }
-    });
+      }
+    },
+    // define view
+    view: {
+      content: [
+        {
+          name: 'topology', // object name
+          type: 'nx.graphic.Topology', // object type
+          // this defines properties of a nx.graphic.Topology instance
+          // see full specifications online
+          // https://developer.cisco.com/site/neXt/document/api-reference-manual/
+          props: {
+            adaptive: true, // width 100% if true
+            showIcon: true,
+            identityKey: 'id', // helps to link source and target
+            //width: 1138, // adaptive is set to true
+            height: 700,
+            dataProcessor: 'force', // arrange nodes positions if not set
+            enableSmartLabel: true, // moves the labels in order to avoid overlay of them
+            enableGradualScaling: true, // may slow down, if true
+            nodeConfig: {
+              label: 'model.name',
+              /*
+               icon types:
+               https://developer.cisco.com/media/neXt-site/example.html#Basic/icons
+               */
+              iconType: 'model.icon',
+              color: '#0how00'
+            },
+            nodeSetConfig: {
+                label: 'model.name',
+                iconType: 'model.iconType'
+            },
+            tooltipManagerConfig: {
+                nodeTooltipContentClass: 'CustomNodeTooltip'
+            },
+            supportMultipleLink: true, // if true, two nodes can have more than one link
+            linkInstanceClass: 'CustomLinkClass',
+            linkConfig: {
+              linkType: 'curve', // also: parallel
+              sourcelabel: 'model.srcIfName',
+              targetlabel: 'model.tgtIfName',
+            }
+          }
+        }
+      ]
+    }
+  });
 
-    nx.define('CustomNodeTooltip', nx.ui.Component, {
+  nx.define('CustomNodeTooltip', nx.ui.Component, {
         properties: {
             node: {},
             topology: {}
@@ -315,6 +293,32 @@
         }
     });
 
+    nx.define('TopologyApp', nx.ui.Application, {
+        properties: {
+            topologyContainer: {},
+            topology: {}
+        },
+        methods: {
+            start: function (cmt) {
+              /* TopologyContainer is a nx.ui.Component object that can contain much more things than just a nx.graphic.Topology object.
+               We can 'inject' a topology instance inside and interact with it easily
+               */
+              this.topologyContainer = new TopologyContainer();
+              // topology instance was made in TopologyContainer, but we can invoke its members through 'topology' variable for convenience
+              this.topology = this.topologyContainer.topology();
+              // Read topology data from variable
+              this.topology.data(cmt);
+              // Attach it to the document
+              this.topology.attach(this);
+            }
+        }
+    });
+
+})(nx);
+
+
+(function (nx) {
+
     var currentLayout = 'auto'
 
     horizontal = function() {
@@ -375,7 +379,7 @@
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
     var topologyData;
-
+    
     xmlhttp.onreadystatechange = function() {
       // TODO handle errors
       if (this.readyState == 4 && this.status == 200) {
@@ -396,11 +400,11 @@
           }
         }
         if (topologyData.nodes.length > 0) {
-          // Create an application instance
-          var shell = new Shell();
-          // Run the application
-          shell.start();
-          shell.container(document.getElementById("topology-container"));
+          // initialize a new application instance
+          var app = new TopologyApp();
+          app.start(topologyData);
+          //assign the app to the <div>
+          app.container(document.getElementById('topology-container'));
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
