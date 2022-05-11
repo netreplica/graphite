@@ -293,10 +293,70 @@
         }
     });
 
+    // This class realizes an action button and its behavior
+  	nx.define('ActionBar', nx.ui.Component, {
+  		properties: {
+  			'topology': null, // this prop will be actually initialized by this.assignTopology()
+  			'exportedData': ''
+  		},
+  		view: {
+  			content: [
+  				{
+  					tag: 'div',
+  					content: [
+  						{
+  							// create the button and bind it to the event onAdd
+  							tag: 'button',
+  							content: 'Toggle ASNs',
+  							events: {
+  								'click': '{#toggle_asns}'
+  							}
+  						}
+  					]
+  				}
+  			]
+  		},
+  		methods: {
+  			'toggle_asns': function () {
+          
+  				var topo = this.topology();
+          var topo_url = "/clab/clab-2host/node-data.json";
+          
+          // Load topology model
+          var udpate_xmlhttp = new XMLHttpRequest();
+    
+          udpate_xmlhttp.onreadystatechange = function() {
+            // TODO handle errors
+            if (this.readyState == 4 && this.status == 200) {
+              var data = JSON.parse(this.responseText);
+              if (data.hasOwnProperty("nodes")) {
+    						// go through fetched nodes' array
+    						nx.each(topo.getNodes(), function (node) {
+                  var l = node.get('label');
+                  if (data.nodes.hasOwnProperty(l) && data.nodes[l].hasOwnProperty('asn')) {
+                    console.log(data.nodes[l].asn);
+                    node.set('label', l + ", AS " + data.nodes[l].asn);
+                  }
+    						});
+              }
+            }
+          };
+          udpate_xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
+          udpate_xmlhttp.send();
+        },
+          
+  			// assign topology instance (by ref) to the actionbar instance
+  			'assignTopology': function (topo) {
+  				this.topology(topo);
+  			}
+  		}
+  	});
+
     nx.define('TopologyApp', nx.ui.Application, {
         properties: {
             topologyContainer: {},
-            topology: {}
+            topology: {},
+            actionBar: {}
         },
         methods: {
             start: function (cmt) {
@@ -306,8 +366,12 @@
               this.topologyContainer = new TopologyContainer();
               // topology instance was made in TopologyContainer, but we can invoke its members through 'topology' variable for convenience
               this.topology = this.topologyContainer.topology();
+            	this.actionBar = new ActionBar();
+              
               // Read topology data from variable
               this.topology.data(cmt);
+            	this.actionBar.assignTopology(this.topology);
+            	this.actionBar.attach(this);
               // Attach it to the document
               this.topology.attach(this);
             }
@@ -315,7 +379,6 @@
     });
 
 })(nx);
-
 
 (function (nx) {
 
