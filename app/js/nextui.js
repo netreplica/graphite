@@ -44,17 +44,14 @@
             enableGradualScaling: true, // may slow down, if true
             nodeConfig: {
               label: 'model.name',
-              /*
-               icon types:
-               https://developer.cisco.com/media/neXt-site/example.html#Basic/icons
-               */
-              iconType: 'model.icon',
+              iconType: 'model.icon', // icon types: https://developer.cisco.com/media/neXt-site/example.html#Basic/icons
               color: '#0how00'
             },
             nodeSetConfig: {
                 label: 'model.name',
                 iconType: 'model.iconType'
             },
+            nodeInstanceClass: 'AnnotatedNode',
             tooltipManagerConfig: {
                 nodeTooltipContentClass: 'CustomNodeTooltip'
             },
@@ -68,6 +65,88 @@
           }
         }
       ]
+    }
+  });
+
+  nx.define('AnnotatedNode', nx.graphic.Topology.Node, {
+    view: function (view) {
+      view.content.push({
+        name: 'deviceStatusBadge',
+        type: 'nx.graphic.Circle',
+        props: {
+          r: 5,
+          fill: "#ff0000",
+          visible: false
+        }
+      },{
+        name: 'asnLabel',
+        type: 'nx.graphic.Text',
+        props: {
+          visible: false
+        }
+      });
+      return view;
+    },
+    methods: {
+
+      showStatus: function () {
+        // draw/not draw the down badge based on status
+        if (this.model().get("isDown"))
+          this._showDownBadge();
+        else
+          this._hideDownBadge();
+      },
+
+      hideStatus: function () {
+        this._hideDownBadge();
+      },
+
+      showASN: function () {
+        this._showASNLabel();
+      },
+
+      hideASN: function () {
+        this._hideASNLabel();
+      },
+
+      // display the red badge
+      _showDownBadge: function () {
+        // view of badge
+        var badge = this.view("deviceStatusBadge");
+
+        // set properties
+        badge.sets({
+          // make visible
+          "visible": true,
+          // set X offset
+          "cx": -13,
+          // set Y offset
+          "cy": 13
+        });
+
+      },
+
+      // make the badge invisible
+      _hideDownBadge: function () {
+        this.view("deviceStatusBadge").set("visible", false);
+      },
+      
+      _showASNLabel: function () {
+        // view of badge
+        var label = this.view("asnLabel");
+
+        // set properties
+        label.sets({
+          "text": this.model().get("ASN"),
+          // make visible
+          "visible": true,
+        });
+      },
+      
+      _hideASNLabel: function () {
+        this.view("asnLabel").set("visible", false);
+      },
+      
     }
   });
 
@@ -294,32 +373,32 @@
     });
 
     // This class realizes an action button and its behavior
-  	nx.define('ActionBar', nx.ui.Component, {
-  		properties: {
-  			'topology': null, // this prop will be actually initialized by this.assignTopology()
-  			'exportedData': ''
-  		},
-  		view: {
-  			content: [
-  				{
-  					tag: 'div',
-  					content: [
-  						{
-  							// create the button and bind it to the event onAdd
-  							tag: 'button',
-  							content: 'Toggle ASNs',
-  							events: {
-  								'click': '{#toggle_asns}'
-  							}
-  						}
-  					]
-  				}
-  			]
-  		},
-  		methods: {
-  			'toggle_asns': function () {
+    nx.define('ActionBar', nx.ui.Component, {
+      properties: {
+        'topology': null, // this prop will be actually initialized by this.assignTopology()
+        'exportedData': ''
+      },
+      view: {
+        content: [
+          {
+            tag: 'div',
+            content: [
+              {
+                // create the button and bind it to the event onAdd
+                tag: 'button',
+                content: 'Toggle ASNs',
+                events: {
+                  'click': '{#toggle_asns}'
+                }
+              }
+            ]
+          }
+        ]
+      },
+      methods: {
+        'toggle_asns': function () {
           
-  				var topo = this.topology();
+          var topo = this.topology();
           var topo_url = "/clab/clab-2host/node-data.json";
           
           // Load topology model
@@ -330,14 +409,14 @@
             if (this.readyState == 4 && this.status == 200) {
               var data = JSON.parse(this.responseText);
               if (data.hasOwnProperty("nodes")) {
-    						// go through fetched nodes' array
-    						nx.each(topo.getNodes(), function (node) {
-                  var l = node.get('label');
-                  if (data.nodes.hasOwnProperty(l) && data.nodes[l].hasOwnProperty('asn')) {
-                    console.log(data.nodes[l].asn);
-                    node.set('label', l + ", AS " + data.nodes[l].asn);
+                // go through fetched nodes' array
+                nx.each(topo.getNodes(), function (node) {
+                  var n = node.model().get('name');
+                  if (data.nodes.hasOwnProperty(n) && data.nodes[n].hasOwnProperty('asn')) {
+                    node.model().set('ASN', data.nodes[n].asn);
+                    node.showASN();
                   }
-    						});
+                });
               }
             }
           };
@@ -345,12 +424,12 @@
           udpate_xmlhttp.send();
         },
           
-  			// assign topology instance (by ref) to the actionbar instance
-  			'assignTopology': function (topo) {
-  				this.topology(topo);
-  			}
-  		}
-  	});
+        // assign topology instance (by ref) to the actionbar instance
+        'assignTopology': function (topo) {
+          this.topology(topo);
+        }
+      }
+    });
 
     nx.define('TopologyApp', nx.ui.Application, {
         properties: {
@@ -366,12 +445,12 @@
               this.topologyContainer = new TopologyContainer();
               // topology instance was made in TopologyContainer, but we can invoke its members through 'topology' variable for convenience
               this.topology = this.topologyContainer.topology();
-            	this.actionBar = new ActionBar();
+              this.actionBar = new ActionBar();
               
               // Read topology data from variable
               this.topology.data(cmt);
-            	this.actionBar.assignTopology(this.topology);
-            	this.actionBar.attach(this);
+              this.actionBar.assignTopology(this.topology);
+              this.actionBar.attach(this);
               // Attach it to the document
               this.topology.attach(this);
             }
