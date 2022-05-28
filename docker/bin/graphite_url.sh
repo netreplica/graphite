@@ -14,4 +14,9 @@ else
   GHOST=$HOSTNAME
 fi
 
+if sh -c 'curl --silent --connect-timeout 1 http://169.254.169.254/ >/dev/null'; then
+  # looks like we are running in a public cloud environment
+  GHOST=`curl --silent --connect-timeout 3 ifconfig.me`
+fi
+
 echo "http://${GHOST}:${GPORT}/graphite"
