@@ -77,7 +77,8 @@
         },
         // Display Node icon. Displays a dot if set to 'false'.
         showIcon: true,
-        linkInstanceClass: 'CustomLinkClass' 
+        linkInstanceClass: 'AlignedLinkLabel' 
+        //linkInstanceClass: 'BadgeLinkLabel' 
     });
     
 //    topo.registerIcon("dead_node", "img/dead_node.png", 49, 49);
@@ -251,7 +252,7 @@
         }
     });
 
-    nx.define('CustomLinkClass', nx.graphic.Topology.Link, {
+    nx.define('AlignedLinkLabel', nx.graphic.Topology.Link, {
         properties: {
             sourcelabel: null,
             targetlabel: null
@@ -278,6 +279,13 @@
             return view;
         },
         methods: {
+            init: function (args) {
+                this.inherited(args);
+                this.topology().fit();
+            },
+            'setModel': function (model) {
+                this.inherited(model);
+            },
             update: function() {
                 
                 this.inherited();
@@ -311,6 +319,125 @@
                     el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
                     el.setStyle('font-size', 12 * stageScale);
                 }
+            }
+        }
+    });
+
+    nx.define('BadgeLinkLabel', nx.graphic.Topology.Link, {
+        properties: {
+            sourcelabel: 'null',
+            targetlabel: 'null',
+        },
+        view: function (view) {
+            view.content.push({
+                name: 'sourceBadge',
+                type: 'nx.graphic.Group',
+                content: [
+                    {
+                        name: 'sourceBg',
+                        type: 'nx.graphic.Rect',
+                        props: {
+                            'class': 'link-set-circle',
+                            height: 1
+                        }
+                    },
+                    {
+                        name: 'sourceText',
+                        type: 'nx.graphic.Text',
+                        props: {
+                            'class': 'link-set-text',
+                            y: 1
+                        }
+                    }
+                ],
+                props: {
+                    'alignment-baseline': 'after-edge',
+                }
+            },
+                {
+                    name: 'targetBadge',
+                    type: 'nx.graphic.Group',
+                    content: [
+                        {
+                            name: 'targetBg',
+                            type: 'nx.graphic.Rect',
+                            props: {
+                                'class': 'link-set-circle',
+                                height: 1
+                            }
+                        },
+                        {
+                            name: 'targetText',
+                            type: 'nx.graphic.Text',
+                            props: {
+                                'class': 'link-set-text',
+                                y: 1
+                            }
+                        }
+                    ],
+                    props: {
+                        'alignment-baseline': 'after-edge',
+                    }
+                }
+
+            );
+            return view;
+        },
+        methods: {
+            init: function (args) {
+                this.inherited(args);
+                this.topology().fit();
+            },
+            'setModel': function (model) {
+                this.inherited(model);
+            },
+            update: function () {
+                this.inherited();
+                var line = this.line();
+                var angle = line.angle();
+                var stageScale = this.stageScale();
+                line = line.pad(50 * stageScale, 50 * stageScale);
+                if (this.sourcelabel()) {
+                    var sourceBadge = this.view('sourceBadge');
+                    var sourceText = this.view('sourceText');
+                    var sourceBg = this.view('sourceBg');
+                    var point;
+                    sourceText.sets({
+                        text: this.sourcelabel(),
+                    });
+                    //TODO: accommodate larger text label
+                    sourceBg.sets({ width: 34, visible: true });
+                    sourceBg.setTransform(34 / -2);
+                    point = line.start;
+                    if (stageScale) {
+                        sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+                    } else {
+                        sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+                    }
+                }
+                if (this.targetlabel()) {
+                    var targetBadge = this.view('targetBadge');
+                    var targetText = this.view('targetText');
+                    var targetBg = this.view('targetBg');
+                    var point;
+                    targetText.sets({
+                        text: this.targetlabel(),
+                    });
+                    targetBg.sets({ width: 34, visible: true });
+                    targetBg.setTransform(34 / -2);
+                    point = line.end;
+                    if (stageScale) {
+                        targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+                    } else {
+                        targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+                    }
+                }
+                this.view("sourceBadge").visible(true);
+                this.view("sourceBg").visible(true);
+                this.view("sourceText").visible(true);
+                this.view("targetBadge").visible(true);
+                this.view("targetBg").visible(true);
+                this.view("targetText").visible(true);
             }
         }
     });
