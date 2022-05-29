@@ -262,17 +262,13 @@
                 name: 'source',
                 type: 'nx.graphic.Text',
                 props: {
-                    'class': 'sourcelabel',
-                    'alignment-baseline': 'text-after-edge',
-                    'text-anchor': 'start'
+                    'class': 'sourcelabel label-text-color-fg label-text-anchor-start'
                 }
             }, {
                 name: 'target',
                 type: 'nx.graphic.Text',
                 props: {
-                    'class': 'targetlabel',
-                    'alignment-baseline': 'text-after-edge',
-                    'text-anchor': 'end'
+                    'class': 'targetlabel label-text-color-fg label-text-anchor-end'
                 }
             });
             
