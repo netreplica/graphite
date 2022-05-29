@@ -9,6 +9,7 @@ RUN apk add --no-cache \
   lighttpd=${LIGHTTPD_VERSION} \
   git \
   npm \
+  curl \
   && rm -rf /var/cache/apk/*
 
 # Clone Graphite dependencies
