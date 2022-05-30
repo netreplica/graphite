@@ -56,8 +56,7 @@
                 nodeTooltipContentClass: 'CustomNodeTooltip'
             },
             supportMultipleLink: true, // if true, two nodes can have more than one link
-            linkInstanceClass: 'AlignedLinkLabel' 
-            //linkInstanceClass: 'BadgeLinkLabel' 
+            linkInstanceClass: 'AlignedLinkLabel',
             linkConfig: {
               linkType: 'curve', // also: parallel
               sourcelabel: 'model.srcIfName',
@@ -499,6 +498,7 @@
     nx.define('ActionBar', nx.ui.Component, {
       properties: {
         'topology': null, // this prop will be actually initialized by this.assignTopology()
+        'topologyApp': {},
         'exportedData': ''
       },
       view: {
@@ -507,7 +507,12 @@
             tag: 'div',
             content: [
               {
-                // create the button and bind it to the event onAdd
+                tag: 'button',
+                content: 'Toggle Link Label Types',
+                events: {
+                  'click': '{#toggle_link_label_types}'
+                }
+              },{
                 tag: 'button',
                 content: 'Toggle ASNs',
                 events: {
@@ -519,6 +524,9 @@
         ]
       },
       methods: {
+        'toggle_link_label_types': function () {
+          this.topologyApp().toggle_link_label_types();
+        },
         'toggle_asns': function () {
           
           var topo = this.topology();
@@ -550,14 +558,21 @@
         // assign topology instance (by ref) to the actionbar instance
         'assignTopology': function (topo) {
           this.topology(topo);
+        },
+          
+        // assign topologyApp instance (by ref) to the actionbar instance
+        'assignTopologyApp': function (app) {
+          this.topologyApp(app);
         }
       }
     });
 
     nx.define('TopologyApp', nx.ui.Application, {
         properties: {
+            cmt: {},
             topologyContainer: {},
             topology: {},
+            linkInstanceClass: '',
             actionBar: {}
         },
         methods: {
@@ -565,6 +580,7 @@
               /* TopologyContainer is a nx.ui.Component object that can contain much more things than just a nx.graphic.Topology object.
                We can 'inject' a topology instance inside and interact with it easily
                */
+              this.cmt = cmt;
               this.topologyContainer = new TopologyContainer();
               // topology instance was made in TopologyContainer, but we can invoke its members through 'topology' variable for convenience
               this.topology = this.topologyContainer.topology();
@@ -573,8 +589,28 @@
               // Read topology data from variable
               this.topology.data(cmt);
               this.actionBar.assignTopology(this.topology);
+              this.actionBar.assignTopologyApp(this);
               this.actionBar.attach(this);
               // Attach it to the document
+              this.topology.attach(this);
+              this.linkInstanceClass = this.topology.linkInstanceClass();
+            },
+            toggle_link_label_types: function () {
+              switch (this.linkInstanceClass) {
+              case 'AlignedLinkLabel':
+                this.linkInstanceClass = 'BadgeLinkLabel';
+                break;
+              case 'BadgeLinkLabel':
+                this.linkInstanceClass = 'AlignedLinkLabel';
+                break;
+              default:
+                this.linkInstanceClass = 'AlignedLinkLabel';
+              }
+              // detach topology currently in view
+              this.topology.detach(this);
+              // update topology props
+              this.topology.linkInstanceClass(this.linkInstanceClass);
+              // attach topology back
               this.topology.attach(this);
             }
         }
@@ -652,6 +688,7 @@
         switch (topo_type) {
         case "clab":
           topologyData = convert_clab_to_cmt(topo_data);
+          break;
         default:
           topologyData = convert_clab_to_cmt(topo_data);
         }
