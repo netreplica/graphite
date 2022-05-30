@@ -573,6 +573,7 @@
             topologyContainer: {},
             topology: {},
             linkInstanceClass: '',
+            currentLayout: 'auto',
             actionBar: {}
         },
         methods: {
@@ -594,6 +595,30 @@
               // Attach it to the document
               this.topology.attach(this);
               this.linkInstanceClass = this.topology.linkInstanceClass();
+            },
+            layout_horizontal: function () {
+              if (this.currentLayout === 'vertical') {
+                  return;
+              };
+              this.currentLayout = 'vertical';
+              var layout = this.topology.getLayout('hierarchicalLayout');
+              layout.direction('vertical');
+              layout.levelBy(function(node, model) {
+                  return model.get('layerSortPreference');
+              });
+              this.topology.activateLayout('hierarchicalLayout');
+            },
+            layout_vertical: function () {
+              if (this.currentLayout === 'horizontal') {
+                  return;
+              };
+              this.currentLayout = 'horizontal';
+              var layout = this.topology.getLayout('hierarchicalLayout');
+              layout.direction('horizontal');
+              layout.levelBy(function(node, model) {
+                  return model.get('layerSortPreference');
+              });
+              this.topology.activateLayout('hierarchicalLayout');
             },
             toggle_link_label_types: function () {
               switch (this.linkInstanceClass) {
@@ -620,38 +645,20 @@
 
 (function (nx) {
 
-    var currentLayout = 'auto'
+    var app; // TopologyApp
 
     horizontal = function() {
-        if (currentLayout === 'horizontal') {
-            return;
-        };
-        currentLayout = 'horizontal';
         document.getElementById("nav-auto").className = "";
         document.getElementById("nav-horizontal").className = "active";
         document.getElementById("nav-vertical").className = "";
-        var layout = topo.getLayout('hierarchicalLayout');
-        layout.direction('horizontal');
-        layout.levelBy(function(node, model) {
-            return model.get('layerSortPreference');
-        });
-        topo.activateLayout('hierarchicalLayout');
+        app.layout_horizontal();
     };
 
     vertical = function() {
-        if (currentLayout === 'vertical') {
-            return;
-        };
-        currentLayout = 'vertical';
         document.getElementById("nav-auto").className = "";
         document.getElementById("nav-horizontal").className = "";
         document.getElementById("nav-vertical").className = "active";
-        var layout = topo.getLayout('hierarchicalLayout');
-        layout.direction('vertical');
-        layout.levelBy(function(node, model) {
-          return model.get('layerSortPreference');
-        });
-        topo.activateLayout('hierarchicalLayout');
+        app.layout_vertical();
     };
 
     // Identify topology to load
@@ -703,7 +710,7 @@
         }
         if (topologyData.nodes.length > 0) {
           // initialize a new application instance
-          var app = new TopologyApp();
+          app = new TopologyApp();
           app.start(topologyData);
           //assign the app to the <div>
           app.container(document.getElementById('topology-container'));
