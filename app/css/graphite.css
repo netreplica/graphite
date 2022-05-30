@@ -1,0 +1,26 @@
+.n-topology.n-topology-blue .label-text-color-fg {
+  fill: #0386d2;
+}
+.n-topology.n-topology-dark .label-text-color-fg {
+  fill: #00a9ff;
+}
+.n-topology.n-topology-green .label-text-color-fg {
+  fill: #26999e;
+}
+.n-topology.n-topology-slate .label-text-color-fg {
+  fill: #ffffff;
+}
+.n-topology.n-topology-yellow .label-text-color-fg {
+  fill: #ffc200;
+}
+.n-topology .label-text-anchor-start {
+  text-anchor: start;
+  alignment-baseline: text-after-edge;
+}
+.n-topology .label-text-anchor-middle {
+  text-anchor: middle;
+}
+.n-topology .label-text-anchor-end {
+  text-anchor: end;
+  alignment-baseline: text-after-edge;
+}

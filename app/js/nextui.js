@@ -56,7 +56,8 @@
                 nodeTooltipContentClass: 'CustomNodeTooltip'
             },
             supportMultipleLink: true, // if true, two nodes can have more than one link
-            linkInstanceClass: 'CustomLinkClass',
+            linkInstanceClass: 'AlignedLinkLabel' 
+            //linkInstanceClass: 'BadgeLinkLabel' 
             linkConfig: {
               linkType: 'curve', // also: parallel
               sourcelabel: 'model.srcIfName',
@@ -308,7 +309,7 @@
         }
     });
 
-    nx.define('CustomLinkClass', nx.graphic.Topology.Link, {
+    nx.define('AlignedLinkLabel', nx.graphic.Topology.Link, {
         properties: {
             sourcelabel: null,
             targetlabel: null
@@ -318,23 +319,26 @@
                 name: 'source',
                 type: 'nx.graphic.Text',
                 props: {
-                    'class': 'sourcelabel',
-                    'alignment-baseline': 'text-after-edge',
-                    'text-anchor': 'start'
+                    'class': 'sourcelabel label-text-color-fg label-text-anchor-start'
                 }
             }, {
                 name: 'target',
                 type: 'nx.graphic.Text',
                 props: {
-                    'class': 'targetlabel',
-                    'alignment-baseline': 'text-after-edge',
-                    'text-anchor': 'end'
+                    'class': 'targetlabel label-text-color-fg label-text-anchor-end'
                 }
             });
             
             return view;
         },
         methods: {
+            init: function (args) {
+                this.inherited(args);
+                this.topology().fit();
+            },
+            'setModel': function (model) {
+                this.inherited(model);
+            },
             update: function() {
                 
                 this.inherited();
@@ -371,6 +375,125 @@
             }
         }
     });
+
+    nx.define('BadgeLinkLabel', nx.graphic.Topology.Link, {
+        properties: {
+            sourcelabel: 'null',
+            targetlabel: 'null',
+        },
+        view: function (view) {
+            view.content.push({
+                name: 'sourceBadge',
+                type: 'nx.graphic.Group',
+                content: [
+                    {
+                        name: 'sourceBg',
+                        type: 'nx.graphic.Rect',
+                        props: {
+                            'class': 'link-set-circle',
+                            height: 1
+                        }
+                    },
+                    {
+                        name: 'sourceText',
+                        type: 'nx.graphic.Text',
+                        props: {
+                            'class': 'link-set-text',
+                            y: 1
+                        }
+                    }
+                ],
+                props: {
+                    'alignment-baseline': 'after-edge',
+                }
+            },
+                {
+                    name: 'targetBadge',
+                    type: 'nx.graphic.Group',
+                    content: [
+                        {
+                            name: 'targetBg',
+                            type: 'nx.graphic.Rect',
+                            props: {
+                                'class': 'link-set-circle',
+                                height: 1
+                            }
+                        },
+                        {
+                            name: 'targetText',
+                            type: 'nx.graphic.Text',
+                            props: {
+                                'class': 'link-set-text',
+                                y: 1
+                            }
+                        }
+                    ],
+                    props: {
+                        'alignment-baseline': 'after-edge',
+                    }
+                }
+
+            );
+            return view;
+        },
+        methods: {
+            init: function (args) {
+                this.inherited(args);
+                this.topology().fit();
+            },
+            'setModel': function (model) {
+                this.inherited(model);
+            },
+            update: function () {
+                this.inherited();
+                var line = this.line();
+                var angle = line.angle();
+                var stageScale = this.stageScale();
+                line = line.pad(50 * stageScale, 50 * stageScale);
+                if (this.sourcelabel()) {
+                    var sourceBadge = this.view('sourceBadge');
+                    var sourceText = this.view('sourceText');
+                    var sourceBg = this.view('sourceBg');
+                    var point;
+                    sourceText.sets({
+                        text: this.sourcelabel(),
+                    });
+                    //TODO: accommodate larger text label
+                    sourceBg.sets({ width: 34, visible: true });
+                    sourceBg.setTransform(34 / -2);
+                    point = line.start;
+                    if (stageScale) {
+                        sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+                    } else {
+                        sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+                    }
+                }
+                if (this.targetlabel()) {
+                    var targetBadge = this.view('targetBadge');
+                    var targetText = this.view('targetText');
+                    var targetBg = this.view('targetBg');
+                    var point;
+                    targetText.sets({
+                        text: this.targetlabel(),
+                    });
+                    targetBg.sets({ width: 34, visible: true });
+                    targetBg.setTransform(34 / -2);
+                    point = line.end;
+                    if (stageScale) {
+                        targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+                    } else {
+                        targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+                    }
+                }
+                this.view("sourceBadge").visible(true);
+                this.view("sourceBg").visible(true);
+                this.view("sourceText").visible(true);
+                this.view("targetBadge").visible(true);
+                this.view("targetBg").visible(true);
+                this.view("targetText").visible(true);
+              }
+          }
+      });
 
     // This class realizes an action button and its behavior
     nx.define('ActionBar', nx.ui.Component, {
@@ -456,7 +579,7 @@
             }
         }
     });
-
+    
 })(nx);
 
 (function (nx) {
