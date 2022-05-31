@@ -79,10 +79,32 @@
           visible: false
         }
       },{
-        name: 'asnLabel',
-        type: 'nx.graphic.Text',
+        name: 'devicePropsBadge',
+        type: 'nx.graphic.Group',
+        content: [
+          {
+            name: 'badgeShape',
+            type: 'nx.graphic.Rect',
+            props: {
+              'class': 'badge-color-fg',
+              width: 64,
+              height: 32,
+              x: 64,
+              y: -40
+            }
+          },
+          {
+            name: 'badgeText',
+            type: 'nx.graphic.Text',
+            props: {
+              'class': 'label-text-color-fg',
+              x: 64-28,
+              y: -20
+            }
+          }
+        ],
         props: {
-          visible: false
+          visible: false,
         }
       });
       return view;
@@ -101,12 +123,23 @@
         this._hideDownBadge();
       },
 
-      showASN: function () {
-        this._showASNLabel();
+      showProperties: function () {
+        var devicePropsBadge = this.view('devicePropsBadge');
+        var badgeShape = this.view('badgeShape');
+        var badgeText = this.view('badgeText');
+        // set properties
+        badgeText.text("AS: " + this.model().get("ASN"));
+        devicePropsBadge.visible(true);
+        //badgeShape.sets({ width: 64 });
+        badgeShape.setTransform(64 / -2);
+        badgeShape.visible(true);
+        badgeText.visible(true);
       },
 
-      hideASN: function () {
-        this._hideASNLabel();
+      hideProperties: function () {
+        this.view("badgeText").set("visible", false);
+        this.view("badgeShape").set("visible", false);
+        this.view("devicePropsBadge").set("visible", false);
       },
 
       // display the red badge
@@ -130,23 +163,6 @@
       _hideDownBadge: function () {
         this.view("deviceStatusBadge").set("visible", false);
       },
-      
-      _showASNLabel: function () {
-        // view of badge
-        var label = this.view("asnLabel");
-
-        // set properties
-        label.sets({
-          "text": this.model().get("ASN"),
-          // make visible
-          "visible": true,
-        });
-      },
-      
-      _hideASNLabel: function () {
-        this.view("asnLabel").set("visible", false);
-      },
-      
     }
   });
 
@@ -514,9 +530,9 @@
                 }
               },{
                 tag: 'button',
-                content: 'Toggle ASNs',
+                content: 'Toggle Device Properties',
                 events: {
-                  'click': '{#toggle_asns}'
+                  'click': '{#toggle_device_props}'
                 }
               }
             ]
@@ -527,32 +543,8 @@
         'toggle_link_label_types': function () {
           this.topologyApp().toggle_link_label_types();
         },
-        'toggle_asns': function () {
-          
-          var topo = this.topology();
-          var topo_url = "/clab/clab-2host/node-data.json";
-          
-          // Load topology model
-          var udpate_xmlhttp = new XMLHttpRequest();
-    
-          udpate_xmlhttp.onreadystatechange = function() {
-            // TODO handle errors
-            if (this.readyState == 4 && this.status == 200) {
-              var data = JSON.parse(this.responseText);
-              if (data.hasOwnProperty("nodes")) {
-                // go through fetched nodes' array
-                nx.each(topo.getNodes(), function (node) {
-                  var n = node.model().get('name');
-                  if (data.nodes.hasOwnProperty(n) && data.nodes[n].hasOwnProperty('asn')) {
-                    node.model().set('ASN', data.nodes[n].asn);
-                    node.showASN();
-                  }
-                });
-              }
-            }
-          };
-          udpate_xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
-          udpate_xmlhttp.send();
+        'toggle_device_props': function () {
+          this.topologyApp().toggle_device_props();
         },
           
         // assign topology instance (by ref) to the actionbar instance
@@ -574,6 +566,7 @@
             topology: {},
             linkInstanceClass: '',
             currentLayout: 'auto',
+            devicePropertiesShown: false,
             actionBar: {}
         },
         methods: {
@@ -595,6 +588,7 @@
               // Attach it to the document
               this.topology.attach(this);
               this.linkInstanceClass = this.topology.linkInstanceClass();
+              this.devicePropertiesShown = false;
             },
             layout_horizontal: function () {
               if (this.currentLayout === 'vertical') {
@@ -637,6 +631,40 @@
               this.topology.linkInstanceClass(this.linkInstanceClass);
               // attach topology back
               this.topology.attach(this);
+            },
+            toggle_device_props: function () {
+              var topo = this.topology;
+              if (!this.devicePropertiesShown) {
+                var topo_url = "/clab/clab-2host/node-data.json";
+          
+                // Load topology model
+                var udpate_xmlhttp = new XMLHttpRequest();
+    
+                udpate_xmlhttp.onreadystatechange = function() {
+                  // TODO handle errors
+                  if (this.readyState == 4 && this.status == 200) {
+                    var data = JSON.parse(this.responseText);
+                    if (data.hasOwnProperty("nodes")) {
+                      // go through fetched nodes' array
+                      nx.each(topo.getNodes(), function (node) {
+                        var n = node.model().get('name');
+                        if (data.nodes.hasOwnProperty(n) && data.nodes[n].hasOwnProperty('asn')) {
+                          node.model().set('ASN', data.nodes[n].asn);
+                          node.showProperties();
+                        }
+                      });
+                    }
+                  }
+                };
+                udpate_xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
+                udpate_xmlhttp.send();
+                this.devicePropertiesShown = true;
+              } else {
+                nx.each(topo.getNodes(), function (node) {
+                  node.hideProperties();
+                });
+                this.devicePropertiesShown = false;
+              }
             }
         }
     });

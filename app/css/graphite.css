@@ -13,6 +13,36 @@
 .n-topology.n-topology-yellow .label-text-color-fg {
   fill: #ffc200;
 }
+.n-topology.n-topology-blue .badge-color-fg {
+  fill: #ffffff;
+  stroke: #0386d2;
+  /*stroke-width: 16px;
+  stroke-linejoin: round;*/
+}
+.n-topology.n-topology-dark .badge-color-fg {
+  fill: #00a9ff;
+  stroke: #00a9ff;
+  stroke-width: 16px;
+  stroke-linejoin: round;
+}
+.n-topology.n-topology-green .badge-color-fg {
+  fill: #26999e;
+  stroke: #26999e;
+  stroke-width: 16px;
+  stroke-linejoin: round;
+}
+.n-topology.n-topology-slate .badge-color-fg {
+  fill: #ffffff;
+  stroke: #ffffff;
+  stroke-width: 16px;
+  stroke-linejoin: round;
+}
+.n-topology.n-topology-yellow .badge-color-fg {
+  fill: #ffc200;
+  stroke: #ffc200;
+  stroke-width: 16px;
+  stroke-linejoin: round;
+}
 .n-topology .label-text-anchor-start {
   text-anchor: start;
   alignment-baseline: text-after-edge;
