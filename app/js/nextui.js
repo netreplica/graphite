@@ -570,7 +570,7 @@
             actionBar: {}
         },
         methods: {
-            start: function (cmt) {
+            init_with_cmt: function (cmt) {
               /* TopologyContainer is a nx.ui.Component object that can contain much more things than just a nx.graphic.Topology object.
                We can 'inject' a topology instance inside and interact with it easily
                */
@@ -578,17 +578,25 @@
               this.topologyContainer = new TopologyContainer();
               // topology instance was made in TopologyContainer, but we can invoke its members through 'topology' variable for convenience
               this.topology = this.topologyContainer.topology();
-              this.actionBar = new ActionBar();
               
               // Read topology data from variable
               this.topology.data(cmt);
+              this.linkInstanceClass = this.topology.linkInstanceClass();
+              this.devicePropertiesShown = false;
+            },
+            add_action_bar: function () {
+              this.actionBar = new ActionBar();
               this.actionBar.assignTopology(this.topology);
               this.actionBar.assignTopologyApp(this);
               this.actionBar.attach(this);
+            },
+            attach: function () {
               // Attach it to the document
               this.topology.attach(this);
-              this.linkInstanceClass = this.topology.linkInstanceClass();
-              this.devicePropertiesShown = false;
+            },
+            detach: function () {
+              // Attach it to the document
+              this.topology.detach(this);
             },
             layout_horizontal: function () {
               if (this.currentLayout === 'vertical') {
@@ -693,11 +701,15 @@
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
     var topo_type = "default", topo_name = "default", topo_base = "/default/", topo_url;
+    var showActionBar = false;
     if (url_params.has('type')) {
       topo_type = url_params.get('type');
     }
     if (url_params.has('topo')) {
       topo_name = url_params.get('topo');
+    }
+    if (url_params.has('actionbar')) {
+      showActionBar = true;
     }
     switch (topo_type) {
     case "clab":
@@ -739,9 +751,13 @@
         if (topologyData.nodes.length > 0) {
           // initialize a new application instance
           app = new TopologyApp();
-          app.start(topologyData);
           //assign the app to the <div>
           app.container(document.getElementById('topology-container'));
+          app.init_with_cmt(topologyData);
+          if (showActionBar) {
+            app.add_action_bar();
+          }
+          app.attach();
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
