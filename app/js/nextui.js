@@ -469,6 +469,7 @@
                 this.inherited();
                 var line = this.line();
                 var angle = line.angle();
+                var angle_flip = angle + 180;
                 var stageScale = this.stageScale();
                 var ipLabel;
                 var line_int = line.pad(50 * stageScale, 50 * stageScale);
@@ -495,7 +496,17 @@
                     point_ip = line_ip.start;
                     ipLabel.set('x', point_ip.x);
                     ipLabel.set('y', point_ip.y);
-                    ipLabel.set('transform', 'rotate(' + angle + ')');
+                    if (angle > 90 || angle < -90) {
+                      ipLabel.setStyle('text-anchor', 'end');
+                      ipLabel.setStyle('transform-origin', '100% 0%');
+                      ipLabel.setStyle('alignment-baseline', 'text-before-edge');
+                      ipLabel.set('transform', 'rotate(' + angle_flip + ')');
+                    } else {
+                      ipLabel.setStyle('text-anchor', 'start');
+                      ipLabel.setStyle('transform-origin', '0% 100%');
+                      ipLabel.setStyle('alignment-baseline', 'text-after-edge');
+                      ipLabel.set('transform', 'rotate(' + angle + ')');
+                    }
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     
                 }
@@ -520,7 +531,17 @@
                     point_ip = line_ip.end;
                     ipLabel.set('x', point_ip.x);
                     ipLabel.set('y', point_ip.y);
-                    ipLabel.set('transform', 'rotate(' + angle + ')');
+                    if (angle > 90 || angle < -90) {
+                      ipLabel.setStyle('text-anchor', 'start');
+                      ipLabel.setStyle('transform-origin', '0% 100%');
+                      ipLabel.setStyle('alignment-baseline', 'text-after-edge');
+                      ipLabel.set('transform', 'rotate(' + angle_flip + ')');
+                    } else {
+                      ipLabel.setStyle('text-anchor', 'end');
+                      ipLabel.setStyle('transform-origin', '100% 0%');
+                      ipLabel.setStyle('alignment-baseline', 'text-before-edge');
+                      ipLabel.set('transform', 'rotate(' + angle + ')');
+                    }
                     ipLabel.setStyle('font-size', 10 * stageScale);
                 }
                 this.view("sourceBadge").visible(true);
