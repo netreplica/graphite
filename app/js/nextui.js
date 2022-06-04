@@ -417,10 +417,7 @@
                             y: 1
                         }
                     }
-                ],
-                props: {
-                    'alignment-baseline': 'after-edge',
-                }
+                ]
               },
               {
                 name: 'targetBadge',
@@ -442,10 +439,7 @@
                             y: 1
                         }
                     }
-                ],
-                props: {
-                    'alignment-baseline': 'after-edge',
-                }
+                ]
               },
               {
                 name: 'sourceIP',

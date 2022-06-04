@@ -16,8 +16,8 @@
 .n-topology.n-topology-blue .badge-color-fg {
   fill: #ffffff;
   stroke: #0386d2;
-  /*stroke-width: 16px;
-  stroke-linejoin: round;*/
+  stroke-width: 16px;
+  stroke-linejoin: round;
 }
 .n-topology.n-topology-dark .badge-color-fg {
   fill: #00a9ff;
@@ -47,12 +47,9 @@
   text-anchor: start;
   alignment-baseline: text-after-edge;
 }
-.n-topology .label-text-anchor-middle {
-  text-anchor: middle;
-}
 .n-topology .label-text-anchor-end {
   text-anchor: end;
-  alignment-baseline: text-after-edge;
+  alignment-baseline: text-before-edge;
 }
 
 .label-link-align-start {
@@ -64,7 +61,7 @@
 
 .label-link-align-end {
   text-anchor: end;
-  alignment-baseline: text-after-edge;
+  alignment-baseline: text-before-edge;
   transform-box: fill-box;
   transform-origin: 100% 0%;
 }
