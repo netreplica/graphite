@@ -45,6 +45,10 @@ function if_shortname(ifname) {
   return ifname;
 }
 
+function if_number(ifname) {
+  return ifname.replace(/^[A-z]+/,'');
+}
+
 function port_mode_node_name(n, i) {
   return i + "@" + n;
 }
@@ -196,8 +200,8 @@ function convert_clab_topology_data_to_cmt(c){
     var tgt_i = node_id_map[l["z"]["node"]];
     var src_d_name = l["a"]["node"];
     var tgt_d_name = l["z"]["node"];
-    var src_i_name = l["a"]["interface"];
-    var tgt_i_name = l["z"]["interface"];
+    var src_i_name = if_number(l["a"]["interface"]);
+    var tgt_i_name = if_number(l["z"]["interface"]);
     if (node_id_map.hasOwnProperty(port_mode_node_name(l["a"]["node"], l["a"]["interface"]))) {
       src_i = node_id_map[port_mode_node_name(l["a"]["node"], l["a"]["interface"])];
       src_i_name = "";

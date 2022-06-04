@@ -471,11 +471,11 @@
                     var sourceBg = this.view('sourceBg');
                     var point;
                     sourceText.sets({
-                        text: this.sourcelabel(),
+                      text: this.sourcelabel(),
                     });
                     //TODO: accommodate larger text label
-                    sourceBg.sets({ width: 34, visible: true });
-                    sourceBg.setTransform(34 / -2);
+                    sourceBg.sets({ width: 8, visible: true });
+                    sourceBg.setTransform(8 / -2);
                     point = line.start;
                     if (stageScale) {
                         sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
@@ -491,8 +491,8 @@
                     targetText.sets({
                         text: this.targetlabel(),
                     });
-                    targetBg.sets({ width: 34, visible: true });
-                    targetBg.setTransform(34 / -2);
+                    targetBg.sets({ width: 8, visible: true });
+                    targetBg.setTransform(8 / -2);
                     point = line.end;
                     if (stageScale) {
                         targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
