@@ -421,33 +421,45 @@
                 props: {
                     'alignment-baseline': 'after-edge',
                 }
-            },
-                {
-                    name: 'targetBadge',
-                    type: 'nx.graphic.Group',
-                    content: [
-                        {
-                            name: 'targetBg',
-                            type: 'nx.graphic.Rect',
-                            props: {
-                                'class': 'link-set-circle',
-                                height: 1
-                            }
-                        },
-                        {
-                            name: 'targetText',
-                            type: 'nx.graphic.Text',
-                            props: {
-                                'class': 'link-set-text',
-                                y: 1
-                            }
+              },
+              {
+                name: 'targetBadge',
+                type: 'nx.graphic.Group',
+                content: [
+                    {
+                        name: 'targetBg',
+                        type: 'nx.graphic.Rect',
+                        props: {
+                            'class': 'link-set-circle',
+                            height: 1
                         }
-                    ],
-                    props: {
-                        'alignment-baseline': 'after-edge',
+                    },
+                    {
+                        name: 'targetText',
+                        type: 'nx.graphic.Text',
+                        props: {
+                            'class': 'link-set-text',
+                            y: 1
+                        }
                     }
+                ],
+                props: {
+                    'alignment-baseline': 'after-edge',
                 }
-
+              },
+              {
+                name: 'sourceIP',
+                type: 'nx.graphic.Text',
+                props: {
+                    'class': 'sourcelabel label-text-color-fg label-link-align-start'
+                }
+              }, {
+                name: 'targetIP',
+                type: 'nx.graphic.Text',
+                props: {
+                    'class': 'targetlabel label-text-color-fg label-link-align-end'
+                }
+              }
             );
             return view;
         },
@@ -464,41 +476,58 @@
                 var line = this.line();
                 var angle = line.angle();
                 var stageScale = this.stageScale();
-                line = line.pad(50 * stageScale, 50 * stageScale);
+                var ipLabel;
+                var line_int = line.pad(50 * stageScale, 50 * stageScale);
+                var line_ip = line.pad(75 * stageScale, 75 * stageScale);
                 if (this.sourcelabel()) {
                     var sourceBadge = this.view('sourceBadge');
                     var sourceText = this.view('sourceText');
                     var sourceBg = this.view('sourceBg');
-                    var point;
+                    var point_int, point_ip;
                     sourceText.sets({
                       text: this.sourcelabel(),
                     });
+                    ipLabel = this.view('sourceIP');
+                    ipLabel.set('text', "192.168.1.101/24");
                     //TODO: accommodate larger text label
                     sourceBg.sets({ width: 8, visible: true });
                     sourceBg.setTransform(8 / -2);
-                    point = line.start;
+                    point_int = line_int.start;
                     if (stageScale) {
-                        sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+                        sourceBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ' + 'scale (' + stageScale + ') ');
                     } else {
-                        sourceBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+                        sourceBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ');
                     }
+                    point_ip = line_ip.start;
+                    ipLabel.set('x', point_ip.x);
+                    ipLabel.set('y', point_ip.y);
+                    ipLabel.set('transform', 'rotate(' + angle + ')');
+                    ipLabel.setStyle('font-size', 10 * stageScale);
+                    
                 }
                 if (this.targetlabel()) {
                     var targetBadge = this.view('targetBadge');
                     var targetText = this.view('targetText');
                     var targetBg = this.view('targetBg');
-                    var point;
+                    var point_int, point_ip;
                     targetText.sets({
                         text: this.targetlabel(),
                     });
+                    ipLabel = this.view('targetIP');
+                    ipLabel.set('text', "192.168.1.101/24");
                     targetBg.sets({ width: 8, visible: true });
                     targetBg.setTransform(8 / -2);
-                    point = line.end;
+                    point_int = line_int.end;
                     if (stageScale) {
-                        targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+                        targetBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ' + 'scale (' + stageScale + ') ');
                     } else {
-                        targetBadge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+                        targetBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ');
                     }
+                    point_ip = line_ip.end;
+                    ipLabel.set('x', point_ip.x);
+                    ipLabel.set('y', point_ip.y);
+                    ipLabel.set('transform', 'rotate(' + angle + ')');
+                    ipLabel.setStyle('font-size', 10 * stageScale);
                 }
                 this.view("sourceBadge").visible(true);
                 this.view("sourceBg").visible(true);

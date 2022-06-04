@@ -54,3 +54,17 @@
   text-anchor: end;
   alignment-baseline: text-after-edge;
 }
+
+.label-link-align-start {
+  text-anchor: start;
+  alignment-baseline: text-after-edge;
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+}
+
+.label-link-align-end {
+  text-anchor: end;
+  alignment-baseline: text-after-edge;
+  transform-box: fill-box;
+  transform-origin: 100% 0%;
+}
