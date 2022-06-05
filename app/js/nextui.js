@@ -480,7 +480,7 @@
                     var sourceBg = this.view('sourceBg');
                     var point_int, point_ip;
                     sourceText.sets({
-                      text: this.sourcelabel(),
+                      text: if_number(this.sourcelabel()),
                     });
                     ipLabel = this.view('sourceIP');
                     ipLabel.set('text', "192.168.1.101/24");
@@ -516,7 +516,7 @@
                     var targetBg = this.view('targetBg');
                     var point_int, point_ip;
                     targetText.sets({
-                        text: this.targetlabel(),
+                        text: if_number(this.targetlabel()),
                     });
                     ipLabel = this.view('targetIP');
                     ipLabel.set('text', "192.168.1.101/24");
@@ -720,7 +720,12 @@
             }
         }
     });
-    
+
+  
+  function if_number(ifname) {
+    return ifname.replace(/^[A-z]+/,'');
+  }
+
 })(nx);
 
 (function (nx) {
