@@ -384,8 +384,10 @@
 
     nx.define('BadgeLinkLabel', nx.graphic.Topology.Link, {
         properties: {
-            sourcelabel: 'null',
-            targetlabel: 'null',
+            sourcelabel: null,
+            targetlabel: null,
+            sourceIP: null,
+            targetIP: null,
         },
         view: function (view) {
             view.content.push({
@@ -467,11 +469,15 @@
                     var badge = this.view('sourceBadge');
                     var badgeBg = this.view('sourceBg');
                     var badgeLabel = this.view('sourceText');
-                    badgeLabel.set('text', if_number(this.sourcelabel()));
+                    if (this.sourcelabel() != null) {
+                      badgeLabel.set('text', if_number(this.sourcelabel()));
+                    }
                     position_link_badge(badge, badgeBg, line_int.start, stageScale)
 
                     var ipLabel = this.view('sourceIP');
-                    ipLabel.set('text', "192.168.1.101/24");
+                    if (this.sourceIP() != null) {
+                      ipLabel.set('text', this.sourceIP());
+                    }
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.start, angle, "source");
                 }
@@ -479,11 +485,15 @@
                     var badge = this.view('targetBadge');
                     var badgeLabel = this.view('targetText');
                     var badgeBg = this.view('targetBg');
-                    badgeLabel.set('text', if_number(this.targetlabel()));
+                    if (this.targetlabel() != null) {
+                      badgeLabel.set('text', if_number(this.targetlabel()));
+                    }
                     position_link_badge(badge, badgeBg, line_int.end, stageScale)
 
                     var ipLabel = this.view('targetIP');
-                    ipLabel.set('text', "192.168.1.101/24");
+                    if (this.targetIP() != null) {
+                      ipLabel.set('text', this.targetIP());
+                    }
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.end, angle, "target");
                 }
@@ -495,6 +505,22 @@
                 this.view("targetText").visible(true);
                 this.view("sourceIP").visible(true);
                 this.view("targetIP").visible(true);
+              },
+              showIP: function () {
+                var srcLabel = this.view('sourceIP');
+                if (this.model().get("srcIfIP") != null) {
+                  srcLabel.set('text', this.model().get("srcIfIP"));
+                  srcLabel.visible(true);
+                }
+                var tgtLabel = this.view('targetIP');
+                if (this.model().get("tgtIfIP") != null) {
+                  tgtLabel.set('text', this.model().get("tgtIfIP"));
+                  tgtLabel.visible(true);
+                }
+              },
+              hideIP: function () {
+                this.view('sourceIP').visible(false);
+                this.view('targetIP').visible(false);
               }
           }
       });
@@ -644,10 +670,36 @@
                     if (data.hasOwnProperty("nodes")) {
                       // go through fetched nodes' array
                       nx.each(topo.getNodes(), function (node) {
+                        
                         var n = node.model().get('name');
-                        if (data.nodes.hasOwnProperty(n) && data.nodes[n].hasOwnProperty('asn')) {
-                          node.model().set('ASN', data.nodes[n].asn);
-                          node.showProperties();
+                        
+                        if (data.nodes.hasOwnProperty(n)) {
+                          if (data.nodes[n].hasOwnProperty('asn')) {
+                            node.model().set('ASN', data.nodes[n].asn);
+                            //node.showProperties();
+                          }
+                            
+                          if (data.nodes[n].hasOwnProperty('interfaces')) {
+                            node.eachLink(
+                              function (link) {
+                                // find out if current node is source or target of the link
+                                if (link.get('sourceNode').model().get('name') == n) {
+                                  // find out if we have data for this interface name
+                                  if (data.nodes[n]['interfaces'].hasOwnProperty(link.get('sourcelabel'))) {
+                                    link.model().set("srcIfIP", data.nodes[n]['interfaces'][link.get('sourcelabel')]['ipv4']);
+                                  }
+                                } else if (link.get('targetNode').model().get('name') == n) {
+                                  // find out if we have data for this interface name
+                                  if (data.nodes[n]['interfaces'].hasOwnProperty(link.get('targetlabel'))) {
+                                    link.model().set("tgtIfIP", data.nodes[n]['interfaces'][link.get('targetlabel')]['ipv4']);
+                                  }
+                                }
+                                if (typeof link.showIP === 'function') {
+                                  link.showIP();
+                                }
+                              }
+                            );
+                          } 
                         }
                       });
                     }
@@ -659,6 +711,13 @@
               } else {
                 nx.each(topo.getNodes(), function (node) {
                   node.hideProperties();
+                  node.eachLink(
+                    function (link) {
+                      if (typeof link.hideIP === 'function') {
+                        link.hideIP();
+                      }
+                    }
+                  );
                 });
                 this.devicePropertiesShown = false;
               }
