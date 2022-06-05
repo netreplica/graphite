@@ -61,6 +61,8 @@
               linkType: 'curve', // also: parallel
               sourcelabel: 'model.srcIfName',
               targetlabel: 'model.tgtIfName',
+              sourceIPlabel: 'model.srcIfIP',
+              targetIPlabel: 'model.tgtIfIP',
             }
           }
         }
@@ -386,8 +388,24 @@
         properties: {
             sourcelabel: null,
             targetlabel: null,
-            sourceIP: null,
-            targetIP: null,
+            sourceIPlabel: {
+              get: function () {
+                if (this.model().get('srcIfIP') != null) {
+                  return this.model().get('srcIfIP');
+                } else {
+                  return "";
+                }
+              }
+            },
+            targetIPlabel: {
+              get: function () {
+                if (this.model().get('tgtIfIP') != null) {
+                  return this.model().get('tgtIfIP');
+                } else {
+                  return "";
+                }
+              }
+            },
         },
         view: function (view) {
             view.content.push({
@@ -475,9 +493,7 @@
                     position_link_badge(badge, badgeBg, line_int.start, stageScale)
 
                     var ipLabel = this.view('sourceIP');
-                    if (this.sourceIP() != null) {
-                      ipLabel.set('text', this.sourceIP());
-                    }
+                    ipLabel.set('text', this.sourceIPlabel());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.start, angle, "source");
                 }
@@ -491,9 +507,7 @@
                     position_link_badge(badge, badgeBg, line_int.end, stageScale)
 
                     var ipLabel = this.view('targetIP');
-                    if (this.targetIP() != null) {
-                      ipLabel.set('text', this.targetIP());
-                    }
+                    ipLabel.set('text', this.targetIPlabel());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.end, angle, "target");
                 }
@@ -508,15 +522,11 @@
               },
               showIP: function () {
                 var srcLabel = this.view('sourceIP');
-                if (this.model().get("srcIfIP") != null) {
-                  srcLabel.set('text', this.model().get("srcIfIP"));
-                  srcLabel.visible(true);
-                }
+                srcLabel.set('text', this.sourceIPlabel());
+                srcLabel.visible(true);
                 var tgtLabel = this.view('targetIP');
-                if (this.model().get("tgtIfIP") != null) {
-                  tgtLabel.set('text', this.model().get("tgtIfIP"));
-                  tgtLabel.visible(true);
-                }
+                tgtLabel.set('text', this.targetIPlabel());
+                tgtLabel.visible(true);
               },
               hideIP: function () {
                 this.view('sourceIP').visible(false);
