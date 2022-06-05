@@ -52,14 +52,14 @@
   alignment-baseline: text-before-edge;
 }
 
-.label-link-align-start {
+.n-topology .label-link-align-start {
   text-anchor: start;
   alignment-baseline: text-after-edge;
   transform-box: fill-box;
   transform-origin: 0% 100%;
 }
 
-.label-link-align-end {
+.n-topology .label-link-align-end {
   text-anchor: end;
   alignment-baseline: text-before-edge;
   transform-box: fill-box;

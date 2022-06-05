@@ -334,13 +334,13 @@
                 name: 'source',
                 type: 'nx.graphic.Text',
                 props: {
-                    'class': 'sourcelabel label-text-color-fg label-text-anchor-start'
+                    'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
             }, {
                 name: 'target',
                 type: 'nx.graphic.Text',
                 props: {
-                    'class': 'targetlabel label-text-color-fg label-text-anchor-end'
+                    'class': 'targetlabel label-text-color-fg label-link-align-end'
                 }
             });
             
@@ -358,33 +358,53 @@
                 
                 this.inherited();
                 
-                
                 var el, point;
                 
                 var line = this.line();
                 var angle = line.angle();
+                var angle_flip = angle + 180;
                 var stageScale = this.stageScale();
                 
                 // pad line
-                line = line.pad(24 * stageScale, 24 * stageScale);
+                var line_int = line.pad(35 * stageScale, 35 * stageScale);
                 
                 if (this.sourcelabel()) {
                     el = this.view('source');
-                    point = line.start;
+                    el.set('text', this.sourcelabel());
+                    point = line_int.start;
                     el.set('x', point.x);
                     el.set('y', point.y);
-                    el.set('text', this.sourcelabel());
-                    el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
+                    if (angle > 90 || angle < -90) {
+                      el.setStyle('text-anchor', 'end');
+                      el.setStyle('transform-origin', '100% 0%');
+                      el.setStyle('alignment-baseline', 'text-before-edge');
+                      el.set('transform', 'rotate(' + angle_flip + ')');
+                    } else {
+                      el.setStyle('text-anchor', 'start');
+                      el.setStyle('transform-origin', '0% 100%');
+                      el.setStyle('alignment-baseline', 'text-after-edge');
+                      el.set('transform', 'rotate(' + angle + ')');
+                    }
                     el.setStyle('font-size', 12 * stageScale);
                 }
                 
                 if (this.targetlabel()) {
                     el = this.view('target');
-                    point = line.end;
+                    el.set('text', this.targetlabel());
+                    point = line_int.end;
                     el.set('x', point.x);
                     el.set('y', point.y);
-                    el.set('text', this.targetlabel());
-                    el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
+                    if (angle > 90 || angle < -90) {
+                      el.setStyle('text-anchor', 'start');
+                      el.setStyle('transform-origin', '0% 100%');
+                      el.setStyle('alignment-baseline', 'text-after-edge');
+                      el.set('transform', 'rotate(' + angle_flip + ')');
+                    } else {
+                      el.setStyle('text-anchor', 'end');
+                      el.setStyle('transform-origin', '100% 0%');
+                      el.setStyle('alignment-baseline', 'text-before-edge');
+                      el.set('transform', 'rotate(' + angle + ')');
+                    }
                     el.setStyle('font-size', 12 * stageScale);
                 }
             }
