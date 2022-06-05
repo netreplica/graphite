@@ -358,54 +358,25 @@
                 
                 this.inherited();
                 
-                var el, point;
-                
                 var line = this.line();
                 var angle = line.angle();
-                var angle_flip = angle + 180;
                 var stageScale = this.stageScale();
                 
                 // pad line
                 var line_int = line.pad(35 * stageScale, 35 * stageScale);
                 
                 if (this.sourcelabel()) {
-                    el = this.view('source');
-                    el.set('text', this.sourcelabel());
-                    point = line_int.start;
-                    el.set('x', point.x);
-                    el.set('y', point.y);
-                    if (angle > 90 || angle < -90) {
-                      el.setStyle('text-anchor', 'end');
-                      el.setStyle('transform-origin', '100% 0%');
-                      el.setStyle('alignment-baseline', 'text-before-edge');
-                      el.set('transform', 'rotate(' + angle_flip + ')');
-                    } else {
-                      el.setStyle('text-anchor', 'start');
-                      el.setStyle('transform-origin', '0% 100%');
-                      el.setStyle('alignment-baseline', 'text-after-edge');
-                      el.set('transform', 'rotate(' + angle + ')');
-                    }
-                    el.setStyle('font-size', 12 * stageScale);
+                    var label = this.view('source');
+                    label.set('text', this.sourcelabel());
+                    label.setStyle('font-size', 12 * stageScale);
+                    align_link_label(label, line_int.start, angle, "source");
                 }
                 
                 if (this.targetlabel()) {
-                    el = this.view('target');
-                    el.set('text', this.targetlabel());
-                    point = line_int.end;
-                    el.set('x', point.x);
-                    el.set('y', point.y);
-                    if (angle > 90 || angle < -90) {
-                      el.setStyle('text-anchor', 'start');
-                      el.setStyle('transform-origin', '0% 100%');
-                      el.setStyle('alignment-baseline', 'text-after-edge');
-                      el.set('transform', 'rotate(' + angle_flip + ')');
-                    } else {
-                      el.setStyle('text-anchor', 'end');
-                      el.setStyle('transform-origin', '100% 0%');
-                      el.setStyle('alignment-baseline', 'text-before-edge');
-                      el.set('transform', 'rotate(' + angle + ')');
-                    }
-                    el.setStyle('font-size', 12 * stageScale);
+                    label = this.view('target');
+                    label.set('text', this.targetlabel());
+                    label.setStyle('font-size', 12 * stageScale);
+                    align_link_label(label, line_int.end, angle, "target");
                 }
             }
         }
@@ -489,80 +460,32 @@
                 this.inherited();
                 var line = this.line();
                 var angle = line.angle();
-                var angle_flip = angle + 180;
                 var stageScale = this.stageScale();
-                var ipLabel;
                 var line_int = line.pad(50 * stageScale, 50 * stageScale);
                 var line_ip = line.pad(75 * stageScale, 75 * stageScale);
                 if (this.sourcelabel()) {
-                    var sourceBadge = this.view('sourceBadge');
-                    var sourceText = this.view('sourceText');
-                    var sourceBg = this.view('sourceBg');
-                    var point_int, point_ip;
-                    sourceText.sets({
-                      text: if_number(this.sourcelabel()),
-                    });
-                    ipLabel = this.view('sourceIP');
+                    var badge = this.view('sourceBadge');
+                    var badgeBg = this.view('sourceBg');
+                    var badgeLabel = this.view('sourceText');
+                    badgeLabel.set('text', if_number(this.sourcelabel()));
+                    position_link_badge(badge, badgeBg, line_int.start, stageScale)
+
+                    var ipLabel = this.view('sourceIP');
                     ipLabel.set('text', "192.168.1.101/24");
-                    //TODO: accommodate larger text label
-                    sourceBg.sets({ width: 8, visible: true });
-                    sourceBg.setTransform(8 / -2);
-                    point_int = line_int.start;
-                    if (stageScale) {
-                        sourceBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ' + 'scale (' + stageScale + ') ');
-                    } else {
-                        sourceBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ');
-                    }
-                    point_ip = line_ip.start;
-                    ipLabel.set('x', point_ip.x);
-                    ipLabel.set('y', point_ip.y);
-                    if (angle > 90 || angle < -90) {
-                      ipLabel.setStyle('text-anchor', 'end');
-                      ipLabel.setStyle('transform-origin', '100% 0%');
-                      ipLabel.setStyle('alignment-baseline', 'text-before-edge');
-                      ipLabel.set('transform', 'rotate(' + angle_flip + ')');
-                    } else {
-                      ipLabel.setStyle('text-anchor', 'start');
-                      ipLabel.setStyle('transform-origin', '0% 100%');
-                      ipLabel.setStyle('alignment-baseline', 'text-after-edge');
-                      ipLabel.set('transform', 'rotate(' + angle + ')');
-                    }
                     ipLabel.setStyle('font-size', 10 * stageScale);
-                    
+                    align_link_label(ipLabel, line_ip.start, angle, "source");
                 }
                 if (this.targetlabel()) {
-                    var targetBadge = this.view('targetBadge');
-                    var targetText = this.view('targetText');
-                    var targetBg = this.view('targetBg');
-                    var point_int, point_ip;
-                    targetText.sets({
-                        text: if_number(this.targetlabel()),
-                    });
-                    ipLabel = this.view('targetIP');
+                    var badge = this.view('targetBadge');
+                    var badgeLabel = this.view('targetText');
+                    var badgeBg = this.view('targetBg');
+                    badgeLabel.set('text', if_number(this.targetlabel()));
+                    position_link_badge(badge, badgeBg, line_int.end, stageScale)
+
+                    var ipLabel = this.view('targetIP');
                     ipLabel.set('text', "192.168.1.101/24");
-                    targetBg.sets({ width: 8, visible: true });
-                    targetBg.setTransform(8 / -2);
-                    point_int = line_int.end;
-                    if (stageScale) {
-                        targetBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ' + 'scale (' + stageScale + ') ');
-                    } else {
-                        targetBadge.set('transform', 'translate(' + point_int.x + ',' + point_int.y + ') ');
-                    }
-                    point_ip = line_ip.end;
-                    ipLabel.set('x', point_ip.x);
-                    ipLabel.set('y', point_ip.y);
-                    if (angle > 90 || angle < -90) {
-                      ipLabel.setStyle('text-anchor', 'start');
-                      ipLabel.setStyle('transform-origin', '0% 100%');
-                      ipLabel.setStyle('alignment-baseline', 'text-after-edge');
-                      ipLabel.set('transform', 'rotate(' + angle_flip + ')');
-                    } else {
-                      ipLabel.setStyle('text-anchor', 'end');
-                      ipLabel.setStyle('transform-origin', '100% 0%');
-                      ipLabel.setStyle('alignment-baseline', 'text-before-edge');
-                      ipLabel.set('transform', 'rotate(' + angle + ')');
-                    }
                     ipLabel.setStyle('font-size', 10 * stageScale);
+                    align_link_label(ipLabel, line_ip.end, angle, "target");
                 }
                 this.view("sourceBadge").visible(true);
                 this.view("sourceBg").visible(true);
@@ -570,6 +493,8 @@
                 this.view("targetBadge").visible(true);
                 this.view("targetBg").visible(true);
                 this.view("targetText").visible(true);
+                this.view("sourceIP").visible(true);
+                this.view("targetIP").visible(true);
               }
           }
       });
@@ -744,6 +669,52 @@
   
   function if_number(ifname) {
     return ifname.replace(/^[A-z]+/,'');
+  }
+  
+  function align_link_label(label, point, angle, which_end) {
+    var angle_flip = angle + 180;
+    label.set('x', point.x);
+    label.set('y', point.y);
+    switch (which_end) {
+    case "source":
+      if (angle > 90 || angle < -90) {
+        label.setStyle('text-anchor', 'end');
+        label.setStyle('transform-origin', '100% 0%');
+        label.setStyle('alignment-baseline', 'text-before-edge');
+        label.set('transform', 'rotate(' + angle_flip + ')');
+      } else {
+        label.setStyle('text-anchor', 'start');
+        label.setStyle('transform-origin', '0% 100%');
+        label.setStyle('alignment-baseline', 'text-after-edge');
+        label.set('transform', 'rotate(' + angle + ')');
+      }
+      break;
+    case "target":
+      if (angle > 90 || angle < -90) {
+        label.setStyle('text-anchor', 'start');
+        label.setStyle('transform-origin', '0% 100%');
+        label.setStyle('alignment-baseline', 'text-after-edge');
+        label.set('transform', 'rotate(' + angle_flip + ')');
+      } else {
+        label.setStyle('text-anchor', 'end');
+        label.setStyle('transform-origin', '100% 0%');
+        label.setStyle('alignment-baseline', 'text-before-edge');
+        label.set('transform', 'rotate(' + angle + ')');
+      }
+      break;
+    default:
+    }
+  }
+  
+  function position_link_badge(badge, badgeBg, point, stageScale) {
+    //TODO: accommodate larger text label
+    badgeBg.sets({ width: 8, visible: true });
+    badgeBg.setTransform(8 / -2);
+    if (stageScale) {
+        badge.set('transform', 'translate(' + point.x + ',' + point.y + ') ' + 'scale (' + stageScale + ') ');
+    } else {
+        badge.set('transform', 'translate(' + point.x + ',' + point.y + ') ');
+    }
   }
 
 })(nx);
