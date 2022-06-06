@@ -395,6 +395,9 @@
                 } else {
                   return "";
                 }
+              },
+              set: function (ip) {
+                this.model().set('srcIfIP', ip);
               }
             },
             targetIPlabel: {
@@ -404,6 +407,9 @@
                 } else {
                   return "";
                 }
+              },
+              set: function (ip) {
+                this.model().set('tgtIfIP', ip);
               }
             },
         },
@@ -693,15 +699,17 @@
                             node.eachLink(
                               function (link) {
                                 // find out if current node is source or target of the link
-                                if (link.get('sourceNode').model().get('name') == n) {
+                                if (link.sourceNode().model().get('name') == n) {
+                                  var ifname = link.sourcelabel();
                                   // find out if we have data for this interface name
-                                  if (data.nodes[n]['interfaces'].hasOwnProperty(link.get('sourcelabel'))) {
-                                    link.model().set("srcIfIP", data.nodes[n]['interfaces'][link.get('sourcelabel')]['ipv4']);
+                                  if (data.nodes[n].interfaces.hasOwnProperty(ifname)) {
+                                    link.sourceIPlabel(data.nodes[n].interfaces[ifname].ipv4);
                                   }
-                                } else if (link.get('targetNode').model().get('name') == n) {
+                                } else if (link.targetNode().model().get('name') == n) {
+                                  var ifname = link.targetlabel();
                                   // find out if we have data for this interface name
-                                  if (data.nodes[n]['interfaces'].hasOwnProperty(link.get('targetlabel'))) {
-                                    link.model().set("tgtIfIP", data.nodes[n]['interfaces'][link.get('targetlabel')]['ipv4']);
+                                  if (data.nodes[n].interfaces.hasOwnProperty(ifname)) {
+                                    link.targetIPlabel(data.nodes[n].interfaces[ifname].ipv4);
                                   }
                                 }
                                 if (typeof link.showIP === 'function') {
