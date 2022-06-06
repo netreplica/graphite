@@ -56,7 +56,7 @@
                 nodeTooltipContentClass: 'CustomNodeTooltip'
             },
             supportMultipleLink: true, // if true, two nodes can have more than one link
-            linkInstanceClass: 'AlignedLinkLabel',
+            linkInstanceClass: 'LinkWithAlignedLabels',
             linkConfig: {
               linkType: 'curve', // also: parallel
               sourcelabel: 'model.srcIfName',
@@ -326,21 +326,23 @@
         }
     });
 
-    nx.define('AlignedLinkLabel', nx.graphic.Topology.Link, {
+    nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
         properties: {
-            sourcelabel: null,
-            targetlabel: null
+            sourcelabel: "",
+            targetlabel: "",
         },
         view: function(view) {
             view.content.push({
                 name: 'source',
                 type: 'nx.graphic.Text',
+                content: '{#sourcelabel}',
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
             }, {
                 name: 'target',
                 type: 'nx.graphic.Text',
+                content: '{#targetlabel}',
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
                 }
@@ -351,35 +353,27 @@
         methods: {
             init: function (args) {
                 this.inherited(args);
-                this.topology().fit();
             },
             'setModel': function (model) {
                 this.inherited(model);
             },
             update: function() {
-                
                 this.inherited();
                 
                 var line = this.line();
                 var angle = line.angle();
                 var stageScale = this.stageScale();
                 
-                // pad line
-                var line_int = line.pad(35 * stageScale, 35 * stageScale);
+                // use padded line to define x,y coordinates for labels
+                var paddedLine = line.pad(35 * stageScale, 35 * stageScale);
                 
-                if (this.sourcelabel()) {
-                    var label = this.view('source');
-                    label.set('text', this.sourcelabel());
-                    label.setStyle('font-size', 12 * stageScale);
-                    align_link_label(label, line_int.start, angle, "source");
-                }
+                var sourceView = this.view('source');
+                sourceView.setStyle('font-size', 12 * stageScale);
+                align_link_label(sourceView, paddedLine.start, angle, "source");
                 
-                if (this.targetlabel()) {
-                    label = this.view('target');
-                    label.set('text', this.targetlabel());
-                    label.setStyle('font-size', 12 * stageScale);
-                    align_link_label(label, line_int.end, angle, "target");
-                }
+                var targetView = this.view('target');
+                targetView.setStyle('font-size', 12 * stageScale);
+                align_link_label(targetView, paddedLine.end, angle, "target");
             }
         }
     });
@@ -478,7 +472,6 @@
             init: function (args) {
                 this.inherited(args);
                 this.hideIP();
-                this.topology().fit();
             },
             'setModel': function (model) {
                 this.inherited(model);
@@ -656,14 +649,14 @@
             },
             toggle_link_label_types: function () {
               switch (this.linkInstanceClass) {
-              case 'AlignedLinkLabel':
+              case 'LinkWithAlignedLabels':
                 this.linkInstanceClass = 'BadgeLinkLabel';
                 break;
               case 'BadgeLinkLabel':
-                this.linkInstanceClass = 'AlignedLinkLabel';
+                this.linkInstanceClass = 'LinkWithAlignedLabels';
                 break;
               default:
-                this.linkInstanceClass = 'AlignedLinkLabel';
+                this.linkInstanceClass = 'LinkWithAlignedLabels';
               }
               // detach topology currently in view
               this.topology.detach(this);
@@ -704,13 +697,13 @@
                                   var ifname = link.sourcelabel();
                                   // find out if we have data for this interface name
                                   if (data.nodes[n].interfaces.hasOwnProperty(ifname)) {
-                                    link.sourceIPlabel(data.nodes[n].interfaces[ifname].ipv4);
+                                    link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces[ifname].ipv4);
                                   }
                                 } else if (link.targetNode().model().get('name') == n) {
                                   var ifname = link.targetlabel();
                                   // find out if we have data for this interface name
                                   if (data.nodes[n].interfaces.hasOwnProperty(ifname)) {
-                                    link.targetIPlabel(data.nodes[n].interfaces[ifname].ipv4);
+                                    link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces[ifname].ipv4);
                                   }
                                 }
                                 if (typeof link.showIP === 'function') {
