@@ -477,6 +477,7 @@
         methods: {
             init: function (args) {
                 this.inherited(args);
+                this.hideIP();
                 this.topology().fit();
             },
             'setModel': function (model) {
