@@ -222,6 +222,21 @@
                           tag: 'span',
                           content: '{#node.model.image}',
                       }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Version:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.os_version}',
+                      }]
                 }, {
                     tag: 'div',
                     props: {
@@ -668,7 +683,7 @@
             toggle_device_props: function () {
               var topo = this.topology;
               if (!this.devicePropertiesShown) {
-                var topo_url = "/clab/clab-2host/node-data.json";
+                var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/";
           
                 // Load topology model
                 var udpate_xmlhttp = new XMLHttpRequest();
@@ -682,28 +697,35 @@
                       nx.each(topo.getNodes(), function (node) {
                         
                         var n = node.model().get('name');
+                        var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
                         
-                        if (data.nodes.hasOwnProperty(n)) {
-                          if (data.nodes[n].hasOwnProperty('asn')) {
-                            node.model().set('ASN', data.nodes[n].asn);
-                            //node.showProperties();
+                        if (data.nodes.hasOwnProperty(fn)) {
+                          if (data.nodes[fn].hasOwnProperty("facts")) {
+                            node_facts = data.nodes[fn]["facts"];
+                            if (node_facts.hasOwnProperty("os_version")) {
+                              node.model().set('os_version', node_facts["os_version"]);
+                            }
                           }
                             
-                          if (data.nodes[n].hasOwnProperty('interfaces')) {
+                          if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
                             node.eachLink(
                               function (link) {
                                 // find out if current node is source or target of the link
                                 if (link.sourceNode().model().get('name') == n) {
                                   var ifname = link.sourcelabel();
+                                  console.log(ifname);
                                   // find out if we have data for this interface name
-                                  if (data.nodes[n].interfaces.hasOwnProperty(ifname)) {
-                                    link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces[ifname].ipv4);
+                                  if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
+                                    console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
+                                    //link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
                                   }
                                 } else if (link.targetNode().model().get('name') == n) {
                                   var ifname = link.targetlabel();
+                                  console.log(ifname);
                                   // find out if we have data for this interface name
-                                  if (data.nodes[n].interfaces.hasOwnProperty(ifname)) {
-                                    link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces[ifname].ipv4);
+                                  if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
+                                    console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
+                                    //link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
                                   }
                                 }
                                 if (typeof link.showIP === 'function') {

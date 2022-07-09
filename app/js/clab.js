@@ -114,6 +114,7 @@ function convert_clab_topology_data_to_cmt(c){
     var cmt_node = {
   //  "id": int,
   //  "name": string,
+  //  "fullname": string,
   //  "websshDeviceLink": string,
   //  "websshDeviceLinkIPv6": string,
   //  "model": string,
@@ -143,9 +144,10 @@ function convert_clab_topology_data_to_cmt(c){
       }
     }
     
-    cmt_node["model"] = n.kind;
-    cmt_node["image"] = n.image;
-    cmt_node["group"] = n.group;
+    cmt_node["fullname"] = n.longname;
+    cmt_node["model"]    = n.kind;
+    cmt_node["image"]    = n.image;
+    cmt_node["group"]    = n.group;
 
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
       cmt_node["mgmtIPv4"] = n["mgmt-ipv4-address"];
