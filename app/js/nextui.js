@@ -754,9 +754,9 @@
             },
             fetch_device_data: function () {
               var topo = this.topology;
-              var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/";
+              var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/"  + '?nocache=' + (new Date()).getTime();
               
-              fetch(topo_url + '?nocache=' + (new Date()).getTime())
+              fetch(topo_url)
                 .then(response => {
                   if (!response.ok) {
                     throw new Error('Network response was not OK');
@@ -764,61 +764,67 @@
                   return response.json();
                 })
                 .then(data => {
-                  if (data.hasOwnProperty("nodes")) {
-                    // go through fetched nodes' array
-                    nx.each(topo.getNodes(), function (node) {
-                      var n = node.model().get('name');
-                      var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
-                    
-                      if (data.nodes.hasOwnProperty(fn)) {
-                        node_data = data.nodes[fn]
-                        if (node_data.hasOwnProperty("hostname")) {
-                          node.model().set('name', node_data["hostname"]);
-                        }
-                        if (node_data.hasOwnProperty("vendor")) {
-                          node.model().set('vendor', node_data["vendor"]);
-                        }
-                        if (node_data.hasOwnProperty("model")) {
-                          node.model().set('model', node_data["model"]);
-                        }
-                        if (node_data.hasOwnProperty("os_version")) {
-                          node.model().set('os_version', node_data["os_version"]);
-                        }
-                        
-                        if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
-                          node.eachLink(
-                            function (link) {
-                              // find out if current node is source or target of the link
-                              if (link.sourceNode().model().get('name') == n) {
-                                var ifname = link.sourcelabel();
-                                console.log(ifname);
-                                // find out if we have data for this interface name
-                                if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
-                                  console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
-                                  //link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
-                                }
-                              } else if (link.targetNode().model().get('name') == n) {
-                                var ifname = link.targetlabel();
-                                console.log(ifname);
-                                // find out if we have data for this interface name
-                                if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
-                                  console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
-                                  //link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
-                                }
-                              }
-                              if (typeof link.showIP === 'function') {
-                                link.showIP();
-                              }
-                            }
-                          );
-                        } 
-                      }
-                    });
-                  }
+                  this._update_topology_data(data);
                 })
                 .catch(error => {
-                  console.error('There has been a problem with your fetch operation:', error);
+                  console.error('There has been a problem with fetch_device_data:', error);
                 });
+            },
+            _update_topology_data: function(data) {
+              var topo = this.topology;
+              console.log(data);
+              if (typeof data !== 'undefined' && data.hasOwnProperty("nodes")) {
+                // go through fetched nodes' array
+                nx.each(topo.getNodes(), function (node) {
+                  var n = node.model().get('name');
+                  var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
+                
+                  if (data.nodes.hasOwnProperty(fn)) {
+                    node_data = data.nodes[fn]
+                    if (node_data.hasOwnProperty("hostname")) {
+                      node.model().set('name', node_data["hostname"]);
+                    }
+                    if (node_data.hasOwnProperty("vendor")) {
+                      node.model().set('vendor', node_data["vendor"]);
+                    }
+                    if (node_data.hasOwnProperty("model")) {
+                      node.model().set('model', node_data["model"]);
+                    }
+                    if (node_data.hasOwnProperty("os_version")) {
+                      node.model().set('os_version', node_data["os_version"]);
+                    }
+                    
+                    if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
+                      node.eachLink(
+                        function (link) {
+                          // find out if current node is source or target of the link
+                          if (link.sourceNode().model().get('name') == n) {
+                            var ifname = link.sourcelabel();
+                            console.log(ifname);
+                            // find out if we have data for this interface name
+                            if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
+                              console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
+                              //link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
+                            }
+                          } else if (link.targetNode().model().get('name') == n) {
+                            var ifname = link.targetlabel();
+                            console.log(ifname);
+                            // find out if we have data for this interface name
+                            if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
+                              console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
+                              //link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
+                            }
+                          }
+                          if (typeof link.showIP === 'function') {
+                            link.showIP();
+                          }
+                        }
+                      );
+                    } 
+                  }
+                });
+              }
+              return topo;
             }
         }
     });
