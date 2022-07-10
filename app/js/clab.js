@@ -117,7 +117,7 @@ function convert_clab_topology_data_to_cmt(c){
   //  "fullname": string,
   //  "websshDeviceLink": string,
   //  "websshDeviceLinkIPv6": string,
-  //  "model": string,
+  //  "kind": string,
   //  "image": string,
   //  "group": string,
   //  "mgmtIPv4": string,
@@ -145,7 +145,7 @@ function convert_clab_topology_data_to_cmt(c){
     }
     
     cmt_node["fullname"] = n.longname;
-    cmt_node["model"]    = n.kind;
+    cmt_node["kind"]     = n.kind;
     cmt_node["image"]    = n.image;
     cmt_node["group"]    = n.group;
 
@@ -260,7 +260,7 @@ function convert_clab_graph_to_cmt(c){
       "name": n.name,
       "websshDeviceLink": websshDeviceLink,
       "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
-      "model": n.kind,
+      "kind": n.kind,
       "image": n.image,
       "group": n.group,
       "mgmtIPv4": mgmtIPv4,

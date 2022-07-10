@@ -217,10 +217,10 @@
                           props: {
                               "style": "padding-right: 5px"
                           },
-                          content: 'Model:',
+                          content: 'Kind:',
                       }, {
                           tag: 'span',
-                          content: '{#node.model.model}',
+                          content: '{#node.model.kind}',
                       }]
                   }, {
                       tag: 'div',
@@ -236,6 +236,36 @@
                       }, {
                           tag: 'span',
                           content: '{#node.model.image}',
+                      }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Vendor:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.vendor}',
+                      }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Model:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.model}',
                       }]
                   }, {
                       tag: 'div',
@@ -743,6 +773,12 @@
                         node_data = data.nodes[fn]
                         if (node_data.hasOwnProperty("hostname")) {
                           node.model().set('name', node_data["hostname"]);
+                        }
+                        if (node_data.hasOwnProperty("vendor")) {
+                          node.model().set('vendor', node_data["vendor"]);
+                        }
+                        if (node_data.hasOwnProperty("model")) {
+                          node.model().set('model', node_data["model"]);
                         }
                         if (node_data.hasOwnProperty("os_version")) {
                           node.model().set('os_version', node_data["os_version"]);
