@@ -700,11 +700,9 @@
                         var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
                         
                         if (data.nodes.hasOwnProperty(fn)) {
-                          if (data.nodes[fn].hasOwnProperty("facts")) {
-                            node_facts = data.nodes[fn]["facts"];
-                            if (node_facts.hasOwnProperty("os_version")) {
-                              node.model().set('os_version', node_facts["os_version"]);
-                            }
+                          node_data = data.nodes[fn]
+                          if (node_data.hasOwnProperty("os_version")) {
+                            node.model().set('os_version', node_data["os_version"]);
                           }
                             
                           if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
