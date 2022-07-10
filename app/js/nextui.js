@@ -755,20 +755,21 @@
             fetch_device_data: function () {
               var topo = this.topology;
               var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/";
-        
-              var udpate_xmlhttp = new XMLHttpRequest();
-  
-              udpate_xmlhttp.onreadystatechange = function() {
-                // TODO handle errors
-                if (this.readyState == 4 && this.status == 200) {
-                  var data = JSON.parse(this.responseText);
+              
+              fetch(topo_url + '?nocache=' + (new Date()).getTime())
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Network response was not OK');
+                  }
+                  return response.json();
+                })
+                .then(data => {
                   if (data.hasOwnProperty("nodes")) {
                     // go through fetched nodes' array
                     nx.each(topo.getNodes(), function (node) {
-                      
                       var n = node.model().get('name');
                       var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
-                      
+                    
                       if (data.nodes.hasOwnProperty(fn)) {
                         node_data = data.nodes[fn]
                         if (node_data.hasOwnProperty("hostname")) {
@@ -783,7 +784,7 @@
                         if (node_data.hasOwnProperty("os_version")) {
                           node.model().set('os_version', node_data["os_version"]);
                         }
-                          
+                        
                         if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
                           node.eachLink(
                             function (link) {
@@ -814,10 +815,10 @@
                       }
                     });
                   }
-                }
-              };
-              udpate_xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
-              udpate_xmlhttp.send();
+                })
+                .catch(error => {
+                  console.error('There has been a problem with your fetch operation:', error);
+                });
             }
         }
     });
