@@ -202,6 +202,21 @@
                           props: {
                               "style": "padding-right: 5px"
                           },
+                          content: 'Full name:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.fullname}',
+                      }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
                           content: 'Model:',
                       }, {
                           tag: 'span',
@@ -726,6 +741,9 @@
                       
                       if (data.nodes.hasOwnProperty(fn)) {
                         node_data = data.nodes[fn]
+                        if (node_data.hasOwnProperty("hostname")) {
+                          node.model().set('name', node_data["hostname"]);
+                        }
                         if (node_data.hasOwnProperty("os_version")) {
                           node.model().set('os_version', node_data["os_version"]);
                         }
