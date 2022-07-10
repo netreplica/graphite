@@ -574,6 +574,12 @@
                 events: {
                   'click': '{#toggle_device_props}'
                 }
+              },{
+                tag: 'button',
+                content: 'Fetch Device Data',
+                events: {
+                  'click': '{#fetch_device_data}'
+                }
               }
             ]
           }
@@ -585,6 +591,9 @@
         },
         'toggle_device_props': function () {
           this.topologyApp().toggle_device_props();
+        },
+        'fetch_device_data': function () {
+          this.topologyApp().fetch_device_data();
         },
           
         // assign topology instance (by ref) to the actionbar instance
@@ -683,62 +692,6 @@
             toggle_device_props: function () {
               var topo = this.topology;
               if (!this.devicePropertiesShown) {
-                var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/";
-          
-                // Load topology model
-                var udpate_xmlhttp = new XMLHttpRequest();
-    
-                udpate_xmlhttp.onreadystatechange = function() {
-                  // TODO handle errors
-                  if (this.readyState == 4 && this.status == 200) {
-                    var data = JSON.parse(this.responseText);
-                    if (data.hasOwnProperty("nodes")) {
-                      // go through fetched nodes' array
-                      nx.each(topo.getNodes(), function (node) {
-                        
-                        var n = node.model().get('name');
-                        var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
-                        
-                        if (data.nodes.hasOwnProperty(fn)) {
-                          node_data = data.nodes[fn]
-                          if (node_data.hasOwnProperty("os_version")) {
-                            node.model().set('os_version', node_data["os_version"]);
-                          }
-                            
-                          if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
-                            node.eachLink(
-                              function (link) {
-                                // find out if current node is source or target of the link
-                                if (link.sourceNode().model().get('name') == n) {
-                                  var ifname = link.sourcelabel();
-                                  console.log(ifname);
-                                  // find out if we have data for this interface name
-                                  if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
-                                    console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
-                                    //link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
-                                  }
-                                } else if (link.targetNode().model().get('name') == n) {
-                                  var ifname = link.targetlabel();
-                                  console.log(ifname);
-                                  // find out if we have data for this interface name
-                                  if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
-                                    console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
-                                    //link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
-                                  }
-                                }
-                                if (typeof link.showIP === 'function') {
-                                  link.showIP();
-                                }
-                              }
-                            );
-                          } 
-                        }
-                      });
-                    }
-                  }
-                };
-                udpate_xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
-                udpate_xmlhttp.send();
                 this.devicePropertiesShown = true;
               } else {
                 nx.each(topo.getNodes(), function (node) {
@@ -753,6 +706,64 @@
                 });
                 this.devicePropertiesShown = false;
               }
+            },
+            fetch_device_data: function () {
+              var topo = this.topology;
+              var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/";
+        
+              var udpate_xmlhttp = new XMLHttpRequest();
+  
+              udpate_xmlhttp.onreadystatechange = function() {
+                // TODO handle errors
+                if (this.readyState == 4 && this.status == 200) {
+                  var data = JSON.parse(this.responseText);
+                  if (data.hasOwnProperty("nodes")) {
+                    // go through fetched nodes' array
+                    nx.each(topo.getNodes(), function (node) {
+                      
+                      var n = node.model().get('name');
+                      var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
+                      
+                      if (data.nodes.hasOwnProperty(fn)) {
+                        node_data = data.nodes[fn]
+                        if (node_data.hasOwnProperty("os_version")) {
+                          node.model().set('os_version', node_data["os_version"]);
+                        }
+                          
+                        if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
+                          node.eachLink(
+                            function (link) {
+                              // find out if current node is source or target of the link
+                              if (link.sourceNode().model().get('name') == n) {
+                                var ifname = link.sourcelabel();
+                                console.log(ifname);
+                                // find out if we have data for this interface name
+                                if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
+                                  console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
+                                  //link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
+                                }
+                              } else if (link.targetNode().model().get('name') == n) {
+                                var ifname = link.targetlabel();
+                                console.log(ifname);
+                                // find out if we have data for this interface name
+                                if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
+                                  console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
+                                  //link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
+                                }
+                              }
+                              if (typeof link.showIP === 'function') {
+                                link.showIP();
+                              }
+                            }
+                          );
+                        } 
+                      }
+                    });
+                  }
+                }
+              };
+              udpate_xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
+              udpate_xmlhttp.send();
             }
         }
     });
@@ -889,6 +900,7 @@
             app.add_action_bar();
           }
           app.attach();
+          app.fetch_device_data(); // pull additional data from the devices
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
