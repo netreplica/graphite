@@ -621,6 +621,12 @@
                 }
               },{
                 tag: 'button',
+                content: 'Toggle Auto Update',
+                events: {
+                  'click': '{#toggle_auto_update}'
+                }
+              },{
+                tag: 'button',
                 content: 'Fetch Device Data',
                 events: {
                   'click': '{#fetch_device_data}'
@@ -634,8 +640,11 @@
         'toggle_link_label_types': function () {
           this.topologyApp().toggle_link_label_types();
         },
-        'toggle_device_props': function () {
+        'toggle_auto_update': function () {
           this.topologyApp().toggle_device_props();
+        },
+        'toggle_auto_update': function () {
+          this.topologyApp().device_data_autoupdate_toggle();
         },
         'fetch_device_data': function () {
           this.topologyApp().fetch_device_data();
@@ -661,7 +670,8 @@
             linkInstanceClass: '',
             currentLayout: 'auto',
             devicePropertiesShown: false,
-            actionBar: {}
+            actionBar: {},
+            autoUpdateTimer: {},
         },
         methods: {
             init_with_cmt: function (cmt) {
@@ -678,20 +688,24 @@
               this.linkInstanceClass = this.topology.linkInstanceClass();
               this.devicePropertiesShown = false;
             },
+            
             add_action_bar: function () {
               this.actionBar = new ActionBar();
               this.actionBar.assignTopology(this.topology);
               this.actionBar.assignTopologyApp(this);
               this.actionBar.attach(this);
             },
+            
             attach: function () {
               // Attach it to the document
               this.topology.attach(this);
             },
+            
             detach: function () {
               // Attach it to the document
               this.topology.detach(this);
             },
+            
             layout_horizontal: function () {
               if (this.currentLayout === 'vertical') {
                   return;
@@ -704,6 +718,7 @@
               });
               this.topology.activateLayout('hierarchicalLayout');
             },
+            
             layout_vertical: function () {
               if (this.currentLayout === 'horizontal') {
                   return;
@@ -716,6 +731,7 @@
               });
               this.topology.activateLayout('hierarchicalLayout');
             },
+            
             toggle_link_label_types: function () {
               switch (this.linkInstanceClass) {
               case 'LinkWithAlignedLabels':
@@ -734,6 +750,7 @@
               // attach topology back
               this.topology.attach(this);
             },
+            
             toggle_device_props: function () {
               var topo = this.topology;
               if (!this.devicePropertiesShown) {
@@ -752,14 +769,34 @@
                 this.devicePropertiesShown = false;
               }
             },
-            fetch_device_data: function () {
+
+            device_data_autoupdate_on: async function() {
+              var delay = 5; // seconds
+              await this.fetch_device_data();
+              this.autoUpdateTimer = setTimeout(() => this.device_data_autoupdate_on(), delay * 1000);
+            },
+
+            device_data_autoupdate_off: function() {
+              clearTimeout(this.autoUpdateTimer);
+              this.autoUpdateTimer = null;
+            },
+
+            device_data_autoupdate_toggle: function() {
+              if (this.autoUpdateTimer == null) {
+                this.device_data_autoupdate_on();
+              } else {
+                this.device_data_autoupdate_off();
+              }
+            },
+
+            fetch_device_data: function() {
               var topo = this.topology;
               var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/"  + '?nocache=' + (new Date()).getTime();
               
               fetch(topo_url)
                 .then(response => {
                   if (!response.ok) {
-                    throw new Error('Network response was not OK');
+                    throw new Error('Server response was not OK');
                   }
                   return response.json();
                 })
@@ -770,6 +807,7 @@
                   console.error('There has been a problem with fetch_device_data:', error);
                 });
             },
+
             _update_topology_data: function(data) {
               var topo = this.topology;
               console.log(data);
@@ -961,7 +999,7 @@
             app.add_action_bar();
           }
           app.attach();
-          app.fetch_device_data(); // pull additional data from the devices
+          app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
