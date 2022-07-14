@@ -10,9 +10,9 @@ multipass shell clab-graphite
 sudo apt update && sudo apt install jq docker.io -y
 ````
 
-  If you prefer to use any other environment, please make sure it meets ContainerLab [prerequisites](https://containerlab.srlinux.dev/install/#pre-requisites)
+  If you prefer to use any other environment, please make sure it meets ContainerLab [prerequisites](https://containerlab.srlinux.dev/install/#pre-requisites). For the special case of Intel Macs, check out [this reference](CLAB_MACOS.md) instead of the following steps 2-6, and modify the rest of the instructions accordingly.
 
-2. Install `gcc` and [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary. Here is an example for Ubuntu:
+2. Install `gcc` and [Go](https://golang.org/dl/) for your platform to build a custom ContainerLab binary.  Here is an example for Ubuntu:
 
 ```Shell
 sudo apt update && sudo apt install build-essential -y
