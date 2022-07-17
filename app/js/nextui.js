@@ -850,14 +850,22 @@
                           }
                           node_data.interface_list.forEach(
                             i => {
-                              if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
+                              var match = false;
+                              if (i == ifname) {
+                                // Exact interface name match. Should work for nodes that use native Linux interface names, but not for most containerized NOSes
+                                match = true;
+                                console.log(fn + ": " + ifname + ", " + i + ", "+ linkside);
+                              } else if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
+                                // MAC address match. Known to work for cEOSLab in Containerlab
+                                match = true;
+                                console.log(fn + ": " + ifname + ", " + ifmac + ", "+ linkside);
+                              }
+                              if (match) {
                                 switch (linkside) {
                                 case "src":
-                                  console.log(fn + ": " + ifname + ", " + ifmac + " src");
                                   link.model().set("srcIfIP", i);
                                   break;
                                 case "tgt":
-                                  console.log(fn + ": " + ifname + ", " + ifmac + " tgt");
                                   link.model().set("tgtIfIP", i);
                                   break;
                                 }
