@@ -834,33 +834,36 @@
                     if (node_data.hasOwnProperty('interfaces')) {
                       node.eachLink(
                         function (link) {
-                          var ifname;
-                          var ifmac;
-                          // first, check if we have a match for a node name
-                          if (link.sourceNode().model().get('fullname') == fn) {
-                            ifname = link.sourcelabel();
+                          var ifname   = ""; // interface name
+                          var ifmac    = ""; // interface MAC
+                          var ifpeer   = ""; // interface peer name
+                          var linkside = ""; // is the current node a source or a target on the link
+                          // identify if the current node is a source or a target on the link
+                          if (link.sourceNode().model().get('fullname') == fn) { // it is a source
+                            linkside = "src";
+                            ifname = link.model().get('srcIfName');
                             ifmac = link.model().get('srcIfMAC').toUpperCase();
-                            node_data.interface_list.forEach(
-                              i => {
-                                if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
-                                  console.log(i + ": " + ifmac + " src");
-                                  link.model().set("srcIfIP", i);
-                                }
-                              }
-                            );
-                          } else if (link.targetNode().model().get('fullname') == fn) {
-                            ifname = link.targetlabel();
+                          } else if (link.targetNode().model().get('fullname') == fn) { // it is a target
+                            linkside = "tgt";
+                            ifname = link.model().get('tgtIfName');
                             ifmac = link.model().get('tgtIfMAC').toUpperCase();
-                            node_data.interface_list.forEach(
-                              i => {
-                                if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
-                                  console.log(i + ": " + ifmac + " tgt");
+                          }
+                          node_data.interface_list.forEach(
+                            i => {
+                              if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
+                                switch (linkside) {
+                                case "src":
+                                  console.log(fn + ": " + ifname + ", " + ifmac + " src");
+                                  link.model().set("srcIfIP", i);
+                                  break;
+                                case "tgt":
+                                  console.log(fn + ": " + ifname + ", " + ifmac + " tgt");
                                   link.model().set("tgtIfIP", i);
+                                  break;
                                 }
                               }
-                            );
-                          }
-                          console.log(fn + ": " + ifname + ", " + ifmac);
+                            }
+                          );
                         }
                       )
                     }
