@@ -200,6 +200,9 @@ function convert_clab_topology_data_to_cmt(c){
     var tgt_d_name = l["z"]["node"];
     var src_i_name = l["a"]["interface"];
     var tgt_i_name = l["z"]["interface"];
+    var src_i_mac  = l["a"]["mac"];
+    var tgt_i_mac  = l["z"]["mac"];
+    // for port mode display, do not show interface name as a label
     if (node_id_map.hasOwnProperty(port_mode_node_name(l["a"]["node"], l["a"]["interface"]))) {
       src_i = node_id_map[port_mode_node_name(l["a"]["node"], l["a"]["interface"])];
       src_i_name = "";
@@ -215,8 +218,10 @@ function convert_clab_topology_data_to_cmt(c){
       "source": src_i,
       "target": tgt_i,
       "srcIfName": src_i_name,
+      "srcIfMAC":  src_i_mac,
       "srcDevice": src_d_name,
       "tgtIfName": tgt_i_name,
+      "tgtIfMAC":  tgt_i_mac,
       "tgtDevice": tgt_d_name,
     })
   }

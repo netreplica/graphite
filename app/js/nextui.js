@@ -831,6 +831,40 @@
                     if (node_data.hasOwnProperty("os_version")) {
                       node.model().set('os_version', node_data["os_version"]);
                     }
+                    if (node_data.hasOwnProperty('interfaces')) {
+                      node.eachLink(
+                        function (link) {
+                          var ifname;
+                          var ifmac;
+                          // first, check if we have a match for a node name
+                          if (link.sourceNode().model().get('fullname') == fn) {
+                            ifname = link.sourcelabel();
+                            ifmac = link.model().get('srcIfMAC').toUpperCase();
+                            node_data.interface_list.forEach(
+                              i => {
+                                if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
+                                  console.log(i + ": " + ifmac + " src");
+                                  link.model().set("srcIfIP", i);
+                                }
+                              }
+                            );
+                          } else if (link.targetNode().model().get('fullname') == fn) {
+                            ifname = link.targetlabel();
+                            ifmac = link.model().get('tgtIfMAC').toUpperCase();
+                            node_data.interface_list.forEach(
+                              i => {
+                                if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
+                                  console.log(i + ": " + ifmac + " tgt");
+                                  link.model().set("tgtIfIP", i);
+                                }
+                              }
+                            );
+                          }
+                          console.log(fn + ": " + ifname + ", " + ifmac);
+                        }
+                      )
+                    }
+                      
                     
                     if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
                       node.eachLink(
