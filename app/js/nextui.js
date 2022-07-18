@@ -850,7 +850,7 @@
                             ifmac = link.model().get('tgtIfMAC').toUpperCase();  // TODO check tgtIfMAC exists
                             ifpeer = link.model().get('srcDevice');
                           }
-                          node_data.interface_list.forEach( // TODO check interface_list exists
+                          node_data.interface_list.find( // TODO check interface_list exists
                             i => {
                               var match = false;
                               if (i == ifname) {
@@ -880,6 +880,7 @@
                                   link.model().set("tgtIfIP", i);
                                   break;
                                 }
+                                return true; // returning true will stop find() function
                               }
                             }
                           );
