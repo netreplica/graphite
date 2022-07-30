@@ -15,60 +15,105 @@
 */
 
 (function (nx) {
-  nx.define('TopologyContainer', nx.ui.Component, {
-    // we use this trick to use this object as a nx.ui.Component and display topology at the same time
-    properties: {
-      topology: {
-        get: function () {
-          return this.view('topology');
+    /**
+     * GraphiteTopology class
+     * @class GraphiteTopology
+     * @extend nx.graphic.Topology
+     * @module nx.graphic.Topology
+     */
+    
+    nx.define('GraphiteTopology', nx.graphic.Topology, {
+        properties: {
+            /**
+            * Label type to display type: 'static' / 'live'
+            * @property labelType {String}
+            */
+            labelType: {
+                get: function() {
+                    return this._labelType !== undefined ? this._labelType : 'static';
+                },
+                set: function(inValue) {
+                    //var value = this._processPropertyValue(inValue); // TODO validate input
+                    if (this._labelType !== inValue) {
+                        this._labelType = inValue;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+        },
+        view: function(view) {
+            return view;
+        },
+        methods: {
+            init: function (args) {
+                this.inherited(args);
+            },
+            'setModel': function (model) {
+                this.inherited(model);
+            },
+            update: function() {
+                this.inherited();
+            }
         }
-      }
-    },
-    // define view
-    view: {
-      content: [
-        {
-          name: 'topology', // object name
-          type: 'nx.graphic.Topology', // object type
-          // this defines properties of a nx.graphic.Topology instance
-          // see full specifications online
-          // https://developer.cisco.com/site/neXt/document/api-reference-manual/
-          props: {
-            adaptive: true, // width 100% if true
-            showIcon: true,
-            identityKey: 'id', // helps to link source and target
-            //width: 1138, // adaptive is set to true
-            height: 700,
-            dataProcessor: 'force', // arrange nodes positions if not set
-            enableSmartLabel: true, // moves the labels in order to avoid overlay of them
-            enableGradualScaling: true, // may slow down, if true
-            nodeConfig: {
-              label: 'model.name',
-              iconType: 'model.icon', // icon types: https://developer.cisco.com/media/neXt-site/example.html#Basic/icons
-              color: '#0how00'
-            },
-            nodeSetConfig: {
-                label: 'model.name',
-                iconType: 'model.iconType'
-            },
-            nodeInstanceClass: 'AnnotatedNode',
-            tooltipManagerConfig: {
-                nodeTooltipContentClass: 'CustomNodeTooltip'
-            },
-            supportMultipleLink: true, // if true, two nodes can have more than one link
-            linkInstanceClass: 'LinkWithAlignedLabels',
-            linkConfig: {
-              linkType: 'curve', // also: parallel
-              sourcelabel: 'model.srcIfName',
-              targetlabel: 'model.tgtIfName',
-              sourceIPlabel: 'model.srcIfIP',
-              targetIPlabel: 'model.tgtIfIP',
+    });
+
+    nx.define('TopologyContainer', nx.ui.Component, {
+        // we use this trick to use this object as a nx.ui.Component and display topology at the same time
+        properties: {
+          topology: {
+            get: function () {
+              return this.view('topology');
             }
           }
+        },
+        // define view
+        view: {
+          content: [
+            {
+              name: 'topology', // object name
+              type: 'GraphiteTopology', // object type
+              // this mostly defines properties of a nx.graphic.Topology instance
+              // see full specifications online
+              // https://developer.cisco.com/site/neXt/document/api-reference-manual/
+              props: {
+                labelType: 'static', // also: live
+                adaptive: true, // width 100% if true
+                showIcon: true,
+                identityKey: 'id', // helps to link source and target
+                //width: 1138, // adaptive is set to true
+                height: 700,
+                dataProcessor: 'force', // arrange nodes positions if not set
+                enableSmartLabel: true, // moves the labels in order to avoid overlay of them
+                enableGradualScaling: true, // may slow down, if true
+                nodeConfig: {
+                  label: 'model.name',
+                  iconType: 'model.icon', // icon types: https://developer.cisco.com/media/neXt-site/example.html#Basic/icons
+                  color: '#0how00'
+                },
+                nodeSetConfig: {
+                    label: 'model.name',
+                    iconType: 'model.iconType'
+                },
+                nodeInstanceClass: 'AnnotatedNode',
+                tooltipManagerConfig: {
+                    nodeTooltipContentClass: 'CustomNodeTooltip'
+                },
+                supportMultipleLink: true, // if true, two nodes can have more than one link
+                linkInstanceClass: 'LinkWithAlignedLabels',
+                linkConfig: {
+                  linkType:          'curve', // also: parallel
+                  sourceLabelStatic: 'model.srcIfName',
+                  targetLabelStatic: 'model.tgtIfName',
+                  sourceIPlabel:     'model.srcIfIP',
+                  targetIPlabel:     'model.tgtIfIP',
+                }
+              }
+            }
+          ]
         }
-      ]
-    }
-  });
+    });
 
   nx.define('AnnotatedNode', nx.graphic.Topology.Node, {
     view: function (view) {
@@ -389,20 +434,26 @@
     nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
         properties: {
             sourcelabel: "",
-            targetlabel: "",
+            sourceLabelStatic: {
+              set: function(inValue) {
+                  this._sourceLabelStatic = this._processPropertyValue(inValue);
+              }
+            },
+              set: function(inValue) {
+                  this._targetLabelStatic = this._processPropertyValue(inValue);
+              }
+            },
         },
         view: function(view) {
             view.content.push({
                 name: 'source',
                 type: 'nx.graphic.Text',
-                content: '{#sourcelabel}',
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
             }, {
                 name: 'target',
                 type: 'nx.graphic.Text',
-                content: '{#targetlabel}',
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
                 }
@@ -420,6 +471,7 @@
             update: function() {
                 this.inherited();
                 
+                var topology = this.topology();
                 var line = this.line();
                 var angle = line.angle();
                 var stageScale = this.stageScale();
@@ -430,10 +482,26 @@
                 var sourceView = this.view('source');
                 sourceView.setStyle('font-size', 12 * stageScale);
                 align_link_label(sourceView, paddedLine.start, angle, "source");
-                
+
                 var targetView = this.view('target');
                 targetView.setStyle('font-size', 12 * stageScale);
                 align_link_label(targetView, paddedLine.end, angle, "target");
+
+                if (topology instanceof GraphiteTopology && topology.labelType() == 'live') {
+                    if (this.model().get("srcIfNameLive") != null) {
+                        sourceView.set('text', this.model().get("srcIfNameLive"));
+                    }
+                    if (this.model().get("tgtIfNameLive") != null) {
+                        targetView.set('text', this.model().get("tgtIfNameLive"));
+                    }
+                } else { // this would be default 'static'
+                  if (this._sourceLabelStatic != null) {
+                      sourceView.set('text', this._sourceLabelStatic);
+                  }
+                  if (this._targetLabelStatic != null) {
+                      targetView.set('text', this._targetLabelStatic);
+                  }
+                }
             }
         }
     });
@@ -669,6 +737,7 @@
             topology: {},
             linkInstanceClass: '',
             currentLayout: 'auto',
+            currentLabelType: 'static',
             devicePropertiesShown: false,
             actionBar: {},
             autoUpdateTimer: {},
@@ -730,6 +799,24 @@
                   return model.get('layerSortPreference');
               });
               this.topology.activateLayout('hierarchicalLayout');
+            },
+            
+            label_types_static: function() {
+                // detach topology currently in view
+                this.topology.detach(this);
+                // update topology props
+                this.topology.labelType('static');
+                // attach topology back
+                this.topology.attach(this);
+            },
+            
+            label_types_live: function() {
+                // detach topology currently in view
+                this.topology.detach(this);
+                // update topology props
+                this.topology.labelType('live');
+                // attach topology back
+                this.topology.attach(this);
             },
             
             toggle_link_label_types: function () {
@@ -874,10 +961,10 @@
                               if (match) {
                                 switch (linkside) {
                                 case "src":
-                                  link.model().set("srcIfIP", i);
+                                  link.model().set("srcIfNameLive", i);
                                   break;
                                 case "tgt":
-                                  link.model().set("tgtIfIP", i);
+                                  link.model().set("tgtIfNameLive", i);
                                   break;
                                 }
                                 return true; // returning true will stop find() function
@@ -980,7 +1067,8 @@
 (function (nx) {
 
     var app; // TopologyApp
-
+    
+    // Alignment functions
     horizontal = function() {
         document.getElementById("nav-auto").className = "";
         document.getElementById("nav-horizontal").className = "active";
@@ -993,6 +1081,19 @@
         document.getElementById("nav-horizontal").className = "";
         document.getElementById("nav-vertical").className = "active";
         app.layout_vertical();
+    };
+    
+    // Label display functions
+    label_types_static = function() {
+      document.getElementById("nav-live").className = "pull-right";
+      document.getElementById("nav-static").className = "pull-right active";
+      app.label_types_static();
+    };
+
+    label_types_live = function() {
+      document.getElementById("nav-live").className = "pull-right active";
+      document.getElementById("nav-static").className = "pull-right";
+      app.label_types_live();
     };
 
     // Identify topology to load
@@ -1056,7 +1157,7 @@
             app.add_action_bar();
           }
           app.attach();
-          app.device_data_autoupdate_on(); // start pulling additional data from the devices
+          //app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
