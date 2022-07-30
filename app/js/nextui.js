@@ -104,8 +104,6 @@
                 linkInstanceClass: 'LinkWithAlignedLabels',
                 linkConfig: {
                   linkType:          'curve', // also: parallel
-                  sourceLabelStatic: 'model.srcIfName',
-                  targetLabelStatic: 'model.tgtIfName',
                   sourceIPlabel:     'model.srcIfIP',
                   targetIPlabel:     'model.tgtIfIP',
                 }
@@ -433,15 +431,23 @@
 
     nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
         properties: {
-            sourceLabelStatic: {
-              set: function(inValue) {
-                  this._sourceLabelStatic = this._processPropertyValue(inValue);
-              }
+            sourceLabel: {
+                get: function() {
+                    if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
+                        label = this.model().get("srcIfNameLive");
+                        if (label !== undefined && label != "") {return label;}
+                    }
+                    return this.model().get("srcIfName");
+                },
             },
-            targetLabelStatic: {
-              set: function(inValue) {
-                  this._targetLabelStatic = this._processPropertyValue(inValue);
-              }
+            targetLabel: {
+                get: function() {
+                    if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
+                        label = this.model().get("tgtIfNameLive");
+                        if (label !== undefined && label != "") {return label;}
+                    }
+                    return this.model().get("tgtIfName");
+                },
             },
         },
         view: function(view) {
@@ -487,21 +493,8 @@
                 targetView.setStyle('font-size', 12 * stageScale);
                 align_link_label(targetView, paddedLine.end, angle, "target");
 
-                if (topology instanceof GraphiteTopology && topology.labelType() == 'live') {
-                    if (this.model().get("srcIfNameLive") != null) {
-                        sourceView.set('text', this.model().get("srcIfNameLive"));
-                    }
-                    if (this.model().get("tgtIfNameLive") != null) {
-                        targetView.set('text', this.model().get("tgtIfNameLive"));
-                    }
-                } else { // this would be default 'static'
-                  if (this._sourceLabelStatic != null) {
-                      sourceView.set('text', this._sourceLabelStatic);
-                  }
-                  if (this._targetLabelStatic != null) {
-                      targetView.set('text', this._targetLabelStatic);
-                  }
-                }
+                sourceView.set('text', this.sourceLabel());
+                targetView.set('text', this.targetLabel());
             }
         }
     });
