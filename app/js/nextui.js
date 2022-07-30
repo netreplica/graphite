@@ -433,12 +433,12 @@
 
     nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
         properties: {
-            sourcelabel: "",
             sourceLabelStatic: {
               set: function(inValue) {
                   this._sourceLabelStatic = this._processPropertyValue(inValue);
               }
             },
+            targetLabelStatic: {
               set: function(inValue) {
                   this._targetLabelStatic = this._processPropertyValue(inValue);
               }
