@@ -1096,8 +1096,12 @@
 
     enable_live_labels = function() {
         if (app.enableLiveLabels()) {
-            document.getElementById("nav-live").classList.remove("disabled");
-            document.getElementById("nav-live").classList.add("blinking");
+            document.getElementById("nav-labels").classList.add("m-fadeIn");
+            document.getElementById("nav-static").classList.add("m-fadeIn");
+            document.getElementById("nav-live").classList.add("m-fadeIn");
+            document.getElementById("nav-labels").classList.remove("m-fadedOut");
+            document.getElementById("nav-static").classList.remove("m-fadedOut");
+            document.getElementById("nav-live").classList.remove("m-fadedOut");
         }
     };
 
@@ -1162,7 +1166,7 @@
             app.add_action_bar();
           }
           app.attach();
-          //app.device_data_autoupdate_on(); // start pulling additional data from the devices
+          app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
