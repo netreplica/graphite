@@ -65,3 +65,12 @@
   transform-box: fill-box;
   transform-origin: 100% 0%;
 }
+
+.blinking {
+  animation: blinker 1s linear 5;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

@@ -734,6 +734,7 @@
             devicePropertiesShown: false,
             actionBar: {},
             autoUpdateTimer: {},
+            enableLiveLabels: false,
         },
         methods: {
             init_with_cmt: function (cmt) {
@@ -870,7 +871,6 @@
             },
 
             fetch_device_data: function() {
-              var topo = this.topology;
               var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/"  + '?nocache=' + (new Date()).getTime();
               
               fetch(topo_url)
@@ -882,6 +882,9 @@
                 })
                 .then(data => {
                   this._update_topology_data(data);
+                  // enable live label mode
+                  this.enableLiveLabels(true);
+                  enable_live_labels();
                 })
                 .catch(error => {
                   console.error('There has been a problem with fetch_device_data:', error);
@@ -1084,9 +1087,18 @@
     };
 
     label_types_live = function() {
-      document.getElementById("nav-live").className = "pull-right active";
-      document.getElementById("nav-static").className = "pull-right";
-      app.label_types_live();
+        if (app.enableLiveLabels()) {
+            document.getElementById("nav-live").className = "pull-right active";
+            document.getElementById("nav-static").className = "pull-right";
+            app.label_types_live();
+        }
+    };
+
+    enable_live_labels = function() {
+        if (app.enableLiveLabels()) {
+            document.getElementById("nav-live").classList.remove("disabled");
+            document.getElementById("nav-live").classList.add("blinking");
+        }
     };
 
     // Identify topology to load
