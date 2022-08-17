@@ -88,7 +88,7 @@
                 enableSmartLabel: true, // moves the labels in order to avoid overlay of them
                 enableGradualScaling: true, // may slow down, if true
                 nodeConfig: {
-                  label: 'model.name',
+                  label: 'model.label',   // which will be initialized in 'setModel()'
                   iconType: 'model.icon', // icon types: https://developer.cisco.com/media/neXt-site/example.html#Basic/icons
                   color: '#0how00'
                 },
@@ -155,6 +155,27 @@
       return view;
     },
     methods: {
+      init: function (args) {
+          this.inherited(args);
+      },
+
+      setModel: function (model) {
+          this.inherited(model);
+          var l;
+          if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
+              l = this.model().get("hostname");
+              if (l === undefined || l == "") {
+                l = this.model().get("name");
+              }
+          } else {
+            l = this.model().get("name");
+          }
+          this.model().set("label", l); // update the label to either static or live
+      },
+
+      update: function() {
+          this.inherited();
+      },
 
       showStatus: function () {
         // draw/not draw the down badge based on status
@@ -249,6 +270,21 @@
                       }, {
                           tag: 'span',
                           content: '{#node.model.fullname}',
+                      }]
+                  }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Hostname:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.hostname}',
                       }]
                   }, {
                       tag: 'div',
@@ -893,7 +929,7 @@
 
             _update_topology_data: function(data) {
               var topo = this.topology;
-              console.log(data);
+              //console.log(data);
               if (typeof data !== 'undefined' && data.hasOwnProperty("nodes")) {
                 // go through fetched nodes' array
                 nx.each(topo.getNodes(), function (node) {
@@ -903,7 +939,7 @@
                   if (data.nodes.hasOwnProperty(fn)) {
                     node_data = data.nodes[fn]
                     if (node_data.hasOwnProperty("hostname")) {
-                      node.model().set('name', node_data["hostname"]);
+                      node.model().set('hostname', node_data["hostname"]);
                     }
                     if (node_data.hasOwnProperty("vendor")) {
                       node.model().set('vendor', node_data["vendor"]);
@@ -939,11 +975,11 @@
                               if (i == ifname) {
                                 // Exact interface name match. Should work for nodes that use native Linux interface names, but not for most containerized NOSes
                                 match = true;
-                                console.log(fn + ": " + ifname + ", " + i + ", "+ linkside);
+                                //console.log(fn + ": " + ifname + ", " + i + ", "+ linkside);
                               } else if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) { // TODO check mac_address exists
                                 // MAC address match. Known to work for cEOSLab in Containerlab
                                 match = true;
-                                console.log(fn + ": " + ifname + ", " + ifmac + ", " + linkside);
+                                //console.log(fn + ": " + ifname + ", " + ifmac + ", " + linkside);
                               } else if (node_data.hasOwnProperty('lldp_neighbors') && node_data.lldp_neighbors.hasOwnProperty(i)) {
                                 // LLDP peer name match. Requires interface arrays to be index-sorted. 
                                 // TODO add sort
@@ -951,7 +987,7 @@
                                 // consider only point-2-point links, not bridges
                                 if (node_data.lldp_neighbors[i].length == 1 && node_data.lldp_neighbors[i][0].hostname == ifpeer) {
                                   match = true;
-                                  console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbors: ");
+                                  //console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbors: ");
                                 }
                               }
                               if (match) {
