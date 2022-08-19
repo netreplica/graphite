@@ -805,6 +805,13 @@
               this.topology.detach(this);
             },
             
+            layout_auto: function() {
+              this.currentLayout = 'auto';
+              this.detach();
+              this.topology.activateLayout('force');
+              this.attach();
+            },
+            
             layout_horizontal: function () {
               if (this.currentLayout === 'vertical') {
                   return;
@@ -1101,6 +1108,13 @@
     var app; // TopologyApp
     
     // Alignment functions
+    autolayout = function() {
+        document.getElementById("nav-auto").className = "active";
+        document.getElementById("nav-horizontal").className = "";
+        document.getElementById("nav-vertical").className = "";
+        app.layout_auto();
+    };
+
     horizontal = function() {
         document.getElementById("nav-auto").className = "";
         document.getElementById("nav-horizontal").className = "active";
