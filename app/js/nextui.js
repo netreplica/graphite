@@ -161,16 +161,7 @@
 
       setModel: function (model) {
           this.inherited(model);
-          var l;
-          if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-              l = this.model().get("hostname");
-              if (l === undefined || l == "") {
-                l = this.model().get("name");
-              }
-          } else {
-            l = this.model().get("name");
-          }
-          this.model().set("label", l); // update the label to either static or live
+          this.updateLabels();
       },
 
       update: function() {
@@ -206,6 +197,24 @@
         this.view("badgeText").set("visible", false);
         this.view("badgeShape").set("visible", false);
         this.view("devicePropsBadge").set("visible", false);
+      },
+      
+      updateLabels: function() {
+        var l;
+        if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
+            l = this.model().get("hostname");
+            if (l === undefined || l == "") {
+              l = this.model().get("name");
+            }
+        } else {
+          l = this.model().get("name");
+        }
+        this.model().set("label", l); // update the label to either static or live
+        this.eachLink(
+          function (link) {
+            link.updateLabels();
+          }
+        );
       },
 
       // display the red badge
@@ -507,8 +516,9 @@
             init: function (args) {
                 this.inherited(args);
             },
-            'setModel': function (model) {
+            setModel: function (model) {
                 this.inherited(model);
+                this.updateLabels();
             },
             update: function() {
                 this.inherited();
@@ -528,9 +538,12 @@
                 var targetView = this.view('target');
                 targetView.setStyle('font-size', 12 * stageScale);
                 align_link_label(targetView, paddedLine.end, angle, "target");
-
-                sourceView.set('text', this.sourceLabel());
-                targetView.set('text', this.targetLabel());
+            },
+            updateLabels: function() {
+              var sourceView = this.view('source');
+              var targetView = this.view('target');
+              sourceView.set('text', this.sourceLabel());
+              targetView.set('text', this.targetLabel());
             }
         }
     });
@@ -839,21 +852,13 @@
             },
             
             label_types_static: function() {
-                // detach topology currently in view
-                this.topology.detach(this);
-                // update topology props
-                this.topology.labelType('static');
-                // attach topology back
-                this.topology.attach(this);
+              this.topology.labelType('static');
+              this._update_topology_labels();
             },
             
             label_types_live: function() {
-                // detach topology currently in view
-                this.topology.detach(this);
-                // update topology props
-                this.topology.labelType('live');
-                // attach topology back
-                this.topology.attach(this);
+              this.topology.labelType('live');
+              this._update_topology_labels();
             },
             
             toggle_link_label_types: function () {
@@ -1042,10 +1047,20 @@
                         }
                       );
                     } 
+                    
+                    if (topo.labelType() == 'live'){
+                      node.updateLabels();
+                    }
                   }
                 });
               }
               return topo;
+            },
+            
+            _update_topology_labels: function() {
+              nx.each(this.topology.getNodes(), function (node) {
+                node.updateLabels();
+              });
             }
         }
     });
