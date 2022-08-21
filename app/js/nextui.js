@@ -98,7 +98,8 @@
                 },
                 nodeInstanceClass: 'AnnotatedNode',
                 tooltipManagerConfig: {
-                    nodeTooltipContentClass: 'CustomNodeTooltip'
+                  nodeTooltipContentClass: 'GraphiteNodeTooltipContent',
+                  linkTooltipContentClass: 'GraphiteLinkTooltipContent'
                 },
                 supportMultipleLink: true, // if true, two nodes can have more than one link
                 linkInstanceClass: 'LinkWithAlignedLabels',
@@ -241,7 +242,7 @@
     }
   });
 
-  nx.define('CustomNodeTooltip', nx.ui.Component, {
+  nx.define('GraphiteNodeTooltipContent', nx.ui.Component, {
         properties: {
             node: {},
             topology: {}
@@ -460,18 +461,60 @@
         }
     });
 
-    nx.define('Tooltip.Node', nx.ui.Component, {
-        view: function(view){
-            view.content.push({
-            });
-            return view;
-        },
-        methods: {
-            attach: function(args) {
-                this.inherited(args);
-                this.model();
+    nx.define('GraphiteLinkTooltipContent', nx.graphic.Topology.LinkTooltipContent, {
+      properties: {
+        link: {
+            set: function (value) {
+                var model = value.model();
+                var items = {
+                  'srcDevice': '',
+                  'srcIfName': '',
+                  'srcIfNameLive': '',
+                  'srcIfMAC': '',
+                  'tgtDevice': '',
+                  'tgtIfName': '',
+                  'tgtIfNameLive': '',
+                  'tgtIfMAC': ''
+                };
+                
+                Object.entries(model.getData()).forEach(([key, value]) => {
+                  if (items.hasOwnProperty(key)){
+                    items[key] = value;
+                  }
+                });
+                this.view('list').set('items', new nx.data.Dictionary(items));
             }
+        },
+      },
+      view: {
+        props: {
+            "style": "width: 220px;",
+            "class": "popover-textarea n-topology-tooltip-content n-list"
+        },
+        content: {
+          name: 'list',
+          tag: 'ul',
+          props: {
+            template: {
+              tag: 'li',
+              props: {
+                  "style": "font-size:80%;",
+                  role: 'listitem'
+              },
+              content: [{
+                tag: 'label',
+                props: {
+                    "style": "padding-right: 5px"
+                },
+                content: '{key}: '
+              },{
+                tag: 'span',
+                content: '{value}'
+              }]
+            }
+          }
         }
+      }
     });
 
     nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
@@ -1280,4 +1323,5 @@
     }
     return ifname;
   };
+
 })(nx);
