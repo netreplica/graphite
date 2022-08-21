@@ -488,27 +488,26 @@
       },
       view: {
         props: {
-            "style": "width: 220px;",
             "class": "popover-textarea n-topology-tooltip-content n-list"
         },
         content: {
           name: 'list',
-          tag: 'ul',
+          tag: 'table',
           props: {
             template: {
-              tag: 'li',
+              tag: 'tr',
               props: {
                   "style": "font-size:80%;",
                   role: 'listitem'
               },
               content: [{
-                tag: 'label',
+                tag: 'td',
                 props: {
                     "style": "padding-right: 5px"
                 },
-                content: '{key}: '
+                content: '{key}'
               },{
-                tag: 'span',
+                tag: 'td',
                 content: '{value}'
               }]
             }
