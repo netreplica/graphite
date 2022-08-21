@@ -479,7 +479,7 @@
             sourceLabel: {
                 get: function() {
                     if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-                        label = this.model().get("srcIfNameLive");
+                        label = if_shortname(this.model().get("srcIfNameLive"));
                         if (label !== undefined && label != "") {return label;}
                     }
                     return this.model().get("srcIfName");
@@ -488,7 +488,7 @@
             targetLabel: {
                 get: function() {
                     if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-                        label = this.model().get("tgtIfNameLive");
+                        label = if_shortname(this.model().get("tgtIfNameLive"));
                         if (label !== undefined && label != "") {return label;}
                     }
                     return this.model().get("tgtIfName");
@@ -1249,4 +1249,35 @@
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
     xmlhttp.send();
 
+})(nx);
+
+
+(function (nx) {
+  const interface_full_name_map = { // TODO expand to 25/40/50/100/400/800/1600 and cover other NOSes like SRL
+    'Eth': 'Ethernet',
+    'Fa' : 'FastEthernet',
+    'Gi' : 'GigabitEthernet',
+    'Te' : 'TenGigabitEthernet',
+    'Ma' : 'Management'
+  };
+
+  if_fullname= function(ifname) {
+    for (k in interface_full_name_map){
+      var v = interface_full_name_map[k];
+      if (ifname !== undefined && ifname.toLowerCase().startsWith(k.toLowerCase())) {
+        return ifname.toLowerCase().replace(k.toLowerCase(), v);
+      }
+    }
+    return ifname;
+  };
+
+  if_shortname = function(ifname) {
+    for (k in interface_full_name_map){
+      var v = interface_full_name_map[k];
+      if (ifname !== undefined && ifname.toLowerCase().startsWith(v.toLowerCase())) {
+        return ifname.toLowerCase().replace(v.toLowerCase(), k);
+      }
+    }
+    return ifname;
+  };
 })(nx);

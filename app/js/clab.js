@@ -14,37 +14,6 @@
    limitations under the License.
 */
 
-const interface_full_name_map = {
-  'e1-': 'ethernet1-',
-  'Eth': 'Ethernet',
-  'Fa' : 'FastEthernet',
-  'Gi' : 'GigabitEthernet',
-  'Te' : 'TenGigabitEthernet',
-  'Ma' : 'Management'
-};
-
-function if_fullname(ifname) {
-  //TODO ifname = dequote(ifname)
-  for (k in interface_full_name_map){
-    var v = interface_full_name_map[k];
-    if (ifname.toLowerCase().startsWith(k.toLowerCase())) {
-      return ifname.toLowerCase().replace(k.toLowerCase(), v);
-    }
-  }
-  return ifname;
-}
-
-function if_shortname(ifname) {
-  //TODO ifname = dequote(ifname)
-  for (k in interface_full_name_map){
-    var v = interface_full_name_map[k];
-    if (ifname.toLowerCase().startsWith(v.toLowerCase())) {
-      return ifname.toLowerCase().replace(v.toLowerCase(), k);
-    }
-  }
-  return ifname;
-}
-
 function port_mode_node_name(n, i) {
   return i + "@" + n;
 }
