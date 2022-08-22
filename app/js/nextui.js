@@ -1021,7 +1021,7 @@
                       node.model().set('os_version', node_data["os_version"]);
                     }
                     var ifmatched = []; // keep track of node_data interfaces we already matched to avoid matching them more than once via LLDP
-                    if (node_data.hasOwnProperty('interfaces')) {
+                    if (node_data.hasOwnProperty('interface_list') && node_data.hasOwnProperty('interfaces')) {
                       node.eachLink(
                         function (link) {
                           var ifname   = ""; // interface name
@@ -1032,16 +1032,17 @@
                           if (link.sourceNode().model().get('fullname') == fn) { // it is a source
                             linkside = "src";
                             ifname = link.model().get('srcIfName');
-                            ifmac = link.model().get('srcIfMAC').toUpperCase(); // TODO check srcIfMAC exists
+                            ifmac = link.model().get('srcIfMAC');
                             ifpeer = link.model().get('tgtDevice');
                           } else if (link.targetNode().model().get('fullname') == fn) { // it is a target
                             linkside = "tgt";
                             ifname = link.model().get('tgtIfName');
-                            ifmac = link.model().get('tgtIfMAC').toUpperCase();  // TODO check tgtIfMAC exists
+                            ifmac = link.model().get('tgtIfMAC');
                             ifpeer = link.model().get('srcDevice');
                           }
+                          ifmac !== undefined ? ifmac = ifmac.toUpperCase() : ifmac = "";
                           // look for a matching interface from node_data
-                          var match = node_data.interface_list.find( // TODO check interface_list exists
+                          var match = node_data.interface_list.find(
                             i => {
                               if (ifmatched.includes(i)) {
                                 return false;
@@ -1049,16 +1050,20 @@
                                 // Exact interface name match. Should work for nodes that use native Linux interface names, but not for most containerized NOSes
                                 //console.log(fn + ": " + ifname + ", " + i + ", "+ linkside);
                                 return true;
-                              } else if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) { // TODO check mac_address exists
+                              } else if (ifmac != "" && 
+                                         node_data.interfaces.hasOwnProperty(i) &&
+                                         node_data.interfaces[i].hasOwnProperty('mac_address') &&
+                                         node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
                                 // MAC address match. Known to work for cEOSLab in Containerlab
                                 //console.log(fn + ": " + ifname + ", " + ifmac + ", " + linkside);
                                 return true;
-                              } else if (node_data.hasOwnProperty('lldp_neighbors') && node_data.lldp_neighbors.hasOwnProperty(i)) {
+                              } else if (node_data.hasOwnProperty('lldp_neighbors') && 
+                                         node_data.lldp_neighbors.hasOwnProperty(i)) {
                                 // LLDP peer name match. Requires interface arrays to be index-sorted. 
                                 // TODO add sort
-                                // TODO add counter to pick Nth interface in a matching LAG
-                                // consider only point-2-point links, not bridges
-                                if (node_data.lldp_neighbors[i].length == 1 && node_data.lldp_neighbors[i][0].hostname == ifpeer) {
+                                // TODO consider only point-2-point links, not bridges
+                                if (node_data.lldp_neighbors[i].length == 1 && 
+                                    node_data.lldp_neighbors[i][0].hostname == ifpeer) {
                                   //console.log(fn + ": MAC didn't match for " + ifname + " mac: " + ifmac + " with " + i)
                                   //console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbor: " + ifpeer);
                                   return true;
@@ -1079,7 +1084,6 @@
                               break;
                             }
                           }
-                          
                         }
                       )
                     }
