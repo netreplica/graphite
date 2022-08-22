@@ -466,29 +466,40 @@
         link: {
             set: function (value) {
                 var model = value.model();
-                var items = {
-                  'srcDevice': '',
-                  'srcIfName': '',
-                  'srcIfNameLive': '',
-                  'srcIfMAC': '',
-                  'tgtDevice': '',
-                  'tgtIfName': '',
-                  'tgtIfNameLive': '',
-                  'tgtIfMAC': ''
-                };
-                
-                Object.entries(model.getData()).forEach(([key, value]) => {
-                  if (items.hasOwnProperty(key)){
-                    items[key] = value;
-                  }
-                });
-                this.view('list').set('items', new nx.data.Dictionary(items));
+                var items = [
+                  {
+                    'rowName': '',
+                    'srcValue': 'Source',
+                    'tgtValue': 'Target'
+                  },
+                  {
+                    'rowName': 'Device',
+                    'srcValue': model.get('srcDevice'),
+                    'tgtValue': model.get('tgtDevice')
+                  },
+                  {
+                    'rowName': 'Interface',
+                    'srcValue': model.get('srcIfName'),
+                    'tgtValue': model.get('tgtIfName')
+                  },
+                  {
+                    'rowName': 'Name',
+                    'srcValue': model.get('srcIfNameLive'),
+                    'tgtValue': model.get('tgtIfNameLive')
+                  },
+                  {
+                    'rowName': 'MAC',
+                    'srcValue': model.get('srcIfMAC'),
+                    'tgtValue': model.get('tgtIfMAC')
+                  },
+                ];
+                this.view('list').set('items', items);
             }
         },
       },
       view: {
         props: {
-            "class": "popover-textarea n-topology-tooltip-content n-list"
+            "class": "popover-textarea"
         },
         content: {
           name: 'list',
@@ -498,17 +509,22 @@
               tag: 'tr',
               props: {
                   "style": "font-size:80%;",
-                  role: 'listitem'
               },
               content: [{
                 tag: 'td',
                 props: {
-                    "style": "padding-right: 5px"
+                    "style": "padding-right: 10px"
                 },
-                content: '{key}'
+                content: '{rowName}'
               },{
                 tag: 'td',
-                content: '{value}'
+                props: {
+                    "style": "padding-right: 10px"
+                },
+                content: '{srcValue}'
+              },{
+                tag: 'td',
+                content: '{tgtValue}'
               }]
             }
           }
