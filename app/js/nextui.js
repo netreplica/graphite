@@ -104,9 +104,9 @@
                 supportMultipleLink: true, // if true, two nodes can have more than one link
                 linkInstanceClass: 'LinkWithAlignedLabels',
                 linkConfig: {
-                  linkType:          'curve', // also: parallel
-                  sourceIPlabel:     'model.srcIfIP',
-                  targetIPlabel:     'model.tgtIfIP',
+                  linkType:          'curve', // curve or parallel
+                  sourceIPlabel:     'model.srcIfName',
+                  targetIPlabel:     'model.tgtIfName',
                 }
               }
             }
@@ -1020,6 +1020,7 @@
                     if (node_data.hasOwnProperty("os_version")) {
                       node.model().set('os_version', node_data["os_version"]);
                     }
+                    var ifmatched = []; // keep track of node_data interfaces we already matched to avoid matching them more than once via LLDP
                     if (node_data.hasOwnProperty('interfaces')) {
                       node.eachLink(
                         function (link) {
@@ -1039,40 +1040,46 @@
                             ifmac = link.model().get('tgtIfMAC').toUpperCase();  // TODO check tgtIfMAC exists
                             ifpeer = link.model().get('srcDevice');
                           }
-                          node_data.interface_list.find( // TODO check interface_list exists
+                          // look for a matching interface from node_data
+                          var match = node_data.interface_list.find( // TODO check interface_list exists
                             i => {
-                              var match = false;
-                              if (i == ifname) {
+                              if (ifmatched.includes(i)) {
+                                return false;
+                              } else if (i == ifname) {
                                 // Exact interface name match. Should work for nodes that use native Linux interface names, but not for most containerized NOSes
-                                match = true;
                                 //console.log(fn + ": " + ifname + ", " + i + ", "+ linkside);
+                                return true;
                               } else if (node_data.interfaces[i].mac_address.toUpperCase() == ifmac) { // TODO check mac_address exists
                                 // MAC address match. Known to work for cEOSLab in Containerlab
-                                match = true;
                                 //console.log(fn + ": " + ifname + ", " + ifmac + ", " + linkside);
+                                return true;
                               } else if (node_data.hasOwnProperty('lldp_neighbors') && node_data.lldp_neighbors.hasOwnProperty(i)) {
                                 // LLDP peer name match. Requires interface arrays to be index-sorted. 
                                 // TODO add sort
                                 // TODO add counter to pick Nth interface in a matching LAG
                                 // consider only point-2-point links, not bridges
                                 if (node_data.lldp_neighbors[i].length == 1 && node_data.lldp_neighbors[i][0].hostname == ifpeer) {
-                                  match = true;
-                                  //console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbors: ");
+                                  //console.log(fn + ": MAC didn't match for " + ifname + " mac: " + ifmac + " with " + i)
+                                  //console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbor: " + ifpeer);
+                                  return true;
                                 }
                               }
-                              if (match) {
-                                switch (linkside) {
-                                case "src":
-                                  link.model().set("srcIfNameLive", i);
-                                  break;
-                                case "tgt":
-                                  link.model().set("tgtIfNameLive", i);
-                                  break;
-                                }
-                                return true; // returning true will stop find() function
-                              }
+                              return false;
                             }
                           );
+                          if (match !== undefined) {
+                            //console.log("matched: " + match);
+                            ifmatched.push(match);
+                            switch (linkside) {
+                            case "src":
+                              link.model().set("srcIfNameLive", match);
+                              break;
+                            case "tgt":
+                              link.model().set("tgtIfNameLive", match);
+                              break;
+                            }
+                          }
+                          
                         }
                       )
                     }
