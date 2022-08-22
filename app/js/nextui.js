@@ -1077,7 +1077,7 @@
                       )
                     }
                       
-                    
+                    /*
                     if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
                       node.eachLink(
                         function (link) {
@@ -1105,6 +1105,7 @@
                         }
                       );
                     } 
+                    */
                     
                     if (topo.labelType() == 'live'){
                       node.updateLabels();
