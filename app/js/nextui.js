@@ -1026,7 +1026,7 @@
                         function (link) {
                           var ifname   = ""; // interface name
                           var ifmac    = ""; // interface MAC
-                          var ifpeer   = ""; // interface peer name
+                          var ifpeer   = ""; // interface peer device name
                           var linkside = ""; // is the current node a source or a target on the link
                           // identify if the current node is a source or a target on the link
                           if (link.sourceNode().model().get('fullname') == fn) { // it is a source
@@ -1042,6 +1042,7 @@
                           }
                           ifmac !== undefined ? ifmac = ifmac.toUpperCase() : ifmac = "";
                           // look for a matching interface from node_data
+                          var peerif = ""; // interface peer interface name
                           var match = node_data.interface_list.find(
                             i => {
                               if (ifmatched.includes(i)) {
@@ -1059,13 +1060,13 @@
                                 return true;
                               } else if (node_data.hasOwnProperty('lldp_neighbors') && 
                                          node_data.lldp_neighbors.hasOwnProperty(i)) {
-                                // LLDP peer name match. Requires interface arrays to be index-sorted. 
-                                // TODO add sort
+                                // LLDP peer name match. Only works if topology and node_data interfaces are in the same order
                                 // TODO consider only point-2-point links, not bridges
                                 if (node_data.lldp_neighbors[i].length == 1 && 
                                     node_data.lldp_neighbors[i][0].hostname == ifpeer) {
-                                  //console.log(fn + ": MAC didn't match for " + ifname + " mac: " + ifmac + " with " + i)
-                                  //console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbor: " + ifpeer);
+                                  // will use peerif for the other side of the link, to make sure we use correct peer interface name from LLDP
+                                  peerif = node_data.lldp_neighbors[i][0].port
+                                  //console.log(fn + ": " + ifname + " " + linkside + " " + i + " neighbor: " + ifpeer + " " + peerif);
                                   return true;
                                 }
                               }
@@ -1073,14 +1074,28 @@
                             }
                           );
                           if (match !== undefined) {
-                            //console.log("matched: " + match);
+                            //console.log("matched: " + match + " peer if: " + peerif);
                             ifmatched.push(match);
                             switch (linkside) {
                             case "src":
-                              link.model().set("srcIfNameLive", match);
+                              if (link.model().get("srcIfNameLive") === undefined) {
+                                link.model().set("srcIfNameLive", match);
+                                //console.log("set if to " + link.model().get("srcIfNameLive"));
+                              }
+                              if (link.model().get("tgtIfNameLive") === undefined && peerif != "") {
+                                link.model().set("tgtIfNameLive", peerif);
+                                //console.log("set peerif to " + link.model().get("tgtIfNameLive"));
+                              }
                               break;
                             case "tgt":
-                              link.model().set("tgtIfNameLive", match);
+                              if (link.model().get("tgtIfNameLive") === undefined) {
+                                link.model().set("tgtIfNameLive", match);
+                                //console.log("set if to " + link.model().get("tgtIfNameLive"));
+                              }
+                              if (link.model().get("srcIfNameLive") === undefined && peerif != "") {
+                                link.model().set("srcIfNameLive", peerif);
+                                //console.log("set peerif to " + link.model().get("srcIfNameLive"));
+                              }
                               break;
                             }
                           }
