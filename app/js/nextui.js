@@ -536,29 +536,59 @@
         }
       }
     });
+    
+    /**
+     * GraphiteLink class
+     * @class GraphiteLink
+     * @extend nx.graphic.Topology.Link
+     * 
+     * Handles live link data
+     */
+    nx.define('GraphiteLink', nx.graphic.Topology.Link, {
+      properties: {
+        sourceName: {
+          get: function() {
+            return this.model().get("srcIfName");
+          },
+        },
+        targetName: {
+          get: function() {
+            return this.model().get("tgtIfName");
+          },
+        },
+        sourceNameLive: {
+          get: function() {
+            return this.model().get("srcIfNameLive");
+          },
+        },
+        targetNameLive: {
+          get: function() {
+            return this.model().get("tgtIfNameLive");
+          },
+        },
+      },
+      methods: {
+        init: function (args) {
+          this.inherited(args);
+        },
+        setModel: function (model) {
+          this.inherited(model);
+        },
+        update: function() {
+          this.inherited();
+        },
+      }
+    });
 
-    nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
+    /**
+     * LinkWithAlignedLabels class
+     * @class LinkWithAlignedLabels
+     * @extend GraphiteLink
+     * 
+     * Link with interface name labels aligned alongside the link
+     */
+    nx.define('LinkWithAlignedLabels', GraphiteLink, {
         properties: {
-            sourceName: {
-              get: function() {
-                return this.model().get("srcIfName");
-              },
-            },
-            targetName: {
-              get: function() {
-                return this.model().get("tgtIfName");
-              },
-            },
-            sourceNameLive: {
-              get: function() {
-                return this.model().get("srcIfNameLive");
-              },
-            },
-            targetNameLive: {
-              get: function() {
-                return this.model().get("tgtIfNameLive");
-              },
-            },
             sourceLabel: {
                 get: function() {
                     if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
