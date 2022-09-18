@@ -105,8 +105,6 @@
                 linkInstanceClass: 'LinkWithAlignedLabels',
                 linkConfig: {
                   linkType:          'curve', // curve or parallel
-                  sourceIPlabel:     'model.srcIfName',
-                  targetIPlabel:     'model.tgtIfName',
                 }
               }
             }
@@ -566,6 +564,48 @@
             return this.model().get("tgtIfNameLive");
           },
         },
+        sourceLabel: {
+            get: function() {
+                if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
+                    label = if_shortname(this.sourceNameLive());
+                    if (label !== undefined && label != "") {return label;}
+                }
+                return this.sourceName();
+            },
+        },
+        targetLabel: {
+            get: function() {
+                if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
+                    label = if_shortname(this.targetNameLive());
+                    if (label !== undefined && label != "") {return label;}
+                }
+                return this.targetName();
+            },
+        },
+        sourceIP: {
+          get: function () {
+            if (this.model().get('srcIfIP') != null) {
+              return this.model().get('srcIfIP');
+            } else {
+              return "";
+            }
+          },
+          set: function (ip) {
+            this.model().set('srcIfIP', ip);
+          }
+        },
+        targetIP: {
+          get: function () {
+            if (this.model().get('tgtIfIP') != null) {
+              return this.model().get('tgtIfIP');
+            } else {
+              return "";
+            }
+          },
+          set: function (ip) {
+            this.model().set('tgtIfIP', ip);
+          }
+        },
       },
       methods: {
         init: function (args) {
@@ -589,24 +629,6 @@
      */
     nx.define('LinkWithAlignedLabels', GraphiteLink, {
         properties: {
-            sourceLabel: {
-                get: function() {
-                    if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-                        label = if_shortname(this.sourceNameLive());
-                        if (label !== undefined && label != "") {return label;}
-                    }
-                    return this.sourceName();
-                },
-            },
-            targetLabel: {
-                get: function() {
-                    if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-                        label = if_shortname(this.targetNameLive());
-                        if (label !== undefined && label != "") {return label;}
-                    }
-                    return this.targetName();
-                },
-            },
         },
         view: function(view) {
             view.content.push({
@@ -661,34 +683,25 @@
         }
     });
 
-    nx.define('BadgeLinkLabel', nx.graphic.Topology.Link, {
+    /**
+     * BadgeLinkLabel class
+     * @class BadgeLinkLabel
+     * @extend GraphiteLink
+     * 
+     * Link with interface numbers as badges
+     */
+    nx.define('BadgeLinkLabel', GraphiteLink, {
         properties: {
-            sourcelabel: null,
-            targetlabel: null,
-            sourceIPlabel: {
-              get: function () {
-                if (this.model().get('srcIfIP') != null) {
-                  return this.model().get('srcIfIP');
-                } else {
-                  return "";
-                }
-              },
-              set: function (ip) {
-                this.model().set('srcIfIP', ip);
-              }
+          sourceLabelNumber: {
+            get: function() {
+              return if_number(this.sourceLabel());
             },
-            targetIPlabel: {
-              get: function () {
-                if (this.model().get('tgtIfIP') != null) {
-                  return this.model().get('tgtIfIP');
-                } else {
-                  return "";
-                }
-              },
-              set: function (ip) {
-                this.model().set('tgtIfIP', ip);
-              }
+          },
+          targetLabelNumber: {
+            get: function() {
+              return if_number(this.targetLabel());
             },
+          },
         },
         view: function (view) {
             view.content.push({
@@ -766,31 +779,31 @@
                 var stageScale = this.stageScale();
                 var line_int = line.pad(50 * stageScale, 50 * stageScale);
                 var line_ip = line.pad(75 * stageScale, 75 * stageScale);
-                if (this.sourcelabel()) {
+                if (this.sourceLabel()) {
                     var badge = this.view('sourceBadge');
                     var badgeBg = this.view('sourceBg');
                     var badgeLabel = this.view('sourceText');
-                    if (this.sourcelabel() != null) {
-                      badgeLabel.set('text', if_number(this.sourcelabel()));
+                    if (this.sourceLabel() != null) {
+                      badgeLabel.set('text', this.sourceLabelNumber());
                     }
                     position_link_badge(badge, badgeBg, line_int.start, stageScale)
 
                     var ipLabel = this.view('sourceIP');
-                    ipLabel.set('text', this.sourceIPlabel());
+                    ipLabel.set('text', this.sourceIP());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.start, angle, "source");
                 }
-                if (this.targetlabel()) {
+                if (this.targetLabel()) {
                     var badge = this.view('targetBadge');
                     var badgeLabel = this.view('targetText');
                     var badgeBg = this.view('targetBg');
-                    if (this.targetlabel() != null) {
-                      badgeLabel.set('text', if_number(this.targetlabel()));
+                    if (this.targetLabel() != null) {
+                      badgeLabel.set('text', this.targetLabelNumber());
                     }
                     position_link_badge(badge, badgeBg, line_int.end, stageScale)
 
                     var ipLabel = this.view('targetIP');
-                    ipLabel.set('text', this.targetIPlabel());
+                    ipLabel.set('text', this.targetIP());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.end, angle, "target");
                 }
@@ -803,12 +816,18 @@
                 this.view("sourceIP").visible(true);
                 this.view("targetIP").visible(true);
               },
+              updateLabels: function() {
+                var sourceLabelView = this.view('sourceText');
+                var targetLabelView = this.view('targetText');
+                sourceLabelView.set('text', this.sourceLabelNumber());
+                targetLabelView.set('text', this.targetLabelNumber());
+              },
               showIP: function () {
                 var srcLabel = this.view('sourceIP');
-                srcLabel.set('text', this.sourceIPlabel());
+                srcLabel.set('text', this.sourceIP());
                 srcLabel.visible(true);
                 var tgtLabel = this.view('targetIP');
-                tgtLabel.set('text', this.targetIPlabel());
+                tgtLabel.set('text', this.targetIP());
                 tgtLabel.visible(true);
               },
               hideIP: function () {
@@ -1211,7 +1230,11 @@
 
   
   function if_number(ifname) {
-    return ifname.replace(/^[A-z]+/,'');
+    if (typeof ifname == 'string') {
+      return ifname.replace(/^[A-z]+/,'');
+    } else {
+      return "";
+    }
   }
   
   function align_link_label(label, point, angle, which_end) {
