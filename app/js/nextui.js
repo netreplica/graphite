@@ -492,6 +492,11 @@
                     'srcValue': model.get('srcIfMAC'),
                     'tgtValue': model.get('tgtIfMAC')
                   },
+                  {
+                    'rowName': 'IPv4',
+                    'srcValue': model.get('srcIfIP'),
+                    'tgtValue': model.get('tgtIfIP')
+                  },
                 ];
                 this.view('list').set('items', items);
             }
@@ -534,22 +539,42 @@
 
     nx.define('LinkWithAlignedLabels', nx.graphic.Topology.Link, {
         properties: {
+            sourceName: {
+              get: function() {
+                return this.model().get("srcIfName");
+              },
+            },
+            targetName: {
+              get: function() {
+                return this.model().get("tgtIfName");
+              },
+            },
+            sourceNameLive: {
+              get: function() {
+                return this.model().get("srcIfNameLive");
+              },
+            },
+            targetNameLive: {
+              get: function() {
+                return this.model().get("tgtIfNameLive");
+              },
+            },
             sourceLabel: {
                 get: function() {
                     if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-                        label = if_shortname(this.model().get("srcIfNameLive"));
+                        label = if_shortname(this.sourceNameLive());
                         if (label !== undefined && label != "") {return label;}
                     }
-                    return this.model().get("srcIfName");
+                    return this.sourceName();
                 },
             },
             targetLabel: {
                 get: function() {
                     if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
-                        label = if_shortname(this.model().get("tgtIfNameLive"));
+                        label = if_shortname(this.targetNameLive());
                         if (label !== undefined && label != "") {return label;}
                     }
-                    return this.model().get("tgtIfName");
+                    return this.targetName();
                 },
             },
         },
@@ -1103,26 +1128,31 @@
                       )
                     }
                       
-                    /*
                     if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
                       node.eachLink(
                         function (link) {
                           // find out if current node is source or target of the link
-                          if (link.sourceNode().model().get('name') == n) {
-                            var ifname = link.sourcelabel();
-                            console.log(ifname);
+                          if (link.sourceNode().model().get('name') == n) { // TODO add getter to the link class
+                            var ifname = link.sourceNameLive();
+                            //console.log(ifname);
                             // find out if we have data for this interface name
-                            if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
-                              console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
-                              //link.model().set("srcIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.sourceIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
+                            if (data.nodes[fn].interfaces_ip.hasOwnProperty(ifname) && data.nodes[fn].interfaces_ip[ifname].hasOwnProperty("ipv4")) {
+                              for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
+                                ip = k + "/" + v["prefix_length"];
+                                //console.log(ip);
+                                link.model().set("srcIfIP", ip);
+                              }
                             }
                           } else if (link.targetNode().model().get('name') == n) {
-                            var ifname = link.targetlabel();
-                            console.log(ifname);
+                            var ifname = link.targetNameLive();
+                            //console.log(ifname);
                             // find out if we have data for this interface name
-                            if (data.nodes[ln].interfaces_ip.hasOwnProperty(ifname)) {
-                              console.log(data.nodes[ln].interfaces_ip[ifname].ipv4);
-                              //link.model().set("tgtIfIP", data.nodes[n].interfaces[ifname].ipv4); //link.targetIPlabel(data.nodes[n].interfaces_ip[ifname].ipv4);
+                            if (data.nodes[fn].interfaces_ip.hasOwnProperty(ifname) && data.nodes[fn].interfaces_ip[ifname].hasOwnProperty("ipv4")) {
+                              for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
+                                ip = k + "/" + v["prefix_length"];
+                                //console.log(ip);
+                                link.model().set("tgtIfIP", ip);
+                              }
                             }
                           }
                           if (typeof link.showIP === 'function') {
@@ -1131,7 +1161,6 @@
                         }
                       );
                     } 
-                    */
                     
                     if (topo.labelType() == 'live'){
                       node.updateLabels();
@@ -1316,7 +1345,7 @@
             app.add_action_bar();
           }
           app.attach();
-          app.device_data_autoupdate_on(); // start pulling additional data from the devices
+          //app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
