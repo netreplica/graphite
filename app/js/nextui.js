@@ -105,8 +105,8 @@
                 linkInstanceClass: 'LinkWithAlignedLabels',
                 linkConfig: {
                   linkType:          'curve', // curve or parallel
-                  sourceIPs:         [],
-                  targetIPs:         [],
+                  sourceIPv4s:         [],
+                  targetIPv4s:         [],
                 }
               }
             }
@@ -493,8 +493,8 @@
                     'tgtValue': model.get('tgtIfMAC')
                   },
                 ];
-                var srcIPs = model.get('srcIfIPArray');
-                var tgtIPs = model.get('tgtIfIPArray');
+                var srcIPs = model.get('srcIfIPv4Array');
+                var tgtIPs = model.get('tgtIfIPv4Array');
                 for (let i = 0; i < Math.max(srcIPs.length, tgtIPs.length); i++){
                   var src, tgt;
                   i < srcIPs.length ? src = srcIPs[i] : "";
@@ -597,8 +597,8 @@
         },
         sourceIP: {
           get: function () {
-            if (this.sourceIPs().length > 0) {
-              return this.sourceIPs()[0];
+            if (this.sourceIPv4s().length > 0) {
+              return this.sourceIPv4s()[0];
             } else {
               return "";
             }
@@ -606,35 +606,35 @@
         },
         targetIP: {
           get: function () {
-            if (this.targetIPs().length > 0) {
-              return this.targetIPs()[0];
+            if (this.targetIPv4s().length > 0) {
+              return this.targetIPv4s()[0];
             } else {
               return "";
             }
           },
         },
-        sourceIPs: {
+        sourceIPv4s: {
           get: function () {
-            if (this.model().get('srcIfIPArray') != null) {
-              return this.model().get('srcIfIPArray');
+            if (this.model().get('srcIfIPv4Array') != null) {
+              return this.model().get('srcIfIPv4Array');
             } else {
               return [];
             }
           },
           set: function (array) {
-            this.model().set('srcIfIPArray', array);
+            this.model().set('srcIfIPv4Array', array);
           },
         },
-        targetIPs: {
+        targetIPv4s: {
           get: function () {
-            if (this.model().get('tgtIfIPArray') != null) {
-              return this.model().get('tgtIfIPArray');
+            if (this.model().get('tgtIfIPv4Array') != null) {
+              return this.model().get('tgtIfIPv4Array');
             } else {
               return [];
             }
           },
           set: function (array) {
-            this.model().set('tgtIfIPArray', array);
+            this.model().set('tgtIfIPv4Array', array);
           },
         },
       },
@@ -1220,7 +1220,7 @@
                               for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
                                 ip = k + "/" + v["prefix_length"];
                                 //console.log(ip);
-                                link.model().get("srcIfIPArray").push(ip);
+                                link.model().get("srcIfIPv4Array").push(ip);
                               }
                             }
                           } else if (link.targetNode().model().get('name') == n) {
@@ -1231,7 +1231,7 @@
                               for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
                                 ip = k + "/" + v["prefix_length"];
                                 //console.log(ip);
-                                link.model().get("tgtIfIPArray").push(ip);
+                                link.model().get("tgtIfIPv4Array").push(ip);
                               }
                             }
                           }
