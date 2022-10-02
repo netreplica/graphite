@@ -105,6 +105,8 @@
                 linkInstanceClass: 'LinkWithAlignedLabels',
                 linkConfig: {
                   linkType:          'curve', // curve or parallel
+                  sourceIPs:         [],
+                  targetIPs:         [],
                 }
               }
             }
@@ -490,12 +492,21 @@
                     'srcValue': model.get('srcIfMAC'),
                     'tgtValue': model.get('tgtIfMAC')
                   },
-                  {
-                    'rowName': 'IPv4',
-                    'srcValue': model.get('srcIfIP'),
-                    'tgtValue': model.get('tgtIfIP')
-                  },
                 ];
+                var srcIPs = model.get('srcIfIPArray');
+                var tgtIPs = model.get('tgtIfIPArray');
+                for (let i = 0; i < Math.max(srcIPs.length, tgtIPs.length); i++){
+                  var src, tgt;
+                  i < srcIPs.length ? src = srcIPs[i] : "";
+                  i < tgtIPs.length ? tgt = tgtIPs[i] : "";
+                  items.push(
+                    {
+                      'rowName': "IPv4[" + i + "]",
+                      'srcValue': src,
+                      'tgtValue': tgt
+                    }
+                  );
+                }
                 this.view('list').set('items', items);
             }
         },
@@ -504,35 +515,37 @@
         props: {
             "class": "popover-textarea"
         },
-        content: {
-          name: 'list',
-          tag: 'table',
-          props: {
-            template: {
-              tag: 'tr',
-              props: {
-                  "style": "font-size:80%;",
-              },
-              content: [{
-                tag: 'td',
+        content: [
+          {
+            name: 'list',
+            tag: 'table',
+            props: {
+              template: {
+                tag: 'tr',
                 props: {
-                    "style": "padding-right: 10px"
+                    "style": "font-size:80%;",
                 },
-                content: '{rowName}'
-              },{
-                tag: 'td',
-                props: {
-                    "style": "padding-right: 10px"
-                },
-                content: '{srcValue}'
-              },{
-                tag: 'td',
-                content: '{tgtValue}'
-              }]
+                content: [{
+                  tag: 'td',
+                  props: {
+                      "style": "padding-right: 10px"
+                  },
+                  content: '{rowName}'
+                },{
+                  tag: 'td',
+                  props: {
+                      "style": "padding-right: 10px"
+                  },
+                  content: '{srcValue}'
+                },{
+                  tag: 'td',
+                  content: '{tgtValue}'
+                }]
+              }
             }
-          }
-        }
-      }
+          },
+        ],
+      },
     });
     
     /**
@@ -584,27 +597,45 @@
         },
         sourceIP: {
           get: function () {
-            if (this.model().get('srcIfIP') != null) {
-              return this.model().get('srcIfIP');
+            if (this.sourceIPs().length > 0) {
+              return this.sourceIPs()[0];
             } else {
               return "";
             }
           },
-          set: function (ip) {
-            this.model().set('srcIfIP', ip);
-          }
         },
         targetIP: {
           get: function () {
-            if (this.model().get('tgtIfIP') != null) {
-              return this.model().get('tgtIfIP');
+            if (this.targetIPs().length > 0) {
+              return this.targetIPs()[0];
             } else {
               return "";
             }
           },
-          set: function (ip) {
-            this.model().set('tgtIfIP', ip);
-          }
+        },
+        sourceIPs: {
+          get: function () {
+            if (this.model().get('srcIfIPArray') != null) {
+              return this.model().get('srcIfIPArray');
+            } else {
+              return [];
+            }
+          },
+          set: function (array) {
+            this.model().set('srcIfIPArray', array);
+          },
+        },
+        targetIPs: {
+          get: function () {
+            if (this.model().get('tgtIfIPArray') != null) {
+              return this.model().get('tgtIfIPArray');
+            } else {
+              return [];
+            }
+          },
+          set: function (array) {
+            this.model().set('tgtIfIPArray', array);
+          },
         },
       },
       methods: {
@@ -1189,7 +1220,7 @@
                               for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
                                 ip = k + "/" + v["prefix_length"];
                                 //console.log(ip);
-                                link.model().set("srcIfIP", ip);
+                                link.model().get("srcIfIPArray").push(ip);
                               }
                             }
                           } else if (link.targetNode().model().get('name') == n) {
@@ -1200,7 +1231,7 @@
                               for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
                                 ip = k + "/" + v["prefix_length"];
                                 //console.log(ip);
-                                link.model().set("tgtIfIP", ip);
+                                link.model().get("tgtIfIPArray").push(ip);
                               }
                             }
                           }
