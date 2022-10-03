@@ -595,7 +595,7 @@
                 return this.targetName();
             },
         },
-        sourceIP: {
+        sourceIPv4: {
           get: function () {
             if (this.sourceIPv4s().length > 0) {
               return this.sourceIPv4s()[0];
@@ -604,7 +604,7 @@
             }
           },
         },
-        targetIP: {
+        targetIPv4: {
           get: function () {
             if (this.targetIPv4s().length > 0) {
               return this.targetIPv4s()[0];
@@ -780,13 +780,13 @@
                 ]
               },
               {
-                name: 'sourceIP',
+                name: 'sourceIPv4',
                 type: 'nx.graphic.Text',
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
               }, {
-                name: 'targetIP',
+                name: 'targetIPv4',
                 type: 'nx.graphic.Text',
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
@@ -819,8 +819,8 @@
                     }
                     position_link_badge(badge, badgeBg, line_int.start, stageScale)
 
-                    var ipLabel = this.view('sourceIP');
-                    ipLabel.set('text', this.sourceIP());
+                    var ipLabel = this.view('sourceIPv4');
+                    ipLabel.set('text', this.sourceIPv4());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.start, angle, "source");
                 }
@@ -833,8 +833,8 @@
                     }
                     position_link_badge(badge, badgeBg, line_int.end, stageScale)
 
-                    var ipLabel = this.view('targetIP');
-                    ipLabel.set('text', this.targetIP());
+                    var ipLabel = this.view('targetIPv4');
+                    ipLabel.set('text', this.targetIPv4());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.end, angle, "target");
                 }
@@ -844,8 +844,8 @@
                 this.view("targetBadge").visible(true);
                 this.view("targetBg").visible(true);
                 this.view("targetText").visible(true);
-                this.view("sourceIP").visible(true);
-                this.view("targetIP").visible(true);
+                this.view("sourceIPv4").visible(true);
+                this.view("targetIPv4").visible(true);
               },
               updateLabels: function() {
                 var sourceLabelView = this.view('sourceText');
@@ -854,16 +854,16 @@
                 targetLabelView.set('text', this.targetLabelNumber());
               },
               showIP: function () {
-                var srcLabel = this.view('sourceIP');
-                srcLabel.set('text', this.sourceIP());
+                var srcLabel = this.view('sourceIPv4');
+                srcLabel.set('text', this.sourceIPv4());
                 srcLabel.visible(true);
-                var tgtLabel = this.view('targetIP');
-                tgtLabel.set('text', this.targetIP());
+                var tgtLabel = this.view('targetIPv4');
+                tgtLabel.set('text', this.targetIPv4());
                 tgtLabel.visible(true);
               },
               hideIP: function () {
-                this.view('sourceIP').visible(false);
-                this.view('targetIP').visible(false);
+                this.view('sourceIPv4').visible(false);
+                this.view('targetIPv4').visible(false);
               }
           }
       });
