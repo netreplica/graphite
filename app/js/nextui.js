@@ -1215,6 +1215,7 @@
                           if (link.sourceNode().model().get('name') == n) { // TODO add getter to the link class
                             var ifname = link.sourceNameLive();
                             //console.log(ifname);
+                            link.model().set("srcIfIPv4Array", []); // in case all or some IPs were deleted
                             // find out if we have data for this interface name
                             if (data.nodes[fn].interfaces_ip.hasOwnProperty(ifname) && data.nodes[fn].interfaces_ip[ifname].hasOwnProperty("ipv4")) {
                               for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
@@ -1226,6 +1227,7 @@
                           } else if (link.targetNode().model().get('name') == n) {
                             var ifname = link.targetNameLive();
                             //console.log(ifname);
+                            link.model().set("tgtIfIPv4Array", []); // in case all or some IPs were deleted
                             // find out if we have data for this interface name
                             if (data.nodes[fn].interfaces_ip.hasOwnProperty(ifname) && data.nodes[fn].interfaces_ip[ifname].hasOwnProperty("ipv4")) {
                               for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
