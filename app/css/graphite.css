@@ -79,3 +79,6 @@
   opacity: 1;
   transition: visibility 0s linear 0s, opacity 300ms;
 }
+.popover {
+  max-width: 400px;
+}

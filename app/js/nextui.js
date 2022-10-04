@@ -107,6 +107,8 @@
                   linkType:          'curve', // curve or parallel
                   sourceIPv4s:         [],
                   targetIPv4s:         [],
+                  sourceIPv6s:         [],
+                  targetIPv6s:         [],
                 }
               }
             }
@@ -493,20 +495,8 @@
                     'tgtValue': model.get('tgtIfMAC')
                   },
                 ];
-                var srcIPs = model.get('srcIfIPv4Array');
-                var tgtIPs = model.get('tgtIfIPv4Array');
-                for (let i = 0; i < Math.max(srcIPs.length, tgtIPs.length); i++){
-                  var src, tgt;
-                  src = (i < srcIPs.length ? srcIPs[i] : "");
-                  tgt = (i < tgtIPs.length ? tgtIPs[i] : "");
-                  items.push(
-                    {
-                      'rowName': "IPv4[" + i + "]",
-                      'srcValue': src,
-                      'tgtValue': tgt
-                    }
-                  );
-                }
+                addLinkTooltipItems(items, "IPv4", model.get('srcIfIPv4Array'), model.get('tgtIfIPv4Array'));
+                addLinkTooltipItems(items, "IPv6", model.get('srcIfIPv6Array'), model.get('tgtIfIPv6Array'));
                 this.view('list').set('items', items);
             }
         },
@@ -615,26 +605,38 @@
         },
         sourceIPv4s: {
           get: function () {
-            if (this.model().get('srcIfIPv4Array') != null) {
-              return this.model().get('srcIfIPv4Array');
-            } else {
-              return [];
-            }
+            var a = this.model().get('srcIfIPv4Array');
+            return (a != null ? a : []);
           },
-          set: function (array) {
-            this.model().set('srcIfIPv4Array', array);
+          set: function (a) {
+            this.model().set('srcIfIPv4Array', a);
           },
         },
         targetIPv4s: {
           get: function () {
-            if (this.model().get('tgtIfIPv4Array') != null) {
-              return this.model().get('tgtIfIPv4Array');
-            } else {
-              return [];
-            }
+            var a = this.model().get('tgtIfIPv4Array');
+            return (a != null ? a : []);
           },
-          set: function (array) {
-            this.model().set('tgtIfIPv4Array', array);
+          set: function (a) {
+            this.model().set('tgtIfIPv4Array', a);
+          },
+          sourceIPv6s: {
+            get: function () {
+              var a = this.model().get('srcIfIPv6Array');
+              return (a != null ? a : []);
+            },
+            set: function (a) {
+              this.model().set('srcIfIPv6Array', a);
+            },
+          },
+          targetIPv6s: {
+            get: function () {
+              var a = this.model().get('tgtIfIPv6Array');
+              return (a != null ? a : []);
+            },
+            set: function (a) {
+              this.model().set('tgtIfIPv6Array', a);
+            },
           },
         },
       },
@@ -1213,29 +1215,11 @@
                         function (link) {
                           // find out if current node is source or target of the link
                           if (link.sourceNode().model().get('name') == n) { // TODO add getter to the link class
-                            var ifname = link.sourceNameLive();
-                            //console.log(ifname);
-                            link.model().set("srcIfIPv4Array", []); // in case all or some IPs were deleted
-                            // find out if we have data for this interface name
-                            if (data.nodes[fn].interfaces_ip.hasOwnProperty(ifname) && data.nodes[fn].interfaces_ip[ifname].hasOwnProperty("ipv4")) {
-                              for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
-                                ip = k + "/" + v["prefix_length"];
-                                //console.log(ip);
-                                link.model().get("srcIfIPv4Array").push(ip);
-                              }
-                            }
+                            linkSetIPsFromNodeData(link, link.sourceNameLive(), "srcIfIPv4Array", data.nodes[fn].interfaces_ip, "ipv4");
+                            linkSetIPsFromNodeData(link, link.sourceNameLive(), "srcIfIPv6Array", data.nodes[fn].interfaces_ip, "ipv6");
                           } else if (link.targetNode().model().get('name') == n) {
-                            var ifname = link.targetNameLive();
-                            //console.log(ifname);
-                            link.model().set("tgtIfIPv4Array", []); // in case all or some IPs were deleted
-                            // find out if we have data for this interface name
-                            if (data.nodes[fn].interfaces_ip.hasOwnProperty(ifname) && data.nodes[fn].interfaces_ip[ifname].hasOwnProperty("ipv4")) {
-                              for (const [k, v] of Object.entries(data.nodes[fn].interfaces_ip[ifname].ipv4)) {
-                                ip = k + "/" + v["prefix_length"];
-                                //console.log(ip);
-                                link.model().get("tgtIfIPv4Array").push(ip);
-                              }
-                            }
+                            linkSetIPsFromNodeData(link, link.targetNameLive(), "tgtIfIPv4Array", data.nodes[fn].interfaces_ip, "ipv4");
+                            linkSetIPsFromNodeData(link, link.targetNameLive(), "tgtIfIPv6Array", data.nodes[fn].interfaces_ip, "ipv6");
                           }
                           if (typeof link.showIP === 'function') {
                             link.showIP();
@@ -1480,5 +1464,36 @@
     }
     return ifname;
   };
+  
+  addLinkTooltipItems = function(items, prefix, sources, targets) {
+    srcArray = (sources == null ? [] : sources);
+    tgtArray = (targets == null ? [] : targets);
+    for (let i = 0; i < Math.max(srcArray.length, tgtArray.length); i++){
+      var src, tgt;
+      src = (i < srcArray.length ? srcArray[i] : "");
+      tgt = (i < tgtArray.length ? tgtArray[i] : "");
+      items.push(
+        {
+          'rowName': prefix + "[" + i + "]",
+          'srcValue': src,
+          'tgtValue': tgt
+        }
+      );
+    }
+  }
+  
+  // Set Link model IP array from node_data
+  linkSetIPsFromNodeData = function(link, ifname, model_key, interfaces_ip, data_key) {
+    //console.log(ifname);
+    link.model().set(model_key, []); // in case all or some IPs were deleted
+    // find out if we have data for this interface name
+    if (interfaces_ip != null && interfaces_ip.hasOwnProperty(ifname) && interfaces_ip[ifname].hasOwnProperty(data_key)) {
+      for (const [k, v] of Object.entries(interfaces_ip[ifname][data_key])) {
+        ip = k + "/" + v["prefix_length"];
+        //console.log(ip);
+        link.model().get(model_key).push(ip);
+      }
+    }
+  }
 
 })(nx);
