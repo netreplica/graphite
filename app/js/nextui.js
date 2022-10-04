@@ -105,10 +105,6 @@
                 linkInstanceClass: 'LinkWithAlignedLabels',
                 linkConfig: {
                   linkType:          'curve', // curve or parallel
-                  sourceIPv4s:         [],
-                  targetIPv4s:         [],
-                  sourceIPv6s:         [],
-                  targetIPv6s:         [],
                 }
               }
             }
@@ -620,23 +616,23 @@
           set: function (a) {
             this.model().set('tgtIfIPv4Array', a);
           },
-          sourceIPv6s: {
-            get: function () {
-              var a = this.model().get('srcIfIPv6Array');
-              return (a != null ? a : []);
-            },
-            set: function (a) {
-              this.model().set('srcIfIPv6Array', a);
-            },
+        },
+        sourceIPv6s: {
+          get: function () {
+            var a = this.model().get('srcIfIPv6Array');
+            return (a != null ? a : []);
           },
-          targetIPv6s: {
-            get: function () {
-              var a = this.model().get('tgtIfIPv6Array');
-              return (a != null ? a : []);
-            },
-            set: function (a) {
-              this.model().set('tgtIfIPv6Array', a);
-            },
+          set: function (a) {
+            this.model().set('srcIfIPv6Array', a);
+          },
+        },
+        targetIPv6s: {
+          get: function () {
+            var a = this.model().get('tgtIfIPv6Array');
+            return (a != null ? a : []);
+          },
+          set: function (a) {
+            this.model().set('tgtIfIPv6Array', a);
           },
         },
       },
@@ -802,7 +798,7 @@
                 this.inherited(args);
                 this.hideIP();
             },
-            'setModel': function (model) {
+            setModel: function (model) {
                 this.inherited(model);
             },
             update: function () {
