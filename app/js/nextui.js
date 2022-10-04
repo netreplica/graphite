@@ -497,8 +497,8 @@
                 var tgtIPs = model.get('tgtIfIPv4Array');
                 for (let i = 0; i < Math.max(srcIPs.length, tgtIPs.length); i++){
                   var src, tgt;
-                  i < srcIPs.length ? src = srcIPs[i] : "";
-                  i < tgtIPs.length ? tgt = tgtIPs[i] : "";
+                  src = (i < srcIPs.length ? srcIPs[i] : "");
+                  tgt = (i < tgtIPs.length ? tgtIPs[i] : "");
                   items.push(
                     {
                       'rowName': "IPv4[" + i + "]",
