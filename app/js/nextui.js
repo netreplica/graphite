@@ -1092,10 +1092,12 @@
                   this._update_topology_data(data);
                   // enable live label mode
                   this.enableLiveLabels(true);
-                  enable_live_labels();
+                  //enable_live_labels(); // commented out - do not show Static/Live UI buttons
+                  this.label_types_live(); // instead, use live labels once we got data in
                 })
                 .catch(error => {
                   console.error('There has been a problem with fetch_device_data:', error);
+                  this.label_types_static(); // if we're no longer getting data, use static labels
                 });
             },
 
