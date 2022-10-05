@@ -14,37 +14,6 @@
    limitations under the License.
 */
 
-const interface_full_name_map = {
-  'e1-': 'ethernet1-',
-  'Eth': 'Ethernet',
-  'Fa' : 'FastEthernet',
-  'Gi' : 'GigabitEthernet',
-  'Te' : 'TenGigabitEthernet',
-  'Ma' : 'Management'
-};
-
-function if_fullname(ifname) {
-  //TODO ifname = dequote(ifname)
-  for (k in interface_full_name_map){
-    var v = interface_full_name_map[k];
-    if (ifname.toLowerCase().startsWith(k.toLowerCase())) {
-      return ifname.toLowerCase().replace(k.toLowerCase(), v);
-    }
-  }
-  return ifname;
-}
-
-function if_shortname(ifname) {
-  //TODO ifname = dequote(ifname)
-  for (k in interface_full_name_map){
-    var v = interface_full_name_map[k];
-    if (ifname.toLowerCase().startsWith(v.toLowerCase())) {
-      return ifname.toLowerCase().replace(v.toLowerCase(), k);
-    }
-  }
-  return ifname;
-}
-
 function port_mode_node_name(n, i) {
   return i + "@" + n;
 }
@@ -114,9 +83,10 @@ function convert_clab_topology_data_to_cmt(c){
     var cmt_node = {
   //  "id": int,
   //  "name": string,
+  //  "fullname": string,
   //  "websshDeviceLink": string,
   //  "websshDeviceLinkIPv6": string,
-  //  "model": string,
+  //  "kind": string,
   //  "image": string,
   //  "group": string,
   //  "mgmtIPv4": string,
@@ -143,9 +113,10 @@ function convert_clab_topology_data_to_cmt(c){
       }
     }
     
-    cmt_node["model"] = n.kind;
-    cmt_node["image"] = n.image;
-    cmt_node["group"] = n.group;
+    cmt_node["fullname"] = n.longname;
+    cmt_node["kind"]     = n.kind;
+    cmt_node["image"]    = n.image;
+    cmt_node["group"]    = n.group;
 
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
       cmt_node["mgmtIPv4"] = n["mgmt-ipv4-address"];
@@ -198,6 +169,9 @@ function convert_clab_topology_data_to_cmt(c){
     var tgt_d_name = l["z"]["node"];
     var src_i_name = l["a"]["interface"];
     var tgt_i_name = l["z"]["interface"];
+    var src_i_mac  = l["a"]["mac"];
+    var tgt_i_mac  = l["z"]["mac"];
+    // for port mode display, do not show interface name as a label
     if (node_id_map.hasOwnProperty(port_mode_node_name(l["a"]["node"], l["a"]["interface"]))) {
       src_i = node_id_map[port_mode_node_name(l["a"]["node"], l["a"]["interface"])];
       src_i_name = "";
@@ -213,8 +187,10 @@ function convert_clab_topology_data_to_cmt(c){
       "source": src_i,
       "target": tgt_i,
       "srcIfName": src_i_name,
+      "srcIfMAC":  src_i_mac,
       "srcDevice": src_d_name,
       "tgtIfName": tgt_i_name,
+      "tgtIfMAC":  tgt_i_mac,
       "tgtDevice": tgt_d_name,
     })
   }
@@ -258,7 +234,7 @@ function convert_clab_graph_to_cmt(c){
       "name": n.name,
       "websshDeviceLink": websshDeviceLink,
       "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
-      "model": n.kind,
+      "kind": n.kind,
       "image": n.image,
       "group": n.group,
       "mgmtIPv4": mgmtIPv4,
