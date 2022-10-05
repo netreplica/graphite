@@ -102,7 +102,7 @@
                   linkTooltipContentClass: 'GraphiteLinkTooltipContent'
                 },
                 supportMultipleLink: true, // if true, two nodes can have more than one link
-                linkInstanceClass: 'LinkWithAlignedLabels',
+                linkInstanceClass: 'BadgeLinkLabel', // also: 'LinkWithAlignedLabels', 'BadgeLinkLabel'
                 linkConfig: {
                   linkType:          'curve', // curve or parallel
                 }
@@ -1060,8 +1060,7 @@
               }
             },
 
-            device_data_autoupdate_on: async function() {
-              var delay = 5; // seconds
+            device_data_autoupdate_on: async function(delay = 10) { // seconds
               await this.fetch_device_data();
               this.autoUpdateTimer = setTimeout(() => this.device_data_autoupdate_on(), delay * 1000);
             },
@@ -1411,7 +1410,7 @@
             app.add_action_bar();
           }
           app.attach();
-          //app.device_data_autoupdate_on(); // start pulling additional data from the devices
+          app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
