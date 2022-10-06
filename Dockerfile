@@ -10,7 +10,15 @@ RUN apk add --no-cache \
   git \
   npm \
   curl \
-  && rm -rf /var/cache/apk/*
+  openssh-client \
+  build-base \
+  uwsgi-python3 \
+  python3 \
+  python3-dev \
+  && rm -rf /var/cache/apk/* \
+  && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+  && python3 get-pip.py \
+  && pip3 install virtualenv
 
 # Clone Graphite dependencies
 ENV WWW_HOME=/htdocs
@@ -22,6 +30,18 @@ RUN mkdir -p $WWW_HOME/default
 # Bootstrap
 RUN mkdir -p $WWW_HOME/bootstrap-3.4.1-dist
 COPY docker/bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
+
+# Node-data
+ENV NODEDATA=/usr/local/nodedata
+RUN mkdir -p ${NODEDATA}/node-data && mkdir -p ${NODEDATA}/venv && mkdir -p ${NODEDATA}/instance
+COPY docker/node-data/ ${NODEDATA}/node-data/
+COPY docker/node-data.cfg.template ${NODEDATA}/node-data.cfg.template
+RUN chown -R uwsgi:uwsgi ${NODEDATA}
+WORKDIR ${NODEDATA}
+ENV VIRTUAL_ENV=${NODEDATA}/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN pip3 install --no-cache-dir -r node-data/requirements.txt
 
 # webssh2
 ENV WEBSSH2=/usr/local/webssh2

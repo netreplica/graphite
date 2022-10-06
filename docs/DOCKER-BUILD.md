@@ -43,6 +43,18 @@
   cp -R src/webssh2/app/* graphite/docker/webssh2/
   ````
 
+3. Clone [node-data](https://github.com/netreplica/node-data)
+
+  ```Shell
+  mkdir -p src
+  git clone https://github.com/netreplica/node-data.git src/node-data
+
+  rm -rf graphite/docker/node-data
+  mkdir -p graphite/docker/node-data
+  cp -R src/node-data/* graphite/docker/node-data/
+  ````
+
+
 3. Build custom containerlab binary – this step was tested on Linux Ubuntu 20.04 LTS
 
   ```Shell

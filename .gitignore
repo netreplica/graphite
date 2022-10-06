@@ -135,5 +135,6 @@ docker/etc/lighttpd/conf.d/mime.conf
 docker/bin/clabg
 docker/default/default.json
 docker/webssh2/
+docker/node-data/
 docker/bootstrap-3.4.1-dist
 docker/bin/envsubst
