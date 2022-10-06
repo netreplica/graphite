@@ -56,7 +56,7 @@ COPY docker/webssh2.config.template ${WEBSSH2}/config.template
 RUN npm install --production
 
 # Default data
-COPY docker/default/ $WWW_HOME/default/
+COPY docker/default/ $WWW_HOME/lab/default/
 
 # Scripts and binaries
 COPY docker/bin/ /usr/local/bin/
@@ -70,8 +70,8 @@ EXPOSE 80/tcp
 # Volume with configuration
 #VOLUME /etc/lighttpd
 
-# Volume with Containerlab topology assets
-VOLUME ${WWW_HOME}/clab
+# Volume with lab topology assets
+VOLUME ${WWW_HOME}/lab
 
 # Run lighttpd webserver
 CMD ["start.sh"]

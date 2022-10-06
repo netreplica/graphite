@@ -29,7 +29,7 @@
   cp -R src/bootstrap-3.4.1-dist graphite/docker
 
   mkdir -p graphite/docker/default
-  cp graphite/examples/topology-data.json graphite/docker/default/default.json
+  cp graphite/examples/topology-data.json graphite/docker/default/
   ````
   
 2. Clone [webssh2](https://github.com/billchurch/WebSSH2)

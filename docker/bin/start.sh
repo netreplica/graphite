@@ -3,14 +3,14 @@
 chmod a+w /dev/stderr
 
 if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ]; then
-  # check if topology-data.json is directly mounted under clab directory
-  TOPO="${WWW_HOME}/clab/topology-data.json"
+  # check if topology-data.json is directly mounted under lab directory
+  TOPO="${WWW_HOME}/lab/topology-data.json"
   if ! [ -e "${TOPO}" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
     # check if topology-data.json is in the mounted clab-<topo> directory
-    TOPO="${WWW_HOME}/clab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+    TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
     if ! [ -e "${TOPO}" ]; then
       # there is no topology-data.json in the mounted clab-<topo>, last resource is legacy implementation with generating clab-<topo>/graph/<topo>.json
-      TOPO="${WWW_HOME}/clab/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
+      TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
       if ! [ -e "${TOPO}" ]; then
         generate_offline_graph.sh
       fi
@@ -19,15 +19,15 @@ if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ]; then
 
   if [ -e "${TOPO}" ]; then
     # link topology data as a default source for visualization
-    mkdir -p ${WWW_HOME}/default
-    rm ${WWW_HOME}/default/default.json
-    ln -s ${TOPO} ${WWW_HOME}/default/default.json
+    mkdir -p ${WWW_HOME}/lab/default
+    rm ${WWW_HOME}/lab/default/topology-data.json
+    ln -s ${TOPO} ${WWW_HOME}/lab/default/topology-data.json
   fi
 fi
 
 if ! [ -f ${NODEDATA}/instance/node-data.cfg ]; then
-  export NODEDATA_ROOT=${WWW_HOME}/clab
-  export NODEDATA_SECRETS='instance/secrets.json'
+  export NODEDATA_ROOT="${WWW_HOME}/lab"
+  export NODEDATA_SECRETS="instance/secrets.json"
   cat ${NODEDATA}/node-data.cfg.template | envsubst > ${NODEDATA}/instance/node-data.cfg
 fi
 cd ${NODEDATA} && nohup flask --app=node-data run 1>&2 &
