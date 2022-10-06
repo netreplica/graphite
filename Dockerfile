@@ -1,8 +1,8 @@
 ##########################################
-# BUILD-IMAGE
+# NODEDATA-IMAGE
 ##########################################
 
-FROM alpine:3.15 AS build-image
+FROM alpine:3.15 AS nodedata-image
 # Install packages
 RUN apk add --no-cache \
   curl \
@@ -23,6 +23,28 @@ COPY docker/node-data/ ${NODEDATA}/node-data/
 COPY docker/node-data.cfg.template ${NODEDATA}/node-data.cfg.template
 WORKDIR ${NODEDATA}
 RUN python3 -m venv $VIRTUAL_ENV && pip3 install --no-cache-dir -r node-data/requirements.txt
+
+##########################################
+# WEBSSH-IMAGE
+##########################################
+
+FROM alpine:3.15 AS webssh-image
+
+RUN apk add --no-cache \
+  npm \
+  && rm -rf /var/cache/apk/*
+
+# webssh2
+ENV WEBSSH2=/usr/local/webssh2
+RUN mkdir -p ${WEBSSH2} 
+WORKDIR ${WEBSSH2}
+COPY docker/webssh2/ ${WEBSSH2}/
+COPY docker/webssh2.config.template ${WEBSSH2}/config.template
+# Add webssh2 user to run node.js
+RUN addgroup --system webssh2 \
+  && adduser -S -G webssh2 -H -s /bin/sh -h ${WEBSSH2} webssh2 \
+  && chown webssh2:webssh2 ${WEBSSH2} \
+  && npm install --production
 
 ##########################################
 # RELEASE-IMAGE
@@ -55,23 +77,17 @@ COPY docker/bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
 
 # Node-data
 ENV NODEDATA=/usr/local/nodedata
-COPY --from=build-image /usr/local/nodedata /usr/local/nodedata
-#RUN chown -R uwsgi:uwsgi ${NODEDATA}
-WORKDIR ${NODEDATA}
 ENV VIRTUAL_ENV=${NODEDATA}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+COPY --from=nodedata-image /usr/local/nodedata /usr/local/nodedata
+#RUN chown -R uwsgi:uwsgi ${NODEDATA}
 
 # webssh2
 ENV WEBSSH2=/usr/local/webssh2
-RUN mkdir -p ${WEBSSH2} 
-WORKDIR ${WEBSSH2}
-COPY docker/webssh2/ ${WEBSSH2}/
-COPY docker/webssh2.config.template ${WEBSSH2}/config.template
-# Add webssh2 user to run node.js
+COPY --from=webssh-image ${WEBSSH2} ${WEBSSH2}
 RUN addgroup --system webssh2 \
   && adduser -S -G webssh2 -H -s /bin/sh -h ${WEBSSH2} webssh2 \
-  && chown webssh2:webssh2 ${WEBSSH2} \
-  && npm install --production
+  && chown webssh2:webssh2 ${WEBSSH2}
 
 # Default data
 COPY docker/default/ $WWW_HOME/lab/default/

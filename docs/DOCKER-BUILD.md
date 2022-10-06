@@ -74,7 +74,15 @@
   curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-Linux-x86_64 -o docker/bin/envsubst
   chmod +x docker/bin/envsubst
   # You might need to add --no-cache=true parameter if latest changes in the dependencies are not propagating to the build
-  docker image build -t netreplica/graphite:local .
+  # Nodedata-image
+  docker image build --target nodedata-image --tag netreplica/graphite:nodedata-stage .
+  # Webssh-image
+  docker image build --target webssh-image --tag netreplica/graphite:webssh-stage .
+  # Release-image
+  docker image build --target release-image \
+  --cache-from=netreplica/graphite:nodedata-stage \
+  --cache-from=netreplica/graphite:webssh-stage \
+  --tag netreplica/graphite:local .
   ````
   
 5. Audit
