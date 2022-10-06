@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.15
 
 ENV LIGHTTPD_VERSION=1.4.64-r0
 
