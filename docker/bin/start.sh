@@ -25,12 +25,12 @@ if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ]; then
   fi
 fi
 
-if ! [ -f ${NODEDATA}/instance/node-data.cfg ]; then
+if ! [ -f ${NODEDATA}/instance/nodedata.cfg ]; then
   export NODEDATA_ROOT="${WWW_HOME}/lab"
   export NODEDATA_SECRETS="instance/secrets.json"
-  cat ${NODEDATA}/node-data.cfg.template | envsubst > ${NODEDATA}/instance/node-data.cfg
+  cat ${NODEDATA}/nodedata.cfg.template | envsubst > ${NODEDATA}/instance/nodedata.cfg
 fi
-cd ${NODEDATA} && nohup flask --app=node-data run 1>&2 &
+cd ${NODEDATA} && nohup uwsgi --socket 127.0.0.1:5000 --protocol=http -w wsgi:app --master -p 4 1>&2 &
 
 if ! [ -f ${WEBSSH2}/config.json ]; then
   export WEBSSH2_SESSION_NAME="graphite-webssh2"

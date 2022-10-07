@@ -15,14 +15,16 @@ RUN apk add --no-cache \
   && pip3 install virtualenv
 
 # Node-data
-ENV NODEDATA="/usr/local/nodedata"
+ENV NODEDATA="/usr/local/node-data"
 ENV VIRTUAL_ENV="${NODEDATA}/venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN mkdir -p ${NODEDATA}/node-data && mkdir -p ${NODEDATA}/venv && mkdir -p ${NODEDATA}/instance
-COPY docker/node-data/ ${NODEDATA}/node-data/
-COPY docker/node-data.cfg.template ${NODEDATA}/node-data.cfg.template
+RUN mkdir -p ${NODEDATA}/instance && mkdir -p ${NODEDATA}/venv
+COPY docker/node-data/ ${NODEDATA}/
+COPY docker/nodedata.cfg.template ${NODEDATA}/nodedata.cfg.template
 WORKDIR ${NODEDATA}
-RUN python3 -m venv $VIRTUAL_ENV && pip3 install --no-cache-dir -r node-data/requirements.txt
+RUN python3 -m venv $VIRTUAL_ENV \
+  && pip3 install --no-cache-dir -r requirements.txt -r requirements_prod.txt \
+  && pip install -e .
 
 ##########################################
 # WEBSSH-IMAGE
@@ -76,10 +78,10 @@ COPY docker/etc/lighttpd/ /etc/lighttpd/
 COPY docker/bootstrap-3.4.1-dist/ $WWW_HOME/bootstrap-3.4.1-dist/
 
 # Node-data
-ENV NODEDATA=/usr/local/nodedata
+ENV NODEDATA=/usr/local/node-data
 ENV VIRTUAL_ENV=${NODEDATA}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-COPY --from=nodedata-image /usr/local/nodedata /usr/local/nodedata
+COPY --from=nodedata-image /usr/local/node-data /usr/local/node-data
 #RUN chown -R uwsgi:uwsgi ${NODEDATA}
 
 # webssh2
