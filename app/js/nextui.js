@@ -1370,7 +1370,9 @@
       topo_url = topo_base + "clab-" + topo_name + "/graph/" + topo_name + ".json";
       break;
     case "clabdata":
-      topo_url = topo_base + "clab-" + topo_name + "/topology-data.json"; // TODO handle when clab prefix is different
+      // NOTE on "clab-" prefix from https://containerlab.dev/manual/topo-def-file/#prefix
+      // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
+      topo_url = topo_base + "clab-" + topo_name + "/topology-data.json";
       break;
     default:
       topo_url = topo_base + topo_name + "/topology-data.json";
