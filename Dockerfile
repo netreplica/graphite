@@ -82,7 +82,9 @@ ENV NODEDATA=/usr/local/node-data
 ENV VIRTUAL_ENV=${NODEDATA}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY --from=nodedata-image /usr/local/node-data /usr/local/node-data
-#RUN chown -R uwsgi:uwsgi ${NODEDATA}
+RUN addgroup --system uwsgi \
+  && adduser -S -G uwsgi -H -s /bin/sh -h ${NODEDATA} uwsgi \
+  && chown uwsgi:uwsgi ${NODEDATA}
 
 # webssh2
 ENV WEBSSH2=/usr/local/webssh2
