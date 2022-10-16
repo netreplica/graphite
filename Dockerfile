@@ -46,7 +46,8 @@ COPY docker/webssh2.config.template ${WEBSSH2}/config.template
 RUN addgroup --system webssh2 \
   && adduser -S -G webssh2 -H -s /bin/sh -h ${WEBSSH2} webssh2 \
   && chown webssh2:webssh2 ${WEBSSH2} \
-  && npm install --production
+  && npm install --production \
+  && npm audit fix
 
 ##########################################
 # RELEASE-IMAGE

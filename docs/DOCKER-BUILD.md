@@ -89,7 +89,8 @@
 
   ```Shell
   docker run --rm -d --name graphite netreplica/graphite:local
+  sleep 2
   docker logs graphite
-  docker exec -t graphite npm audit
+  docker exec -t graphite sh -c "cd \$WEBSSH2; npm audit"
   docker stop graphite
   ````
