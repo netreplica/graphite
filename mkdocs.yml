@@ -1,0 +1,32 @@
+site_name: Graphite
+repo_url: https://github.com/netreplica/graphite
+repo_name: graphite
+edit_uri: ""
+theme:
+  name: material
+  logo: images/netreplica.wod.png
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+markdown_extensions:
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/netreplica
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/netreplica
+# Page tree
+nav:
+  - Home: index.md
+  - Containerlab: CONTAINERLAB.md
+  - Docker: DOCKER.md
+  - Building: DOCKER-BUILD.md

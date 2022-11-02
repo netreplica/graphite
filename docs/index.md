@@ -16,21 +16,21 @@ Graphite support for Containerlab includes:
 
 The easiest way to use Graphite with Containerlab is to add the following code to a topology YAML file under the `nodes:` section. For a full topology example see [examples/2host.yaml](examples/2host.yaml).
 
-```Yaml
-    graphite:
-      kind: linux
-      image: netreplica/graphite
-      env:
-        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
-      binds:
-        - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
-      ports:
-        - 8080:80
-      exec:
-        - sh -c 'graphite_motd.sh 8080'
-      labels:
-        graph-hide: yes
-````
+  ```Yaml
+      graphite:
+        kind: linux
+        image: netreplica/graphite
+        env:
+          CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+        binds:
+          - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+        ports:
+          - 8080:80
+        exec:
+          - sh -c 'graphite_motd.sh 8080'
+        labels:
+          graph-hide: yes
+  ```
 
 Once added, deploy the topology with `sudo -E containerlab deploy -t <topology.yaml>`. Note `-E` parameter for `sudo` – it is needed to pass `SSH_CONNECTION` variable.
 
