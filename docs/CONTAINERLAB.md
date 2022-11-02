@@ -87,7 +87,7 @@
 
 6. Validate access to Graphite web pages by opening the following URL in the browser: `http://REPLACE_IP/graphite/app/index.html`. You should be able to see a sample topology:
 
-![Default Graphite Topology Visualization](../images/3-nodes.clab.png)
+![Default Graphite Topology Visualization](images/3-nodes.clab.png)
 
 ## Visualize a topology generated from a ContainerLab YAML file (offline mode)
 
@@ -119,7 +119,7 @@
 
 3. At this point you should be able to view the topology in Graphite via the following URL: `http://REPLACE_IP/graphite/app/index.html?type=clab&topo=clos-3tier`. In case you used a topology with a different name, please change `clos-3tier` in the URL string to your topology name. Here is an example of what you could see (rendering is unique with every page refresh):
 
-![clos-3tier Graphite Topology Visualization](../images/clos-3tier.clab.png)
+![clos-3tier Graphite Topology Visualization](images/clos-3tier.clab.png)
 
 ## Improve visualization via custom labels in a ContainerLab YAML file
 
@@ -167,7 +167,7 @@ The visualization we got on the previous step lacks hierarchy. Let's fix that by
 
 5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers. `node3-1` is on the top since it has `graph-level` value of 1.
 
-![clos-3tier Graphite Topology Visualization arranged in tiers](../images/clos-3tier.clab.levels.png)
+![clos-3tier Graphite Topology Visualization arranged in tiers](images/clos-3tier.clab.levels.png)
 
 ## Changing visualization icons
 
@@ -212,7 +212,7 @@ All the nodes in our visualization so far represented by the same "router" icon.
 
 3. Now refresh the web page in the browser, and click "Vertical Layout". Now the bottom row of nodes uses "switch" icons.
 
-![clos-3tier Graphite Topology Visualization with switch icons](../images/clos-3tier.clab.icons.png)
+![clos-3tier Graphite Topology Visualization with switch icons](images/clos-3tier.clab.icons.png)
 
 ## Using `port` visualization mode
 
@@ -238,7 +238,7 @@ If such node has multiple interfaces connected to the emulated topology, its vis
 
 The `ixia` node will be visualized as two icons `eth1@ixia` and `eth2@ixia`:
 
-![Ixia-c-one node visualized in port mode](/images/clab-graphite-ixia-ports-cloud.png)
+![Ixia-c-one node visualized in port mode](images/clab-graphite-ixia-ports-cloud.png)
 
 ## Visualize running ContainerLab topology
 
@@ -260,7 +260,7 @@ The `ixia` node will be visualized as two icons `eth1@ixia` and `eth2@ixia`:
 
 3. Now refresh the web page in the browser, click on any node icon. You can see a management IP of each node in the tooltip that appears. These IPs were dynamically assigned by ContainerLabs when the topology was deployed.
 
-![clos-3tier Graphite Topology Visualization with management IPs](../images/clos-3tier.clab.mgmt_ip.png)
+![clos-3tier Graphite Topology Visualization with management IPs](images/clos-3tier.clab.mgmt_ip.png)
 
 
 4. To stop running the topology, use
