@@ -65,21 +65,21 @@ function convert_clab_to_cmt(c){
 function convert_clab_topology_data_to_cmt(c){
   var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
   var node_id_map = {};
-  
+
   // topology name
   if (c.hasOwnProperty("name")) {
     cmt.name = c.name;
   }
-  
+
   if (!c.hasOwnProperty("nodes")) {
     return cmt;
   }
-  
+
   var i = -1; // We will increment the index to 0 right away in the cycle below
   for (var node in c.nodes) { // node is a string with a node name
     i++;
     var n = c.nodes[node]; // retrieve the full object
-    
+
     var cmt_node = {
   //  "id": int,
   //  "name": string,
@@ -100,7 +100,7 @@ function convert_clab_topology_data_to_cmt(c){
     cmt_node["id"] = i;
     cmt_node["name"] = node;
     cmt_node["icon"] = "router";
-    
+
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
         continue; // do not visualize this node
@@ -112,7 +112,7 @@ function convert_clab_topology_data_to_cmt(c){
         cmt_node["layerSortPreference"] = n.labels["graph-level"];
       }
     }
-    
+
     cmt_node["fullname"] = n.longname;
     cmt_node["kind"]     = n.kind;
     cmt_node["image"]    = n.image;
@@ -134,8 +134,8 @@ function convert_clab_topology_data_to_cmt(c){
       }
     }
 
-    // This must be the last section, any other cmt_node properties shoud be set above
-    if (n.labels.hasOwnProperty("graph-mode") && n.labels["graph-mode"] == "port") {
+    // This must be the last section, any other cmt_node properties should be set above
+    if (n.hasOwnProperty("labels") && n.labels.hasOwnProperty("graph-mode") && n.labels["graph-mode"] == "port") {
       // display each port of this node as it's own individual node
       for (var l of c.links) {
         // TODO handle when the same interface is encountered more than once
@@ -160,7 +160,7 @@ function convert_clab_topology_data_to_cmt(c){
       cmt.nodes.push(cmt_node);
     }
   }
-  
+
   for (var i =0; i < c.links.length; i++) {
     var l = c.links[i];
     var src_i = node_id_map[l["a"]["node"]];
