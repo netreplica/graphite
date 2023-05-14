@@ -23,7 +23,7 @@
   grep -v "server.use-ipv6" | \
   grep -v "debug.conf" \
   > graphite/docker/etc/lighttpd/lighttpd.conf
-  
+
   wget -O src/bootstrap-3.4.1-dist.zip https://github.com/twbs/bootstrap/releases/download/v3.4.1/bootstrap-3.4.1-dist.zip
   unzip src/bootstrap-3.4.1-dist.zip -d src/
   cp -R src/bootstrap-3.4.1-dist graphite/docker
@@ -31,7 +31,7 @@
   mkdir -p graphite/docker/default
   cp graphite/examples/topology-data.json graphite/docker/default/
   ````
-  
+
 2. Clone [webssh2](https://github.com/billchurch/WebSSH2)
 
   ```Shell
@@ -42,18 +42,6 @@
   mkdir -p graphite/docker/webssh2
   cp -R src/webssh2/app/* graphite/docker/webssh2/
   ````
-
-3. Clone [node-data](https://github.com/netreplica/node-data)
-
-  ```Shell
-  mkdir -p src
-  git clone https://github.com/netreplica/node-data.git src/node-data
-
-  rm -rf graphite/docker/node-data
-  mkdir -p graphite/docker/node-data
-  cp -R src/node-data/* graphite/docker/node-data/
-  ````
-
 
 3. Build custom containerlab binary – this step was tested on Linux Ubuntu 20.04 LTS
 
@@ -84,7 +72,7 @@
   --cache-from=netreplica/graphite:webssh-stage \
   --tag netreplica/graphite:local .
   ````
-  
+
 5. Audit
 
   ```Shell
