@@ -2,26 +2,26 @@
 
 chmod a+w /dev/stderr
 
-if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ]; then
-  # check if topology-data.json is directly mounted under lab directory
-  TOPO="${WWW_HOME}/lab/topology-data.json"
-  if ! [ -e "${TOPO}" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
-    # check if topology-data.json is in the mounted clab-<topo> directory
-    TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
-    if ! [ -e "${TOPO}" ]; then
-      # there is no topology-data.json in the mounted clab-<topo>, last resource is legacy implementation with generating clab-<topo>/graph/<topo>.json
-      TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
-      if ! [ -e "${TOPO}" ]; then
-        generate_offline_graph.sh
-      fi
-    fi
-  fi
+ # Topology location used by the web app by default, can be mounted this way directly from the host
+TOPO="${WWW_HOME}/default/default.json"
 
-  if [ -e "${TOPO}" ]; then
-    # link topology data as a default source for visualization
-    mkdir -p ${WWW_HOME}/lab/default
-    rm ${WWW_HOME}/lab/default/topology-data.json
-    ln -s ${TOPO} ${WWW_HOME}/lab/default/topology-data.json
+# Default topology from the lab/default folder:
+# – in case the folder was mounted from the host, or
+# - the lab folder was not mounted, in which case we can use the default topology provided by the image
+DEFAULT_TOPO="${WWW_HOME}/lab/default/topology-data.json"
+if ! [ -e "${TOPO}" ] && [ -e "${DEFAULT_TOPO}" ] ; then
+  mkdir -p "${WWW_HOME}/default"
+  ln -s "${DEFAULT_TOPO}" "${TOPO}"
+fi
+
+# Topology location via environment variables – overrides default topology location
+if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
+  DEFAULT_TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+  # check if DEFAULT_TOPO exists
+  if [ -e "${DEFAULT_TOPO}" ]; then
+    # create a symlink to the default topology
+    mkdir -p "${WWW_HOME}/default"
+    ln -s "${DEFAULT_TOPO}" "${TOPO}"
   fi
 fi
 

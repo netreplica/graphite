@@ -21,7 +21,7 @@
      * @extend nx.graphic.Topology
      * @module nx.graphic.Topology
      */
-    
+
     nx.define('GraphiteTopology', nx.graphic.Topology, {
         properties: {
             /**
@@ -197,7 +197,7 @@
         this.view("badgeShape").set("visible", false);
         this.view("devicePropsBadge").set("visible", false);
       },
-      
+
       updateLabels: function() {
         var l;
         if (this.topology() instanceof GraphiteTopology && this.topology().labelType() == 'live') {
@@ -533,12 +533,12 @@
         ],
       },
     });
-    
+
     /**
      * GraphiteLink class
      * @class GraphiteLink
      * @extend nx.graphic.Topology.Link
-     * 
+     *
      * Handles live link data
      */
     nx.define('GraphiteLink', nx.graphic.Topology.Link, {
@@ -653,7 +653,7 @@
      * LinkWithAlignedLabels class
      * @class LinkWithAlignedLabels
      * @extend GraphiteLink
-     * 
+     *
      * Link with interface name labels aligned alongside the link
      */
     nx.define('LinkWithAlignedLabels', GraphiteLink, {
@@ -673,7 +673,7 @@
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
                 }
             });
-            
+
             return view;
         },
         methods: {
@@ -686,15 +686,15 @@
             },
             update: function() {
                 this.inherited();
-                
+
                 var topology = this.topology();
                 var line = this.line();
                 var angle = line.angle();
                 var stageScale = this.stageScale();
-                
+
                 // use padded line to define x,y coordinates for labels
                 var paddedLine = line.pad(35 * stageScale, 35 * stageScale);
-                
+
                 var sourceView = this.view('source');
                 sourceView.setStyle('font-size', 12 * stageScale);
                 align_link_label(sourceView, paddedLine.start, angle, "source");
@@ -716,7 +716,7 @@
      * BadgeLinkLabel class
      * @class BadgeLinkLabel
      * @extend GraphiteLink
-     * 
+     *
      * Link with interface numbers as badges
      */
     nx.define('BadgeLinkLabel', GraphiteLink, {
@@ -920,12 +920,12 @@
         'fetch_device_data': function () {
           this.topologyApp().fetch_device_data();
         },
-          
+
         // assign topology instance (by ref) to the actionbar instance
         'assignTopology': function (topo) {
           this.topology(topo);
         },
-          
+
         // assign topologyApp instance (by ref) to the actionbar instance
         'assignTopologyApp': function (app) {
           this.topologyApp(app);
@@ -955,37 +955,37 @@
               this.topologyContainer = new TopologyContainer();
               // topology instance was made in TopologyContainer, but we can invoke its members through 'topology' variable for convenience
               this.topology = this.topologyContainer.topology();
-              
+
               // Read topology data from variable
               this.topology.data(cmt);
               this.linkInstanceClass = this.topology.linkInstanceClass();
               this.devicePropertiesShown = false;
             },
-            
+
             add_action_bar: function () {
               this.actionBar = new ActionBar();
               this.actionBar.assignTopology(this.topology);
               this.actionBar.assignTopologyApp(this);
               this.actionBar.attach(this);
             },
-            
+
             attach: function () {
               // Attach it to the document
               this.topology.attach(this);
             },
-            
+
             detach: function () {
               // Attach it to the document
               this.topology.detach(this);
             },
-            
+
             layout_auto: function() {
               this.currentLayout = 'auto';
               this.detach();
               this.topology.activateLayout('force');
               this.attach();
             },
-            
+
             layout_horizontal: function () {
               if (this.currentLayout === 'vertical') {
                   return;
@@ -998,7 +998,7 @@
               });
               this.topology.activateLayout('hierarchicalLayout');
             },
-            
+
             layout_vertical: function () {
               if (this.currentLayout === 'horizontal') {
                   return;
@@ -1011,17 +1011,17 @@
               });
               this.topology.activateLayout('hierarchicalLayout');
             },
-            
+
             label_types_static: function() {
               this.topology.labelType('static');
               this._update_topology_labels();
             },
-            
+
             label_types_live: function() {
               this.topology.labelType('live');
               this._update_topology_labels();
             },
-            
+
             toggle_link_label_types: function () {
               switch (this.linkInstanceClass) {
               case 'LinkWithAlignedLabels':
@@ -1040,7 +1040,7 @@
               // attach topology back
               this.topology.attach(this);
             },
-            
+
             toggle_device_props: function () {
               var topo = this.topology;
               if (!this.devicePropertiesShown) {
@@ -1080,7 +1080,7 @@
 
             fetch_device_data: function() {
               var topo_url = "/collect/clab/" + this.cmt.name + "/nodes/"  + '?nocache=' + (new Date()).getTime();
-              
+
               fetch(topo_url)
                 .then(response => {
                   if (!response.ok) {
@@ -1109,7 +1109,7 @@
                 nx.each(topo.getNodes(), function (node) {
                   var n = node.model().get('name');
                   var fn = node.model().get('fullname'); // this name is supposed to be unique for the topology
-                
+
                   if (data.nodes.hasOwnProperty(fn)) {
                     node_data = data.nodes[fn]
                     if (node_data.hasOwnProperty("hostname")) {
@@ -1155,18 +1155,18 @@
                                 // Exact interface name match. Should work for nodes that use native Linux interface names, but not for most containerized NOSes
                                 //console.log(fn + ": " + ifname + ", " + i + ", "+ linkside);
                                 return true;
-                              } else if (ifmac != "" && 
+                              } else if (ifmac != "" &&
                                          node_data.interfaces.hasOwnProperty(i) &&
                                          node_data.interfaces[i].hasOwnProperty('mac_address') &&
                                          node_data.interfaces[i].mac_address.toUpperCase() == ifmac) {
                                 // MAC address match. Known to work for cEOSLab in Containerlab
                                 //console.log(fn + ": " + ifname + ", " + ifmac + ", " + linkside);
                                 return true;
-                              } else if (node_data.hasOwnProperty('lldp_neighbors') && 
+                              } else if (node_data.hasOwnProperty('lldp_neighbors') &&
                                          node_data.lldp_neighbors.hasOwnProperty(i)) {
                                 // LLDP peer name match. Only works if topology and node_data interfaces are in the same order
                                 // TODO consider only point-2-point links, not bridges
-                                if (node_data.lldp_neighbors[i].length == 1 && 
+                                if (node_data.lldp_neighbors[i].length == 1 &&
                                     node_data.lldp_neighbors[i][0].hostname == ifpeer) {
                                   // will use peerif for the other side of the link, to make sure we use correct peer interface name from LLDP
                                   peerif = node_data.lldp_neighbors[i][0].port
@@ -1206,7 +1206,7 @@
                         }
                       )
                     }
-                      
+
                     if (data.nodes[fn].hasOwnProperty('interfaces_ip')) {
                       node.eachLink(
                         function (link) {
@@ -1223,8 +1223,8 @@
                           }
                         }
                       );
-                    } 
-                    
+                    }
+
                     if (topo.labelType() == 'live'){
                       node.updateLabels();
                     }
@@ -1233,7 +1233,7 @@
               }
               return topo;
             },
-            
+
             _update_topology_labels: function() {
               nx.each(this.topology.getNodes(), function (node) {
                 node.updateLabels();
@@ -1242,7 +1242,7 @@
         }
     });
 
-  
+
   function if_number(ifname) {
     if (typeof ifname == 'string') {
       return ifname.replace(/^[A-z]+/,'');
@@ -1250,7 +1250,7 @@
       return "";
     }
   }
-  
+
   function align_link_label(label, point, angle, which_end) {
     var angle_flip = angle + 180;
     label.set('x', point.x);
@@ -1285,7 +1285,7 @@
     default:
     }
   }
-  
+
   function position_link_badge(badge, badgeBg, point, stageScale) {
     //TODO: accommodate larger text label
     badgeBg.sets({ width: 8, visible: true });
@@ -1302,7 +1302,7 @@
 (function (nx) {
 
     var app; // TopologyApp
-    
+
     // Alignment functions
     autolayout = function() {
         document.getElementById("nav-auto").className = "active";
@@ -1324,7 +1324,7 @@
         document.getElementById("nav-vertical").className = "active";
         app.layout_vertical();
     };
-    
+
     // Label display functions
     label_types_static = function() {
       document.getElementById("nav-live").className = "pull-right";
@@ -1354,7 +1354,7 @@
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
-    var topo_type = "default", topo_name = "default", topo_base = "/lab/", topo_url;
+    var topo_type = "default", topo_name = "default", topo_base = "/", topo_file = "default.json", topo_url;
     var showActionBar = false;
     if (url_params.has('type')) {
       topo_type = url_params.get('type');
@@ -1366,22 +1366,22 @@
       showActionBar = true;
     }
     switch (topo_type) {
-    case "clab":
+    case "clab": // Deprecated
       topo_url = topo_base + "clab-" + topo_name + "/graph/" + topo_name + ".json";
       break;
     case "clabdata":
       // NOTE on "clab-" prefix from https://containerlab.dev/manual/topo-def-file/#prefix
       // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
-      topo_url = topo_base + "clab-" + topo_name + "/topology-data.json";
+      topo_url = topo_base + "lab/clab-" + topo_name + "/" + "topology-data.json";
       break;
     default:
-      topo_url = topo_base + topo_name + "/topology-data.json";
+      topo_url = topo_base + topo_name +"/" + topo_file;
     }
-    
+
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
     var topologyData;
-    
+
     xmlhttp.onreadystatechange = function() {
       // TODO handle errors
       if (this.readyState == 4 && this.status == 200) {
@@ -1461,7 +1461,7 @@
     }
     return ifname;
   };
-  
+
   addLinkTooltipItems = function(items, prefix, sources, targets) {
     srcArray = (sources == null ? [] : sources);
     tgtArray = (targets == null ? [] : targets);
@@ -1478,7 +1478,7 @@
       );
     }
   }
-  
+
   // Set Link model IP array from node_data
   linkSetIPsFromNodeData = function(link, ifname, model_key, interfaces_ip, data_key) {
     //console.log(ifname);

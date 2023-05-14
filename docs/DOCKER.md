@@ -14,7 +14,7 @@
 ```Shell
 CLABDIR=$(pwd)
 docker run -d -t \
-  -v "${CLABDIR}":/htdocs/clab \
+  -v "${CLABDIR}":/htdocs/lab \
   -p 8080:80 \
   --name graphite \
   netreplica/graphite
@@ -27,13 +27,13 @@ docker run -d -t \
 You can use the following environmental variables with Graphite docker container:
 
 ```Shell
-GRAPHITE_DEFAULT_TYPE # Default type of topology data to visualize: clab
+GRAPHITE_DEFAULT_TYPE # Default type of topology data to visualize. Currently, only `clab` is supported
 GRAPHITE_DEFAULT_TOPO # Default topology to visualize when no specific topology is provided via the URL
 CLAB_SSH_CONNECTION   # Pass value of SSH_CONNECTION env var on the host when launching Graphite container
                       # and use graphite_motd.sh script to see an URL you can open from your computer to connect to Graphite
 ```
 
-## Generating offline graphs
+## Generating offline graphs - DEPRECATED
 
 1. If you never exported Containerlab topology graphs into JSON, you can do that for all topologies in the folder at once with the following command:
 
