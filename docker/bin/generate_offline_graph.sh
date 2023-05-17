@@ -1,8 +1,8 @@
 #!/bin/sh
 # This script will generate offline graphs in JSON format from specified Containerlab YAML topology file
 
-if [ -d "${WWW_HOME}/clab" ]; then
-  cd "${WWW_HOME}/clab"
+if [ -d "${WWW_HOME}/lab" ]; then
+  cd "${WWW_HOME}/lab"
 fi
 
 if [ "$#" -lt 1 ]; then

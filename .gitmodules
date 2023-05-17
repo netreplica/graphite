@@ -1,0 +1,3 @@
+[submodule "docker/node-data"]
+	path = docker/node-data
+	url = https://github.com/netreplica/node-data.git

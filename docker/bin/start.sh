@@ -2,28 +2,35 @@
 
 chmod a+w /dev/stderr
 
-if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ]; then
-  # check if topology-data.json is directly mounted under clab directory
-  TOPO="${WWW_HOME}/clab/topology-data.json"
-  if ! [ -e "${TOPO}" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
-    # check if topology-data.json is in the mounted clab-<topo> directory
-    TOPO="${WWW_HOME}/clab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
-    if ! [ -e "${TOPO}" ]; then
-      # there is no topology-data.json in the mounted clab-<topo>, last resource is legacy implementation with generating clab-<topo>/graph/<topo>.json
-      TOPO="${WWW_HOME}/clab/clab-${GRAPHITE_DEFAULT_TOPO}/graph/${GRAPHITE_DEFAULT_TOPO}.json"
-      if ! [ -e "${TOPO}" ]; then
-        generate_offline_graph.sh
-      fi
-    fi
-  fi
+ # Topology location used by the web app by default, can be mounted this way directly from the host
+TOPO="${WWW_HOME}/default/default.json"
 
-  if [ -e "${TOPO}" ]; then
-    # link topology data as a default source for visualization
-    mkdir -p ${WWW_HOME}/default
-    rm ${WWW_HOME}/default/default.json
-    ln -s ${TOPO} ${WWW_HOME}/default/default.json
+# Default topology from the lab/default folder:
+# – in case the folder was mounted from the host, or
+# - the lab folder was not mounted, in which case we can use the default topology provided by the image
+DEFAULT_TOPO="${WWW_HOME}/lab/default/topology-data.json"
+if ! [ -e "${TOPO}" ] && [ -e "${DEFAULT_TOPO}" ] ; then
+  mkdir -p "${WWW_HOME}/default"
+  ln -s "${DEFAULT_TOPO}" "${TOPO}"
+fi
+
+# Topology location via environment variables – overrides default topology location
+if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
+  DEFAULT_TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+  # check if DEFAULT_TOPO exists
+  if [ -e "${DEFAULT_TOPO}" ]; then
+    # create a symlink to the default topology
+    mkdir -p "${WWW_HOME}/default"
+    ln -s "${DEFAULT_TOPO}" "${TOPO}"
   fi
 fi
+
+if ! [ -f ${NODEDATA}/instance/nodedata.cfg ]; then
+  export NODEDATA_ROOT="${WWW_HOME}/lab"
+  export NODEDATA_SECRETS="instance/secrets.json"
+  cat ${NODEDATA}/nodedata.cfg.template | envsubst > ${NODEDATA}/instance/nodedata.cfg
+fi
+cd ${NODEDATA} && su uwsgi -c "nohup uwsgi --socket 127.0.0.1:5000 --protocol=http -w wsgi:app --master -p 4 1>&2 &"
 
 if ! [ -f ${WEBSSH2}/config.json ]; then
   export WEBSSH2_SESSION_NAME="graphite-webssh2"
@@ -31,6 +38,5 @@ if ! [ -f ${WEBSSH2}/config.json ]; then
   cat ${WEBSSH2}/config.template | envsubst > ${WEBSSH2}/config.json
 fi
 
-
-su webssh2 -c "nohup /usr/bin/node index.js 1>&2 &"
+cd ${WEBSSH2} && su webssh2 -c "nohup /usr/bin/node index.js 1>&2 &"
 exec lighttpd -D -f /etc/lighttpd/lighttpd.conf

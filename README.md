@@ -26,14 +26,15 @@ The easiest way to use Graphite with Containerlab is to add the following code t
       env:
         CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
       binds:
-        - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+        - __clabDir__/topology-data.json:/htdocs/lab/default/topology-data.json:ro
+        - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
       ports:
         - 8080:80
       exec:
         - sh -c 'graphite_motd.sh 8080'
       labels:
         graph-hide: yes
-````
+```
 
 Once added, deploy the topology with `sudo -E containerlab deploy -t <topology.yaml>`. Note `-E` parameter for `sudo` – it is needed to pass `SSH_CONNECTION` variable.
 
@@ -57,7 +58,7 @@ Graphite was conceived as part of [NANOG-84 Hackathon](https://www.nanog.org/eve
 
 ## Copyright notice
 
-Copyright 2022 Netreplica Team
+Copyright 2022-2023 Netreplica Team
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

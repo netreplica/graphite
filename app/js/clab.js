@@ -14,37 +14,6 @@
    limitations under the License.
 */
 
-const interface_full_name_map = {
-  'e1-': 'ethernet1-',
-  'Eth': 'Ethernet',
-  'Fa' : 'FastEthernet',
-  'Gi' : 'GigabitEthernet',
-  'Te' : 'TenGigabitEthernet',
-  'Ma' : 'Management'
-};
-
-function if_fullname(ifname) {
-  //TODO ifname = dequote(ifname)
-  for (k in interface_full_name_map){
-    var v = interface_full_name_map[k];
-    if (ifname.toLowerCase().startsWith(k.toLowerCase())) {
-      return ifname.toLowerCase().replace(k.toLowerCase(), v);
-    }
-  }
-  return ifname;
-}
-
-function if_shortname(ifname) {
-  //TODO ifname = dequote(ifname)
-  for (k in interface_full_name_map){
-    var v = interface_full_name_map[k];
-    if (ifname.toLowerCase().startsWith(v.toLowerCase())) {
-      return ifname.toLowerCase().replace(v.toLowerCase(), k);
-    }
-  }
-  return ifname;
-}
-
 function port_mode_node_name(n, i) {
   return i + "@" + n;
 }
@@ -96,27 +65,28 @@ function convert_clab_to_cmt(c){
 function convert_clab_topology_data_to_cmt(c){
   var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
   var node_id_map = {};
-  
+
   // topology name
   if (c.hasOwnProperty("name")) {
     cmt.name = c.name;
   }
-  
+
   if (!c.hasOwnProperty("nodes")) {
     return cmt;
   }
-  
+
   var i = -1; // We will increment the index to 0 right away in the cycle below
   for (var node in c.nodes) { // node is a string with a node name
     i++;
     var n = c.nodes[node]; // retrieve the full object
-    
+
     var cmt_node = {
   //  "id": int,
   //  "name": string,
+  //  "fullname": string,
   //  "websshDeviceLink": string,
   //  "websshDeviceLinkIPv6": string,
-  //  "model": string,
+  //  "kind": string,
   //  "image": string,
   //  "group": string,
   //  "mgmtIPv4": string,
@@ -130,7 +100,7 @@ function convert_clab_topology_data_to_cmt(c){
     cmt_node["id"] = i;
     cmt_node["name"] = node;
     cmt_node["icon"] = "router";
-    
+
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
         continue; // do not visualize this node
@@ -142,10 +112,11 @@ function convert_clab_topology_data_to_cmt(c){
         cmt_node["layerSortPreference"] = n.labels["graph-level"];
       }
     }
-    
-    cmt_node["model"] = n.kind;
-    cmt_node["image"] = n.image;
-    cmt_node["group"] = n.group;
+
+    cmt_node["fullname"] = n.longname;
+    cmt_node["kind"]     = n.kind;
+    cmt_node["image"]    = n.image;
+    cmt_node["group"]    = n.group;
 
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
       cmt_node["mgmtIPv4"] = n["mgmt-ipv4-address"];
@@ -163,8 +134,8 @@ function convert_clab_topology_data_to_cmt(c){
       }
     }
 
-    // This must be the last section, any other cmt_node properties shoud be set above
-    if (n.labels.hasOwnProperty("graph-mode") && n.labels["graph-mode"] == "port") {
+    // This must be the last section, any other cmt_node properties should be set above
+    if (n.hasOwnProperty("labels") && n.labels.hasOwnProperty("graph-mode") && n.labels["graph-mode"] == "port") {
       // display each port of this node as it's own individual node
       for (var l of c.links) {
         // TODO handle when the same interface is encountered more than once
@@ -189,7 +160,7 @@ function convert_clab_topology_data_to_cmt(c){
       cmt.nodes.push(cmt_node);
     }
   }
-  
+
   for (var i =0; i < c.links.length; i++) {
     var l = c.links[i];
     var src_i = node_id_map[l["a"]["node"]];
@@ -198,6 +169,9 @@ function convert_clab_topology_data_to_cmt(c){
     var tgt_d_name = l["z"]["node"];
     var src_i_name = l["a"]["interface"];
     var tgt_i_name = l["z"]["interface"];
+    var src_i_mac  = l["a"]["mac"];
+    var tgt_i_mac  = l["z"]["mac"];
+    // for port mode display, do not show interface name as a label
     if (node_id_map.hasOwnProperty(port_mode_node_name(l["a"]["node"], l["a"]["interface"]))) {
       src_i = node_id_map[port_mode_node_name(l["a"]["node"], l["a"]["interface"])];
       src_i_name = "";
@@ -213,8 +187,10 @@ function convert_clab_topology_data_to_cmt(c){
       "source": src_i,
       "target": tgt_i,
       "srcIfName": src_i_name,
+      "srcIfMAC":  src_i_mac,
       "srcDevice": src_d_name,
       "tgtIfName": tgt_i_name,
+      "tgtIfMAC":  tgt_i_mac,
       "tgtDevice": tgt_d_name,
     })
   }
@@ -258,7 +234,7 @@ function convert_clab_graph_to_cmt(c){
       "name": n.name,
       "websshDeviceLink": websshDeviceLink,
       "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
-      "model": n.kind,
+      "kind": n.kind,
       "image": n.image,
       "group": n.group,
       "mgmtIPv4": mgmtIPv4,
