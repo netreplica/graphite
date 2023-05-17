@@ -102,7 +102,7 @@
                   linkTooltipContentClass: 'GraphiteLinkTooltipContent'
                 },
                 supportMultipleLink: true, // if true, two nodes can have more than one link
-                linkInstanceClass: 'BadgeLinkLabel', // also: 'LinkWithAlignedLabels', 'BadgeLinkLabel'
+                linkInstanceClass: 'LinkWithAlignedLabels', // also: 'LinkWithAlignedLabels', 'BadgeLinkLabel'
                 linkConfig: {
                   linkType:          'curve', // curve or parallel
                 }
@@ -1089,11 +1089,12 @@
                   return response.json();
                 })
                 .then(data => {
-                  this._update_topology_data(data);
-                  // enable live label mode
-                  this.enableLiveLabels(true);
-                  //enable_live_labels(); // commented out - do not show Static/Live UI buttons
-                  this.label_types_live(); // instead, use live labels once we got data in
+                  if (data.hasOwnProperty("nodes") && Object.keys(data.nodes).length > 0) {
+                    this._update_topology_data(data);
+                    // enable live label mode
+                    enable_live_labels();
+                    this.label_types_live(); // use live labels once we got data in
+                  }
                 })
                 .catch(error => {
                   console.error('There has been a problem with fetch_device_data:', error);
@@ -1327,28 +1328,27 @@
 
     // Label display functions
     label_types_static = function() {
-      document.getElementById("nav-live").className = "pull-right";
-      document.getElementById("nav-static").className = "pull-right active";
+      document.getElementById("nav-live").classList.remove("active");
+      document.getElementById("nav-static").classList.add("active");
       app.label_types_static();
     };
 
     label_types_live = function() {
-        if (app.enableLiveLabels()) {
-            document.getElementById("nav-live").className = "pull-right active";
-            document.getElementById("nav-static").className = "pull-right";
-            app.label_types_live();
+        if (app.enableLiveLabels) {
+          document.getElementById("nav-static").classList.remove("active");
+          document.getElementById("nav-live").classList.add("active");
+          app.label_types_live();
         }
     };
 
     enable_live_labels = function() {
-        if (app.enableLiveLabels()) {
-            document.getElementById("nav-labels").classList.add("m-fadeIn");
-            document.getElementById("nav-static").classList.add("m-fadeIn");
-            document.getElementById("nav-live").classList.add("m-fadeIn");
-            document.getElementById("nav-labels").classList.remove("m-fadedOut");
-            document.getElementById("nav-static").classList.remove("m-fadedOut");
-            document.getElementById("nav-live").classList.remove("m-fadedOut");
-        }
+      app.enableLiveLabels = true;
+      document.getElementById("nav-labels").classList.add("m-fadeIn");
+      document.getElementById("nav-static").classList.add("m-fadeIn");
+      document.getElementById("nav-live").classList.add("m-fadeIn");
+      document.getElementById("nav-labels").classList.remove("m-fadedOut");
+      document.getElementById("nav-static").classList.remove("m-fadedOut");
+      document.getElementById("nav-live").classList.remove("m-fadedOut");
     };
 
     // Identify topology to load
