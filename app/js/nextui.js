@@ -670,9 +670,21 @@
         },
         setModel: function (model) {
           this.inherited(model);
+          this.view('path').set('id', 'link_' + this.id());
+          if (this.sourceView() instanceof GraphiteAlignedLabel) {
+            this.sourceView().link(this);
+            this.sourceView().side('source');
+          }
+          if (this.targetView() instanceof GraphiteAlignedLabel) {
+            this.targetView().link(this);
+            this.targetView().side('target');
+          }
         },
         update: function() {
           this.inherited();
+          var stageScale = this.stageScale();
+          this.sourceView().setStyle('font-size', 12 * stageScale);
+          this.targetView().setStyle('font-size', 12 * stageScale);
         },
       }
     });
@@ -712,18 +724,10 @@
             },
             setModel: function (model) {
                 this.inherited(model);
-                this.view('path').set('id', 'link_' + this.id());
-                this.sourceView().link(this);
-                this.targetView().link(this);
-                this.sourceView().side('source');
-                this.targetView().side('target');
                 this.updateLabels();
             },
             update: function() {
                 this.inherited();
-                var stageScale = this.stageScale();
-                this.sourceView().setStyle('font-size', 12 * stageScale);
-                this.targetView().setStyle('font-size', 12 * stageScale);
             },
             updateLabels: function() {
               this.sourceView().text(this.sourceLabel());
@@ -798,13 +802,13 @@
                 ]
               },
               {
-                name: 'sourceIPv4',
+                name: 'source',
                 type: 'nx.graphic.Text',
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
               }, {
-                name: 'targetIPv4',
+                name: 'target',
                 type: 'nx.graphic.Text',
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
@@ -837,7 +841,7 @@
                     }
                     position_link_badge(badge, badgeBg, line_int.start, stageScale)
 
-                    var ipLabel = this.view('sourceIPv4');
+                    var ipLabel = this.view('source');
                     ipLabel.set('text', this.sourceIPv4());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.start, angle, "source");
@@ -851,7 +855,7 @@
                     }
                     position_link_badge(badge, badgeBg, line_int.end, stageScale)
 
-                    var ipLabel = this.view('targetIPv4');
+                    var ipLabel = this.view('target');
                     ipLabel.set('text', this.targetIPv4());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.end, angle, "target");
@@ -862,8 +866,8 @@
                 this.view("targetBadge").visible(true);
                 this.view("targetBg").visible(true);
                 this.view("targetText").visible(true);
-                this.view("sourceIPv4").visible(true);
-                this.view("targetIPv4").visible(true);
+                this.view("source").visible(true);
+                this.view("target").visible(true);
               },
               updateLabels: function() {
                 var sourceLabelView = this.view('sourceText');
@@ -872,16 +876,16 @@
                 targetLabelView.set('text', this.targetLabelNumber());
               },
               showIP: function () {
-                var srcLabel = this.view('sourceIPv4');
+                var srcLabel = this.view('source');
                 srcLabel.set('text', this.sourceIPv4());
                 srcLabel.visible(true);
-                var tgtLabel = this.view('targetIPv4');
+                var tgtLabel = this.view('target');
                 tgtLabel.set('text', this.targetIPv4());
                 tgtLabel.visible(true);
               },
               hideIP: function () {
-                this.view('sourceIPv4').visible(false);
-                this.view('targetIPv4').visible(false);
+                this.view('source').visible(false);
+                this.view('target').visible(false);
               }
           }
       });
