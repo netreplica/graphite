@@ -543,6 +543,34 @@
      */
     nx.define('GraphiteLink', nx.graphic.Topology.Link, {
       properties: {
+        sourceView: {
+          /**
+           * Get or set the source view
+           * @property sourceView
+           */
+          get: function () {
+            return this.view('source');
+          },
+          set: function (value) {
+            if (value !== undefined && this._sourceView !== value) {
+              this.view('source', value);
+            }
+          }
+        },
+        targetView: {
+          /**
+           * Get or set the source view
+           * @property targetView
+           */
+          get: function () {
+            return this.view('target');
+          },
+          set: function (value) {
+            if (value !== undefined && this.targetView !== value) {
+              this.view('target', value);
+            }
+          }
+        },
         sourceName: {
           get: function() {
             return this.model().get("srcIfName");
@@ -660,38 +688,6 @@
      */
     nx.define('LinkWithAlignedLabels', GraphiteLink, {
         properties: {
-          sourceView: {
-            /**
-             * Get or set the source view
-             * @property sourceView
-             * @type {GraphiteAlignedLabel}
-             * @default null
-             */
-            get: function () {
-              return this.view('source');
-            },
-            set: function (value) {
-              if (value !== undefined && this._sourceView !== value) {
-                this.view('source', value);
-              }
-            }
-          },
-          targetView: {
-            /**
-             * Get or set the source view
-             * @property targetView
-             * @type {GraphiteAlignedLabel}
-             * @default null
-             */
-            get: function () {
-              return this.view('target');
-            },
-            set: function (value) {
-              if (value !== undefined && this.targetView !== value) {
-                this.view('target', value);
-              }
-            }
-          }
         },
         view: function(view) {
             view.content.push({
