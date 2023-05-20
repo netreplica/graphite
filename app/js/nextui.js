@@ -685,6 +685,14 @@
           var stageScale = this.stageScale();
           this.sourceView().setStyle('font-size', 12 * stageScale);
           this.targetView().setStyle('font-size', 12 * stageScale);
+          if (this.sourceView() instanceof GraphiteAlignedLabel) {
+            this.sourceView().stageScaleUpdate(stageScale);
+          }
+          if (this.targetView() instanceof GraphiteAlignedLabel) {
+            this.targetView().stageScaleUpdate(stageScale);
+          }
+          this.sourceView().update();
+          this.targetView().update();
         },
       }
     });
@@ -949,11 +957,12 @@
                   if (value !== undefined && this._side !== value && (value === 'source' || value === 'target')) {
                       this._side = value;
                       if (this._side == 'source') {
-                        this.offset("10%");
+                        //this.offset(10);
                         this.setStyle('text-anchor', 'start');
                         this.setStyle('alignment-baseline', 'text-before-edge');
                       } else {
-                        this.offset("90%");
+                        var pathLength = this._pathElement.getTotalLength();
+                        //this.offset(pathLength - 10);
                         this.setStyle('text-anchor', 'end');
                         this.setStyle('alignment-baseline', 'text-after-edge');
                       }
@@ -1024,12 +1033,27 @@
               this._text = this.view().dom();
               this._textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
               this.side('source');
+              // Raise the text a bit so that it is not on the link
+              this.view().dom().$dom.setAttribute("dy", "-0.25");
             },
             setModel: function (model) {
               this.inherited(model);
             },
             update: function() {
               this.inherited();
+              var fixedOffset = 25;
+              if (this._stageScale !== undefined) {
+                fixedOffset = fixedOffset * this._stageScale;
+              }
+              if (this._side == 'source') {
+                this.offset(fixedOffset);
+              } else {
+                var pathLength = this._pathElement.getTotalLength();
+                this.offset(pathLength - fixedOffset);
+              }
+            },
+            stageScaleUpdate: function(stageScale) {
+              this._stageScale = stageScale;
             }
           }
       });
