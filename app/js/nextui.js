@@ -685,12 +685,6 @@
           var stageScale = this.stageScale();
           this.sourceView().setStyle('font-size', 12 * stageScale);
           this.targetView().setStyle('font-size', 12 * stageScale);
-          if (this.sourceView() instanceof GraphiteAlignedLabel) {
-            this.sourceView().stageScaleUpdate(stageScale);
-          }
-          if (this.targetView() instanceof GraphiteAlignedLabel) {
-            this.targetView().stageScaleUpdate(stageScale);
-          }
           this.sourceView().update();
           this.targetView().update();
         },
@@ -1002,13 +996,13 @@
               /**
                * Set/get offset of the text along the path
                * @property offset
-               * @type {String}
+               * @type {Number}
                * @default ''
                * @description Set/get offset of the text along the path
                * @example
                * <caption>Set the offset of the text along the path</caption>
-               * // Set the offset to '90%'
-               * textPath.offset('90%');
+               * // Set the offset to 10
+               * textPath.offset(10);
                */
               get: function () {
                 return this._offset !== undefined ? this._offset : '';
@@ -1022,38 +1016,67 @@
                   return false;
                 }
               }
-            }
-          },
-          view: {
+            },
+            gap: {
+              /**
+               * Set/get gap between the text and the path
+               * @property gap
+               * @type {Number}
+               * @default ''
+               * @description Set/get gap between the text and the path
+               * @example
+               * <caption>Set the gap between the text and the path</caption>
+               * // Set the gap to 0.25
+               * textPath.gap(0.25);
+               */
+              get: function () {
+                return this._gap !== undefined ? this._gap : '';
+              },
+              set: function (value) {
+                if (value !== undefined) {
+                  this._gap = value;
+                  this.view().dom().$dom.setAttribute("dy", this._gap);
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            },
+        },
+        view: {
             tag: 'svg:text'
           },
           methods: {
             init: function (args) {
               this.inherited(args);
+              this._fixedOffset = 25;
+              this._fixedGap = -1;
               this._text = this.view().dom();
               this._textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
               this.side('source');
-              // Raise the text a bit so that it is not on the link
-              this.view().dom().$dom.setAttribute("dy", "-0.25");
+              this.gap(this._fixedGap);
             },
             setModel: function (model) {
               this.inherited(model);
             },
             update: function() {
               this.inherited();
-              var fixedOffset = 25;
-              if (this._stageScale !== undefined) {
-                fixedOffset = fixedOffset * this._stageScale;
+              var stageScale = 1;
+              if (this._link !== undefined && this._link !== null) {
+                stageScale = this.link().stageScale();
               }
+              var offset = this._fixedOffset;
+              if (stageScale !== undefined && stageScale !== null) {
+                offset = offset * stageScale;
+              }
+              var gap = this._fixedGap * stageScale;
               if (this._side == 'source') {
-                this.offset(fixedOffset);
+                this.offset(offset);
               } else {
                 var pathLength = this._pathElement.getTotalLength();
-                this.offset(pathLength - fixedOffset);
+                this.offset(pathLength - offset);
               }
-            },
-            stageScaleUpdate: function(stageScale) {
-              this._stageScale = stageScale;
+              this.gap(gap);
             }
           }
       });
