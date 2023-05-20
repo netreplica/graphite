@@ -662,13 +662,13 @@
         view: function(view) {
             view.content.push({
                 name: 'source',
-                type: 'nx.graphic.Text',
+                type: "GraphiteAlignedLabel",
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
             }, {
                 name: 'target',
-                type: 'nx.graphic.Text',
+                type: "GraphiteAlignedLabel",
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
                 }
@@ -682,33 +682,31 @@
             },
             setModel: function (model) {
                 this.inherited(model);
+                this.view('path').set('id', 'link_' + this.id());
+                var sourceView = this.view('source');
+                var targetView = this.view('target');
+                sourceView.link(this);
+                targetView.link(this);
+                sourceView.side('source');
+                targetView.side('target');
                 this.updateLabels();
             },
             update: function() {
                 this.inherited();
-
-                var topology = this.topology();
-                var line = this.line();
-                var angle = line.angle();
                 var stageScale = this.stageScale();
-
-                // use padded line to define x,y coordinates for labels
-                var paddedLine = line.pad(35 * stageScale, 35 * stageScale);
 
                 var sourceView = this.view('source');
                 sourceView.setStyle('font-size', 12 * stageScale);
-                align_link_label(sourceView, paddedLine.start, angle, "source");
 
                 var targetView = this.view('target');
                 targetView.setStyle('font-size', 12 * stageScale);
-                align_link_label(targetView, paddedLine.end, angle, "target");
             },
             updateLabels: function() {
               var sourceView = this.view('source');
               var targetView = this.view('target');
-              sourceView.set('text', this.sourceLabel());
-              targetView.set('text', this.targetLabel());
-            }
+              sourceView.text(this.sourceLabel());
+              targetView.text(this.targetLabel());
+          }
         }
     });
 
@@ -865,6 +863,151 @@
               }
           }
       });
+
+      /**
+       * Label aligned with a link start or end using textPath component
+       * @class GraphiteAlignedLabel
+       * @extend nx.graphic.Text
+       * @module nx.graphic.Topology
+       * @submodule nx.graphic.Topology.Label
+       * @namespace nx.graphic.Topology
+       */
+      nx.define("GraphiteAlignedLabel", nx.graphic.Text, {
+          properties: {
+            text: {
+              /**
+               * Set/get label text
+               * @property text
+               * @type {String}
+               * @default ""
+               * @description Set/get label text
+               * @example
+               * <caption>Set the label text</caption>
+               * // Set the label text to "Hello"
+               * label.text("Hello");
+               */
+              get: function () {
+                  return this._text !== undefined ? this._text : "";
+              },
+              set: function (value) {
+                  if (value !== undefined && this._text !== value) {
+                      this._text = value;
+                      var el = this.view().dom().$dom;
+                      if (el.firstChild) {
+                          el.removeChild(el.firstChild);
+                      }
+                      this._textPath.textContent = this._text;
+                      el.appendChild(this._textPath);
+                      return true;
+                  } else {
+                      return false;
+                  }
+                }
+            },
+            side: {
+              /**
+               * Set/get on which side of a path the text should be rendered
+               * @property side
+               * @type {String}
+               * @default 'source'
+               * @description Possible values are 'source' and 'target'
+               * @example
+               * <caption>Set the side</caption>
+               * // Set the side to 'target'
+               * textPath.side('target');
+               */
+              get: function () {
+                  return this._side;
+              },
+              set: function (value) {
+                  if (value !== undefined && this._side !== value && (value === 'source' || value === 'target')) {
+                      this._side = value;
+                      if (this._side == 'source') {
+                        this.offset("10%");
+                        this.setStyle('text-anchor', 'start');
+                        this.setStyle('alignment-baseline', 'text-before-edge');
+                      } else {
+                        this.offset("90%");
+                        this.setStyle('text-anchor', 'end');
+                        this.setStyle('alignment-baseline', 'text-after-edge');
+                      }
+                      return true;
+                  } else {
+                      return false;
+                  }
+              }
+          },
+          link: {
+              /**
+               * Set/get link instance with which the label is associated
+               * @property link
+               * @type {nx.graphic.Link}
+               * @default null
+               * @description Set/get link instance with which the label is associated
+               * @example
+               * <caption>Set the link instance with which the label is associated</caption>
+               * // Set the link instance to link1
+               * textPath.link(link1);
+               */
+              get: function () {
+                  return this._link !== undefined ? this._link : null;
+              },
+              set: function (value) {
+                  if (value !== undefined && this._link !== value && value !== null) {
+                      this._link = value;
+                      this._textPath.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#link_" + this._link.id());
+                      this._pathElement = this._link.view('path').dom().$dom;
+                      return true;
+                  } else {
+                      return false;
+                  }
+              }
+            },
+            offset: {
+              /**
+               * Set/get offset of the text along the path
+               * @property offset
+               * @type {String}
+               * @default ''
+               * @description Set/get offset of the text along the path
+               * @example
+               * <caption>Set the offset of the text along the path</caption>
+               * // Set the offset to '90%'
+               * textPath.offset('90%');
+               */
+              get: function () {
+                return this._offset !== undefined ? this._offset : '';
+              },
+              set: function (value) {
+                if (value !== undefined) {
+                  this._offset = value;
+                  this._textPath.setAttribute("startOffset", value);
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            }
+          },
+          view: {
+            tag: 'svg:text'
+          },
+          methods: {
+            init: function (args) {
+              this.inherited(args);
+              this._text = this.view().dom();
+              this._textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
+              this.side('source');
+            },
+            setModel: function (model) {
+              this.inherited(model);
+            },
+            update: function() {
+              this.inherited();
+            }
+          }
+      });
+
 
     // This class realizes an action button and its behavior
     nx.define('ActionBar', nx.ui.Component, {
