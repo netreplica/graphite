@@ -653,11 +653,45 @@
      * LinkWithAlignedLabels class
      * @class LinkWithAlignedLabels
      * @extend GraphiteLink
+     * @namespace nx.graphic.Topology
+     * @module graphite.graphic.Topology
      *
      * Link with interface name labels aligned alongside the link
      */
     nx.define('LinkWithAlignedLabels', GraphiteLink, {
         properties: {
+          sourceView: {
+            /**
+             * Get or set the source view
+             * @property sourceView
+             * @type {GraphiteAlignedLabel}
+             * @default null
+             */
+            get: function () {
+              return this.view('source');
+            },
+            set: function (value) {
+              if (value !== undefined && this._sourceView !== value) {
+                this.view('source', value);
+              }
+            }
+          },
+          targetView: {
+            /**
+             * Get or set the source view
+             * @property targetView
+             * @type {GraphiteAlignedLabel}
+             * @default null
+             */
+            get: function () {
+              return this.view('target');
+            },
+            set: function (value) {
+              if (value !== undefined && this.targetView !== value) {
+                this.view('target', value);
+              }
+            }
+          }
         },
         view: function(view) {
             view.content.push({
@@ -683,29 +717,21 @@
             setModel: function (model) {
                 this.inherited(model);
                 this.view('path').set('id', 'link_' + this.id());
-                var sourceView = this.view('source');
-                var targetView = this.view('target');
-                sourceView.link(this);
-                targetView.link(this);
-                sourceView.side('source');
-                targetView.side('target');
+                this.sourceView().link(this);
+                this.targetView().link(this);
+                this.sourceView().side('source');
+                this.targetView().side('target');
                 this.updateLabels();
             },
             update: function() {
                 this.inherited();
                 var stageScale = this.stageScale();
-
-                var sourceView = this.view('source');
-                sourceView.setStyle('font-size', 12 * stageScale);
-
-                var targetView = this.view('target');
-                targetView.setStyle('font-size', 12 * stageScale);
+                this.sourceView().setStyle('font-size', 12 * stageScale);
+                this.targetView().setStyle('font-size', 12 * stageScale);
             },
             updateLabels: function() {
-              var sourceView = this.view('source');
-              var targetView = this.view('target');
-              sourceView.text(this.sourceLabel());
-              targetView.text(this.targetLabel());
+              this.sourceView().text(this.sourceLabel());
+              this.targetView().text(this.targetLabel());
           }
         }
     });
