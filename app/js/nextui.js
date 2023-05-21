@@ -1050,11 +1050,12 @@
           init: function (args) {
             this.inherited(args);
             this._fixedOffset = 25;
-            this._fixedGap = -1;
+            this._sourceGap = -1;
+            this._targetGap = 10;
             this._text = this.view().dom();
             this._textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
             this.side('source');
-            this.gap(this._fixedGap);
+            this.gap(this._sourceGap);
           },
           setModel: function (model) {
             this.inherited(model);
@@ -1062,24 +1063,24 @@
           update: function() {
             this.inherited();
             var stageScale = 1;
-            var targetGapOffset = 10;
             if (this._link !== undefined && this._link !== null) {
               stageScale = this.link().stageScale();
             }
             var offset = this._fixedOffset;
-            var gap = this._fixedGap;
+            var sourceGap = this._sourceGap;
+            var targetGap = this._targetGap;
             if (stageScale !== undefined && stageScale !== null) {
               offset = offset * stageScale;
-              gap = gap * stageScale;
-              targetGapOffset = targetGapOffset * stageScale;
+              sourceGap = sourceGap * stageScale;
+              targetGap = targetGap * stageScale;
             }
             if (this._side == 'source') {
               this.offset(offset);
-              this.gap(gap);
+              this.gap(sourceGap);
             } else {
               var pathLength = this._pathElement.getTotalLength();
               this.offset(pathLength - offset);
-              this.gap(targetGapOffset);
+              this.gap(targetGap);
             }
           }
         }
