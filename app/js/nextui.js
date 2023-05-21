@@ -1602,6 +1602,12 @@
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
     var topologyData;
+    var topologyTypes = {
+      "clab-graph": "Topology", // Containerlab Offline Topology, deprecated
+      "clab": "Containerlab Topology",
+      "netlab": "Netlab Topology",
+      "nr-netbox": "NetBox Topology", // NetBox Topology export by netreplica
+    };
 
     xmlhttp.onreadystatechange = function() {
       // TODO handle errors
@@ -1614,9 +1620,9 @@
         default:
           topologyData = convert_clab_to_cmt(topo_data);
         }
-        if (topologyData.hasOwnProperty("type") && topologyData.type == "clab" && topologyData.hasOwnProperty("name")) {
+        if (topologyData.hasOwnProperty("type") && topologyTypes.hasOwnProperty(topologyData.type) && topologyData.hasOwnProperty("name")) {
           document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
-          document.getElementById("topology-type").innerHTML = "Containerlab Topology";
+          document.getElementById("topology-type").innerHTML = topologyTypes[topologyData.type];
           if (topologyData.name != "") {
             document.getElementById("topology-name").innerHTML = topologyData.name;
           } else {

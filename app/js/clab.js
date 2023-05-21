@@ -53,8 +53,13 @@ function getWebsshDeviceLink(n, a, i) {
 }
 
 // Convert ContainerLab topology into CMT JSON topology
+// The following sources of topology data use the same format as ContainerLab:
+// - ContainerLab: type=clab
+// - NetLab:       type=netlab
+// - NetBox by nr: type=nr-netbox
 function convert_clab_to_cmt(c){
-  if (c.hasOwnProperty("type") && c.type == "clab") {
+  var supported_types = ["clab", "netlab", "nr-netbox"];
+  if (c.hasOwnProperty("type") && supported_types.includes(c.type)) {
     return convert_clab_topology_data_to_cmt(c);
   } else {
     return convert_clab_graph_to_cmt(c);
@@ -63,12 +68,17 @@ function convert_clab_to_cmt(c){
 
 // Convert ContainerLab topology-data.json export into CMT JSON topology
 function convert_clab_topology_data_to_cmt(c){
-  var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
+  var cmt = {"nodes": [], "links": [], "type": "", "name": ""};
   var node_id_map = {};
 
   // topology name
   if (c.hasOwnProperty("name")) {
     cmt.name = c.name;
+  }
+
+  // topology type
+  if (c.hasOwnProperty("type")) {
+    cmt.type = c.type;
   }
 
   if (!c.hasOwnProperty("nodes")) {
@@ -199,7 +209,7 @@ function convert_clab_topology_data_to_cmt(c){
 
 // Convert ContainerLab Graph JSON export into CMT JSON topology
 function convert_clab_graph_to_cmt(c){
-  var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
+  var cmt = {"nodes": [], "links": [], "type": "clab-graph", "name": ""};
   var node_id_map = {};
   for (var i =0; i < c.nodes.length; i++) {
     var n = c.nodes[i];
