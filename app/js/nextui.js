@@ -685,8 +685,6 @@
           var stageScale = this.stageScale();
           this.sourceView().setStyle('font-size', 12 * stageScale);
           this.targetView().setStyle('font-size', 12 * stageScale);
-          this.sourceView().update();
-          this.targetView().update();
         },
       }
     });
@@ -730,6 +728,8 @@
             },
             update: function() {
                 this.inherited();
+                this.sourceView().update();
+                this.targetView().update();
             },
             updateLabels: function() {
               this.sourceView().text(this.sourceLabel());
@@ -1008,7 +1008,7 @@
                 return this._offset !== undefined ? this._offset : '';
               },
               set: function (value) {
-                if (value !== undefined) {
+                if (value !== undefined && value !== null && value === value) { // last check is for NaN
                   this._offset = value;
                   this._textPath.setAttribute("startOffset", value);
                   return true;
@@ -1033,9 +1033,9 @@
                 return this._gap !== undefined ? this._gap : '';
               },
               set: function (value) {
-                if (value !== undefined) {
+                if (value !== undefined && value !== null && value === value) { // last check is for NaN
                   this._gap = value;
-                  this.view().dom().$dom.setAttribute("dy", this._gap);
+                  this.view().dom().$dom.setAttribute("dy", value);
                   return true;
                 } else {
                   return false;
