@@ -1062,6 +1062,7 @@
           update: function() {
             this.inherited();
             var stageScale = 1;
+            var targetGapOffset = 10;
             if (this._link !== undefined && this._link !== null) {
               stageScale = this.link().stageScale();
             }
@@ -1070,14 +1071,16 @@
             if (stageScale !== undefined && stageScale !== null) {
               offset = offset * stageScale;
               gap = gap * stageScale;
+              targetGapOffset = targetGapOffset * stageScale;
             }
             if (this._side == 'source') {
               this.offset(offset);
+              this.gap(gap);
             } else {
               var pathLength = this._pathElement.getTotalLength();
               this.offset(pathLength - offset);
+              this.gap(targetGapOffset);
             }
-            this.gap(gap);
           }
         }
       });
