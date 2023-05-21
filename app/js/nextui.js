@@ -1066,10 +1066,11 @@
               stageScale = this.link().stageScale();
             }
             var offset = this._fixedOffset;
+            var gap = this._fixedGap;
             if (stageScale !== undefined && stageScale !== null) {
               offset = offset * stageScale;
+              gap = gap * stageScale;
             }
-            var gap = this._fixedGap * stageScale;
             if (this._side == 'source') {
               this.offset(offset);
             } else {
