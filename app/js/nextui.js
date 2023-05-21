@@ -543,6 +543,34 @@
      */
     nx.define('GraphiteLink', nx.graphic.Topology.Link, {
       properties: {
+        sourceView: {
+          /**
+           * Get or set the source view
+           * @property sourceView
+           */
+          get: function () {
+            return this.view('source');
+          },
+          set: function (value) {
+            if (value !== undefined && this._sourceView !== value) {
+              this.view('source', value);
+            }
+          }
+        },
+        targetView: {
+          /**
+           * Get or set the source view
+           * @property targetView
+           */
+          get: function () {
+            return this.view('target');
+          },
+          set: function (value) {
+            if (value !== undefined && this.targetView !== value) {
+              this.view('target', value);
+            }
+          }
+        },
         sourceName: {
           get: function() {
             return this.model().get("srcIfName");
@@ -642,9 +670,21 @@
         },
         setModel: function (model) {
           this.inherited(model);
+          this.view('path').set('id', 'link_' + this.id());
+          if (this.sourceView() instanceof GraphiteAlignedLabel) {
+            this.sourceView().link(this);
+            this.sourceView().side('source');
+          }
+          if (this.targetView() instanceof GraphiteAlignedLabel) {
+            this.targetView().link(this);
+            this.targetView().side('target');
+          }
         },
         update: function() {
           this.inherited();
+          var stageScale = this.stageScale();
+          this.sourceView().setStyle('font-size', 12 * stageScale);
+          this.targetView().setStyle('font-size', 12 * stageScale);
         },
       }
     });
@@ -653,6 +693,8 @@
      * LinkWithAlignedLabels class
      * @class LinkWithAlignedLabels
      * @extend GraphiteLink
+     * @namespace nx.graphic.Topology
+     * @module graphite.graphic.Topology
      *
      * Link with interface name labels aligned alongside the link
      */
@@ -662,13 +704,13 @@
         view: function(view) {
             view.content.push({
                 name: 'source',
-                type: 'nx.graphic.Text',
+                type: "GraphiteAlignedLabel",
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
             }, {
                 name: 'target',
-                type: 'nx.graphic.Text',
+                type: "GraphiteAlignedLabel",
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
                 }
@@ -686,29 +728,13 @@
             },
             update: function() {
                 this.inherited();
-
-                var topology = this.topology();
-                var line = this.line();
-                var angle = line.angle();
-                var stageScale = this.stageScale();
-
-                // use padded line to define x,y coordinates for labels
-                var paddedLine = line.pad(35 * stageScale, 35 * stageScale);
-
-                var sourceView = this.view('source');
-                sourceView.setStyle('font-size', 12 * stageScale);
-                align_link_label(sourceView, paddedLine.start, angle, "source");
-
-                var targetView = this.view('target');
-                targetView.setStyle('font-size', 12 * stageScale);
-                align_link_label(targetView, paddedLine.end, angle, "target");
+                this.sourceView().update();
+                this.targetView().update();
             },
             updateLabels: function() {
-              var sourceView = this.view('source');
-              var targetView = this.view('target');
-              sourceView.set('text', this.sourceLabel());
-              targetView.set('text', this.targetLabel());
-            }
+              this.sourceView().text(this.sourceLabel());
+              this.targetView().text(this.targetLabel());
+          }
         }
     });
 
@@ -778,13 +804,13 @@
                 ]
               },
               {
-                name: 'sourceIPv4',
+                name: 'source',
                 type: 'nx.graphic.Text',
                 props: {
                     'class': 'sourcelabel label-text-color-fg label-link-align-start'
                 }
               }, {
-                name: 'targetIPv4',
+                name: 'target',
                 type: 'nx.graphic.Text',
                 props: {
                     'class': 'targetlabel label-text-color-fg label-link-align-end'
@@ -817,7 +843,7 @@
                     }
                     position_link_badge(badge, badgeBg, line_int.start, stageScale)
 
-                    var ipLabel = this.view('sourceIPv4');
+                    var ipLabel = this.view('source');
                     ipLabel.set('text', this.sourceIPv4());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.start, angle, "source");
@@ -831,7 +857,7 @@
                     }
                     position_link_badge(badge, badgeBg, line_int.end, stageScale)
 
-                    var ipLabel = this.view('targetIPv4');
+                    var ipLabel = this.view('target');
                     ipLabel.set('text', this.targetIPv4());
                     ipLabel.setStyle('font-size', 10 * stageScale);
                     align_link_label(ipLabel, line_ip.end, angle, "target");
@@ -842,8 +868,8 @@
                 this.view("targetBadge").visible(true);
                 this.view("targetBg").visible(true);
                 this.view("targetText").visible(true);
-                this.view("sourceIPv4").visible(true);
-                this.view("targetIPv4").visible(true);
+                this.view("source").visible(true);
+                this.view("target").visible(true);
               },
               updateLabels: function() {
                 var sourceLabelView = this.view('sourceText');
@@ -852,19 +878,214 @@
                 targetLabelView.set('text', this.targetLabelNumber());
               },
               showIP: function () {
-                var srcLabel = this.view('sourceIPv4');
+                var srcLabel = this.view('source');
                 srcLabel.set('text', this.sourceIPv4());
                 srcLabel.visible(true);
-                var tgtLabel = this.view('targetIPv4');
+                var tgtLabel = this.view('target');
                 tgtLabel.set('text', this.targetIPv4());
                 tgtLabel.visible(true);
               },
               hideIP: function () {
-                this.view('sourceIPv4').visible(false);
-                this.view('targetIPv4').visible(false);
+                this.view('source').visible(false);
+                this.view('target').visible(false);
               }
           }
       });
+
+      /**
+       * Label aligned with a link start or end using textPath component
+       * @class GraphiteAlignedLabel
+       * @extend nx.graphic.Text
+       * @module nx.graphic.Topology
+       * @submodule nx.graphic.Topology.Label
+       * @namespace nx.graphic.Topology
+       */
+      nx.define("GraphiteAlignedLabel", nx.graphic.Text, {
+        properties: {
+          text: {
+            /**
+             * Set/get label text
+             * @property text
+             * @type {String}
+             * @default ""
+             * @description Set/get label text
+             * @example
+             * <caption>Set the label text</caption>
+             * // Set the label text to "Hello"
+             * label.text("Hello");
+             */
+            get: function () {
+                return this._text !== undefined ? this._text : "";
+            },
+            set: function (value) {
+                if (value !== undefined && this._text !== value) {
+                    this._text = value;
+                    var el = this.view().dom().$dom;
+                    if (el.firstChild) {
+                        el.removeChild(el.firstChild);
+                    }
+                    this._textPath.textContent = this._text;
+                    el.appendChild(this._textPath);
+                    return true;
+                } else {
+                    return false;
+                }
+              }
+          },
+          side: {
+            /**
+             * Set/get on which side of a path the text should be rendered
+             * @property side
+             * @type {String}
+             * @default 'source'
+             * @description Possible values are 'source' and 'target'
+             * @example
+             * <caption>Set the side</caption>
+             * // Set the side to 'target'
+             * textPath.side('target');
+             */
+            get: function () {
+                return this._side;
+            },
+            set: function (value) {
+                if (value !== undefined && this._side !== value && (value === 'source' || value === 'target')) {
+                    this._side = value;
+                    if (this._side == 'source') {
+                      //this.offset(10);
+                      this.setStyle('text-anchor', 'start');
+                      this.setStyle('alignment-baseline', 'text-before-edge');
+                    } else {
+                      var pathLength = this._pathElement.getTotalLength();
+                      //this.offset(pathLength - 10);
+                      this.setStyle('text-anchor', 'end');
+                      this.setStyle('alignment-baseline', 'text-after-edge');
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+          },
+          link: {
+            /**
+             * Set/get link instance with which the label is associated
+             * @property link
+             * @type {nx.graphic.Link}
+             * @default null
+             * @description Set/get link instance with which the label is associated
+             * @example
+             * <caption>Set the link instance with which the label is associated</caption>
+             * // Set the link instance to link1
+             * textPath.link(link1);
+             */
+            get: function () {
+                return this._link !== undefined ? this._link : null;
+            },
+            set: function (value) {
+                if (value !== undefined && this._link !== value && value !== null) {
+                    this._link = value;
+                    this._textPath.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#link_" + this._link.id());
+                    this._pathElement = this._link.view('path').dom().$dom;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+          },
+          offset: {
+            /**
+             * Set/get offset of the text along the path
+             * @property offset
+             * @type {Number}
+             * @default ''
+             * @description Set/get offset of the text along the path
+             * @example
+             * <caption>Set the offset of the text along the path</caption>
+             * // Set the offset to 10
+             * textPath.offset(10);
+             */
+            get: function () {
+              return this._offset !== undefined ? this._offset : '';
+            },
+            set: function (value) {
+              if (value !== undefined && value !== null && value === value) { // last check is for NaN
+                this._offset = value;
+                this._textPath.setAttribute("startOffset", value);
+                return true;
+              } else {
+                return false;
+              }
+            }
+          },
+          gap: {
+            /**
+             * Set/get gap between the text and the path
+             * @property gap
+             * @type {Number}
+             * @default ''
+             * @description Set/get gap between the text and the path
+             * @example
+             * <caption>Set the gap between the text and the path</caption>
+             * // Set the gap to 0.25
+             * textPath.gap(0.25);
+             */
+            get: function () {
+              return this._gap !== undefined ? this._gap : '';
+            },
+            set: function (value) {
+              if (value !== undefined && value !== null && value === value) { // last check is for NaN
+                this._gap = value;
+                this.view().dom().$dom.setAttribute("dy", value);
+                return true;
+              } else {
+                return false;
+              }
+            }
+          },
+        },
+        view: {
+          tag: 'svg:text'
+        },
+        methods: {
+          init: function (args) {
+            this.inherited(args);
+            this._fixedOffset = 25;
+            this._sourceGap = -1;
+            this._targetGap = 10;
+            this._text = this.view().dom();
+            this._textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
+            this.side('source');
+            this.gap(this._sourceGap);
+          },
+          setModel: function (model) {
+            this.inherited(model);
+          },
+          update: function() {
+            this.inherited();
+            var stageScale = 1;
+            if (this._link !== undefined && this._link !== null) {
+              stageScale = this.link().stageScale();
+            }
+            var offset = this._fixedOffset;
+            var sourceGap = this._sourceGap;
+            var targetGap = this._targetGap;
+            if (stageScale !== undefined && stageScale !== null) {
+              offset = offset * stageScale;
+              sourceGap = sourceGap * stageScale;
+              targetGap = targetGap * stageScale;
+            }
+            if (this._side == 'source') {
+              this.offset(offset);
+              this.gap(sourceGap);
+            } else {
+              var pathLength = this._pathElement.getTotalLength();
+              this.offset(pathLength - offset);
+              this.gap(targetGap);
+            }
+          }
+        }
+      });
+
 
     // This class realizes an action button and its behavior
     nx.define('ActionBar', nx.ui.Component, {
