@@ -1595,6 +1595,12 @@
       // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
       topo_url = topo_base + "lab/clab-" + topo_name + "/" + "topology-data.json";
       break;
+    case "nr":
+    case "nrx":
+    case "graphite":
+      // topology data exported for graphite
+      topo_url = topo_base + "lab/" + topo_name + ".graphite.json";
+      break;
     default:
       topo_url = topo_base + topo_name +"/" + topo_file;
     }
