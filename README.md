@@ -24,7 +24,7 @@ The easiest way to use Graphite with Containerlab is to add the following code t
       kind: linux
       image: netreplica/graphite
       env:
-        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+        HOST_CONNECTION: ${SSH_CONNECTION}
       binds:
         - __clabDir__/topology-data.json:/htdocs/lab/default/topology-data.json:ro
         - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
