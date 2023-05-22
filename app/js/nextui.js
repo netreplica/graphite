@@ -1647,12 +1647,11 @@
           app.attach();
           app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
+          var notice_html = '<strong>There are no nodes in the <code><a class="alert-link" href="__topo_url__">topology data file</a></code>.</strong>'
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
-            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
+            notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
             Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
-          } else {
-            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology data file</a></code>.</strong>'
           }
           var notice = document.createElement("div");
           notice.className = "alert alert-warning fade in";
