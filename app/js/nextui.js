@@ -1649,15 +1649,17 @@
         } else {
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
-            var notice = document.createElement("div");
             var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
             Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
-            notice.className = "alert alert-warning fade in";
-            notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
-            var topology_diagram = document.getElementById("topology-container");
-            topology_diagram.insertBefore(notice, topology_diagram.firstChild);
+          } else {
+            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology data file</a></code>.</strong>'
           }
-        }
+          var notice = document.createElement("div");
+          notice.className = "alert alert-warning fade in";
+          notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
+          var topology_diagram = document.getElementById("topology-container");
+          topology_diagram.insertBefore(notice, topology_diagram.firstChild);
+      }
       }
     };
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
