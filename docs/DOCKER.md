@@ -27,7 +27,7 @@
 
 ## Running with ability to visualize multiple data files
 
-1. In a shell terminal, navigate to a directory with the data files for visualization.
+1. In a shell terminal, navigate to a directory with data files for visualization.
 
 2. Launch Graphite as a Docker container with the current directory mounted as `/htdocs/lab`:
 
@@ -39,7 +39,7 @@
     netreplica/graphite:latest
   ```
 
-3. To view a specific topology, use the URL in the following format, replacing `TOPOLOGY_TYPE` and `TOPOLOGY_NAME` according to the rules below.
+3. To view a specific topology, use an URL in the following format, replacing `TOPOLOGY_TYPE` and `TOPOLOGY_NAME` according to the rules below.
 
 ```
 http://localhost:8080/graphite/?type=TOPOLOGY_TYPE&topo=TOPOLOGY_NAME
@@ -54,6 +54,9 @@ To find a location of the topology data file in the mounted directory, Graphite 
 
 * Graphite `graphite`: `TOPOLOGY_NAME.graphite.json` file in the mounted directory
 * Containerlab `clab`: `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders in the mounted directory
+* No type: `TOPOLOGY_NAME` file in the mounted directory
+
+## Default topology type and name
 
 If you launched Graphite with a directory mounted to visualize multiple data files and open the URL [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) without parameters, there is no topology shown – since Graphite doesn't know which one would you like to see. You can change that behavior via use of environmental variables:
 
@@ -69,13 +72,13 @@ docker run -d -t --rm \
   netreplica/graphite:latest
 ```
 
-## Displaying a working URL
-If you're running Graphite on a remote host, or inside a VM, use this helper to show a working URL. In this example we assumed you've mapped Graphite TCP port 80 to host port 8080. Change the port if needed.
+## Graphite URL helper
+
+If you're running Graphite on a remote host, or inside a VM, use this helper to show a URL with proper IP address instead of `localhost`. In this example we assumed you've mapped Graphite TCP port 80 to host port 8080. Change the port if needed.
 
   ```Shell
-  sudo docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+  docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
   ```
-
 
 ## Generating offline graphs - DEPRECATED
 
