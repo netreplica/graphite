@@ -79,21 +79,3 @@ If you're running Graphite on a remote host, or inside a VM, use this helper to 
   ```Shell
   docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
   ```
-
-## Generating offline graphs - DEPRECATED
-
-1. If you never exported Containerlab topology graphs into JSON, you can do that for all topologies in the folder at once with the following command:
-
-```Shell
-docker exec -t graphite generate_all_offline_graphs.sh
-````
-
-  Alternatively, to export graph data for a specific topology, use
-
-```Shell
-docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml
-````
-
-## Docker Image Build Instructions
-
-Follow this guide [DOCKER-BUILD.md](DOCKER-BUILD.md)
