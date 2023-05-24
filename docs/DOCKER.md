@@ -23,7 +23,7 @@
         netreplica/graphite:latest
     ```
 
-3. You should be able to see the visualization on [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/).
+3. You should be able to see the visualization on [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/)
 
 ## Running with ability to visualize multiple data files
 
@@ -39,18 +39,21 @@
     netreplica/graphite:latest
   ```
 
-3. To view a specific topology, use the URL in the following format: `http://localhost:8080/graphite/?type=<topology_type>&topo=<topology_name>`. Replace <topology_type> and <topology_name> according to the rules below.
+3. To view a specific topology, use the URL in the following format, replacing `topology_type` and `topology_name` according to the rules below.
 
-## Topology name
+```
+http://localhost:8080/graphite/?type=topology_type&topo=topology_name
+```
 
+## Topology types and names
 
-
-## Topology types
+* `topology_type`: tells where Graphite should look for the topology files
+* `topology_name`: determines name of the topology file, depending on the `topology_type`
 
 To find a location of the topology data file in the mounted directory, Graphite understands the following topology types:
 
-* `clabdata`: Containerlab `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders
-* `nr`, `nrx`, `graphite`: `TOPOLOGY_NAME.graphite.json` files in the mounted directory
+* Graphite `graphite`: `TOPOLOGY_NAME.graphite.json` file in the mounted directory
+* Containerlab `clabdata`: `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders in the mounted directory
 
 ## Environmental variables
 
