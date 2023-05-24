@@ -39,31 +39,34 @@
     netreplica/graphite:latest
   ```
 
-3. To view a specific topology, use the URL in the following format, replacing `topology_type` and `topology_name` according to the rules below.
+3. To view a specific topology, use the URL in the following format, replacing `TOPOLOGY_TYPE` and `TOPOLOGY_NAME` according to the rules below.
 
 ```
-http://localhost:8080/graphite/?type=topology_type&topo=topology_name
+http://localhost:8080/graphite/?type=TOPOLOGY_TYPE&topo=TOPOLOGY_NAME
 ```
 
 ## Topology types and names
 
-* `topology_type`: tells where Graphite should look for the topology files
-* `topology_name`: determines name of the topology file, depending on the `topology_type`
+* `TOPOLOGY_TYPE`: tells where Graphite should look for the topology files
+* `TOPOLOGY_NAME`: determines the name of the topology file, depending on the `TOPOLOGY_TYPE`
 
 To find a location of the topology data file in the mounted directory, Graphite understands the following topology types:
 
 * Graphite `graphite`: `TOPOLOGY_NAME.graphite.json` file in the mounted directory
 * Containerlab `clabdata`: `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders in the mounted directory
 
-## Environmental variables
-
-You can use the following environmental variables with Graphite docker container:
+If you launched Graphite with a directory mounted to visualize multiple data files and open the URL [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) without parameters, there is no topology shown – since Graphite doesn't know which one would you like to see. You can change that behavior via use of environmental variables:
 
 ```Shell
-GRAPHITE_DEFAULT_TYPE # Default type of topology data to visualize.
-GRAPHITE_DEFAULT_TOPO # Default topology to visualize when no specific topology is provided via the URL.
-HOST_CONNECTION       # Pass value of env:SSH_CONNECTION from the host, and run graphite_motd.sh script
-                      # to see an URL you can open from your computer to connect to Graphite.
+GRAPHITE_DEFAULT_TYPE=graphite # Default topology type
+GRAPHITE_DEFAULT_TOPO=wan      # Default topology name
+docker run -d -t --rm \
+  -v "$(pwd)":/htdocs/lab:ro \
+  -e GRAPHITE_DEFAULT_TYPE="${GRAPHITE_DEFAULT_TYPE}" \
+  -e GRAPHITE_DEFAULT_TOPO="${GRAPHITE_DEFAULT_TOPO}" \
+  -p 8080:80 \
+  --name graphite \
+  netreplica/graphite:latest
 ```
 
 ## Displaying a working URL
