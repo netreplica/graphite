@@ -1575,7 +1575,7 @@
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
-    var topo_type = "default", topo_name = "default", topo_base = "/", topo_file = "default.json", topo_url;
+    var topo_type = "default", topo_name = "", topo_url;
     var showActionBar = false;
     if (url_params.has('type')) {
       topo_type = url_params.get('type');
@@ -1586,23 +1586,26 @@
     if (url_params.has('actionbar')) {
       showActionBar = true;
     }
-    switch (topo_type) {
-    case "clab": // Deprecated
-      topo_url = topo_base + "clab-" + topo_name + "/graph/" + topo_name + ".json";
-      break;
-    case "clabdata":
-      // NOTE on "clab-" prefix from https://containerlab.dev/manual/topo-def-file/#prefix
-      // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
-      topo_url = topo_base + "lab/clab-" + topo_name + "/" + "topology-data.json";
-      break;
-    case "nr":
-    case "nrx":
-    case "graphite":
-      // topology data exported for graphite
-      topo_url = topo_base + "lab/" + topo_name + ".graphite.json";
-      break;
-    default:
-      topo_url = topo_base + topo_name +"/" + topo_file;
+
+    if (topo_name.length > 0) {
+      switch (topo_type) {
+        case "clab":
+        case "clabdata":
+          // NOTE on "clab-" prefix from https://containerlab.dev/manual/topo-def-file/#prefix
+          // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
+          topo_url = "/lab/clab-" + topo_name + "/topology-data.json";
+          break;
+        case "nr":
+        case "nrx":
+        case "graphite":
+          // topology data exported for graphite
+          topo_url = "/lab/" + topo_name + ".graphite.json";
+          break;
+        default:
+          topo_url = "/lab/" + topo_name;
+        }
+    } else {
+      topo_url = "/default/default.json";
     }
 
     // Load topology model

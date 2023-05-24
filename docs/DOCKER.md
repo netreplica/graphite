@@ -16,7 +16,7 @@
 2. Launch Graphite as a Docker container with the data file mounted as `/htdocs/default/default.json`:
 
     ```Shell
-    sudo docker run -d -t --rm \
+    docker run -d -t --rm \
         --mount type=bind,source="${TOPOLOGY}",target=/htdocs/default/default.json,readonly \
         -p 8080:80 \
         --name graphite \
@@ -32,7 +32,7 @@
 2. Launch Graphite as a Docker container with the current directory mounted as `/htdocs/lab`:
 
   ```Shell
-  sudo docker run -d -t --rm \
+  docker run -d -t --rm \
     -v "$(pwd)":/htdocs/lab:ro \
     -p 8080:80 \
     --name graphite \
@@ -53,7 +53,7 @@ http://localhost:8080/graphite/?type=TOPOLOGY_TYPE&topo=TOPOLOGY_NAME
 To find a location of the topology data file in the mounted directory, Graphite understands the following topology types:
 
 * Graphite `graphite`: `TOPOLOGY_NAME.graphite.json` file in the mounted directory
-* Containerlab `clabdata`: `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders in the mounted directory
+* Containerlab `clab`: `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders in the mounted directory
 
 If you launched Graphite with a directory mounted to visualize multiple data files and open the URL [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) without parameters, there is no topology shown – since Graphite doesn't know which one would you like to see. You can change that behavior via use of environmental variables:
 
