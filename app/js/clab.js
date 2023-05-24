@@ -58,7 +58,7 @@ function getWebsshDeviceLink(n, a, i) {
 // - NetLab:       type=netlab
 // - NetBox by nr: type=nr-netbox
 function convert_clab_to_cmt(c){
-  var supported_types = ["clab", "netlab", "nr-netbox"];
+  var supported_types = ["clab", "netlab", "graphite"];
   if (c.hasOwnProperty("type") && supported_types.includes(c.type)) {
     return convert_clab_topology_data_to_cmt(c);
   } else {
@@ -68,7 +68,7 @@ function convert_clab_to_cmt(c){
 
 // Convert ContainerLab topology-data.json export into CMT JSON topology
 function convert_clab_topology_data_to_cmt(c){
-  var cmt = {"nodes": [], "links": [], "type": "", "name": ""};
+  var cmt = {"nodes": [], "links": [], "type": "", "source": "", "name": ""};
   var node_id_map = {};
 
   // topology name
@@ -76,9 +76,14 @@ function convert_clab_topology_data_to_cmt(c){
     cmt.name = c.name;
   }
 
-  // topology type
+  // topology type & source
   if (c.hasOwnProperty("type")) {
     cmt.type = c.type;
+  }
+
+  // topology source
+  if (c.hasOwnProperty("source")) {
+    cmt.source = c.source;
   }
 
   if (!c.hasOwnProperty("nodes")) {

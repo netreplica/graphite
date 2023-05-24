@@ -1611,11 +1611,12 @@
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
     var topologyData;
-    var topologyTypes = {
-      "clab-graph": "Topology", // Containerlab Offline Topology, deprecated
+    var topologySources = {
       "clab": "Containerlab Topology",
       "netlab": "Netlab Topology",
-      "nr-netbox": "NetBox Topology", // NetBox Topology export by netreplica
+      "netbox": "NetBox Topology",
+      "graphite": "Topology",
+      "unknown": "Topology"
     };
 
     xmlhttp.onreadystatechange = function() {
@@ -1629,9 +1630,16 @@
         default:
           topologyData = convert_clab_to_cmt(topo_data);
         }
-        if (topologyData.hasOwnProperty("type") && topologyTypes.hasOwnProperty(topologyData.type) && topologyData.hasOwnProperty("name")) {
-          document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
-          document.getElementById("topology-type").innerHTML = topologyTypes[topologyData.type];
+        if (!topologyData.hasOwnProperty("source") || topologyData.source.length == 0) {
+          if (topologyData.hasOwnProperty("type")) {
+            topologyData['source'] = topologyData.type; // mostly applicable to clab which doesn't export the source field
+          } else {
+            topologyData['source'] = "unknown";
+          }
+        }
+        if (topologyData.hasOwnProperty("source") && topologySources.hasOwnProperty(topologyData.source) && topologyData.hasOwnProperty("name")) {
+          document.title = topologyData.name + "@" + topologyData.source + " - " + window.location.hostname;
+          document.getElementById("topology-type").innerHTML = topologySources[topologyData.source];
           if (topologyData.name != "") {
             document.getElementById("topology-name").innerHTML = topologyData.name;
           } else {
