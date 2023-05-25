@@ -11,9 +11,17 @@ Visualization for Network Topologies
 Support for [NetBox](https://netbox.dev/) DCIM system includes:
 
 * Visualization of network topologies exported by [netreplica/nrx](https://github.com/netreplica/nrx) command-line tool
-* Does not require installing any plugins on a NexBox instance
-* Use of device `role`, plus `site` and/or `tag` information to select devices for visualization
-* Customizable topology data definitions via Jinja2 [templates](https://github.com/netreplica/templates/tree/main/graphite)
+* Does not require installation of a plugin on a NexBox instance
+* Filtering based on Device `role`, `site` and/or `tag` information to select devices for visualization
+* User-customizable topology data definitions via Jinja2 [templates](https://github.com/netreplica/templates/tree/main/graphite)
+
+To export topology for visualization from NetBox run `nrx` with the following parameters. See more in `nrx` [documentation](https://github.com/netreplica/nrx/tree/main#topology-visualization-with-graphite).
+
+```Shell
+nrx.py --config netbox.conf --input netbox --output graphite --site SITE --tag TAG
+```
+
+Once the data is exported, run Graphite using of the methods [described here](docs/DOCKER.md) to access it via a browser.
 
 ### Containerlab
 
