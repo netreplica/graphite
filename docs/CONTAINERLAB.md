@@ -95,7 +95,7 @@ The visualization we got on the previous step lacks hierarchy. Let's fix that by
     sudo -E containerlab deploy -t ${CLAB_TOPO}.yaml --reconfigure
     ```
 
-5. Now refresh the web page in the browser, and click "Vertical Layout". You should see a topology arranged in 3 Clos tiers. `node3-1` is on the top since it has `graph-level` value of 1.
+5. Now refresh the web page in the browser, and click "Horizontal Layout". You should see a topology arranged in 3 Clos tiers. `node3-1` is on the top since it has `graph-level` value of 1.
 
 ![clos-3tier Graphite Topology Visualization arranged in tiers](../images/clos-3tier.clab.levels.png)
 
