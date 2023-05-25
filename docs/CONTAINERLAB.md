@@ -140,7 +140,7 @@ All the nodes in our visualization so far represented by the same "router" icon.
     sudo -E containerlab deploy -t ${CLAB_TOPO}.yaml --reconfigure
     ```
 
-3. Now refresh the web page in the browser, and click "Vertical Layout". Now the bottom row of nodes uses "switch" icons.
+3. Now refresh the web page in the browser, and click "Horizontal Layout". Now the bottom row of nodes uses "switch" icons.
 
     ![clos-3tier Graphite Topology Visualization with switch icons](../images/clos-3tier.clab.icons.png)
 
