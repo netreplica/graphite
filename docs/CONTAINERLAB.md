@@ -3,12 +3,19 @@
 ## Adding Graphite to a topology definition file
 
 
-1. Create a topology definition file for ContainerLab. You could start with one of the examples [published](https://containerlab.srlinux.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
+1. Create a topology definition file for ContainerLab. You could start with one of the examples [published](https://containerlab.dev/lab-examples/lab-examples/) on ContainerLab website, or use your own topology. Here, we will use ContainerLab capability to generate Clos topologies.
 
     ```Shell
-    cd $HOME/netreplica/clab
     CLAB_TOPO="clos-3tier"
     clab generate --name ${CLAB_TOPO} --nodes 4,2,1 > ${CLAB_TOPO}.yaml
+    ```
+
+    For this topology to be valid, we also we need to provide an image to use for all the nodes. Add the following lines to the topology YAML file right after `topology`:
+
+    ```Yaml
+      kinds:
+        srl:
+          image: ghcr.io/nokia/srlinux
     ```
 
     Alternatively, if you have an existing topology in a yaml file, you can skip this step and make a note of the caveats in the next step.
