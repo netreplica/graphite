@@ -15,13 +15,13 @@ Support for [NetBox](https://netbox.dev/) DCIM system includes:
 * Filtering based on Device `role`, `site` and/or `tag` information to select devices for visualization
 * User-customizable topology data definitions via Jinja2 [templates](https://github.com/netreplica/templates/tree/main/graphite)
 
-To export topology for visualization from NetBox run `nrx` with the following parameters. See more in `nrx` [documentation](https://github.com/netreplica/nrx/tree/main#topology-visualization-with-graphite).
+To export a topology for visualization from NetBox run `nrx` with the following parameters. See more in `nrx` [documentation](https://github.com/netreplica/nrx/tree/main#topology-visualization-with-graphite).
 
 ```Shell
 nrx.py --config netbox.conf --input netbox --output graphite --site SITE --tag TAG
 ```
 
-Once the data is exported, run Graphite using of the methods [described here](docs/DOCKER.md) to access it via a browser.
+Once the data is exported, run Graphite using of the methods [described here](docs/DOCKER.md) to see the topology via a browser.
 
 ### Containerlab
 
