@@ -56,13 +56,13 @@ Look for `Graphite visualization 🎨 http://<ip_address>:8080/graphite` Contain
 
 ![Graphite visualization 🎨 link](images/clab-deploy-graphite-url-2host.png)
 
+## Detailed instructions on using Graphite with Containerlab
+
+Follow [step-by-step reference](docs/CONTAINERLAB.md) to learn how to use Graphite with ContainerLab.
+
 ## Running Graphite as a standalone Docker container
 
 To be able to visualize multiple Containerlab topologies, including those that are not currently running, you can launch Graphite as a standalone container. Follow [the guide](docs/DOCKER.md) to learn how.
-
-## Detailed instructions on installing and using Graphite from source code.
-
-Follow [step-by-step reference](docs/CONTAINERLAB.md) to learn how to use Graphite with ContainerLab from source code.
 
 ## NANOG-84 Hackathon
 
