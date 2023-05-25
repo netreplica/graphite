@@ -2,18 +2,24 @@
 
 ---
 # Netreplica Graphite
-Network Visualization for Emulated Topologies
+Visualization for Network Topologies
 
 ## Supported software
 
-### CONTAINERlab
+### NetBox
 
-[Containerlab](https://containerlab.dev/) is an open-source network emulation software that provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them to create lab topologies of users choice and manages labs lifecycle.
+Support for [NetBox](https://netbox.dev/) DCIM system includes:
 
-Graphite support for Containerlab includes:
+* Visualization of network topologies exported by [netreplica/nrx](https://github.com/netreplica/nrx) command-line tool
+* Does not require installing any plugins on a NexBox instance
+* Use of device `role`, plus `site` and/or `tag` information to select devices for visualization
+* Customizable topology data definitions via Jinja2 [templates](https://github.com/netreplica/templates/tree/main/graphite)
+
+### Containerlab
+
+Support for [Containerlab](https://containerlab.dev/) network emulation software includes:
 
 * Visualization of live topologies, including dynamic information about network nodes – for example, management IP addresses.
-* Offline visualization of static topology YAML files.
 * WebSSH access to running Containerlab nodes from the topology visualization.
 * Launching Graphite as part of Containerlab topology by including it as a node in the topology YAML file.
 
