@@ -53,9 +53,9 @@ RUN addgroup --system webssh2 \
 # RELEASE-IMAGE
 ##########################################
 
-FROM alpine:3.15 AS release-image
+FROM alpine:3.18 AS release-image
 
-ENV LIGHTTPD_VERSION=1.4.64-r0
+ENV LIGHTTPD_VERSION=1.4.70-r0
 
 # Install packages
 # gcompat - required by clabg

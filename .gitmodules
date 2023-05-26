@@ -4,3 +4,6 @@
 [submodule "docker/webssh2"]
 	path = docker/webssh2
 	url = https://github.com/billchurch/webssh2.git
+[submodule "docker/lighttpd1.4"]
+	path = docker/lighttpd1.4
+	url = https://git.lighttpd.net/lighttpd/lighttpd1.4.git

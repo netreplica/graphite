@@ -7,22 +7,21 @@
 
 ## Building a Docker image from source
 
-1. Clone [lighttpd 1.4](https://git.lighttpd.net/lighttpd/lighttpd1.4) sources and build configuration files from copies provided
+1. Build `lighttpd` configuration
 
     ```Shell
-    mkdir -p src
-    git clone https://git.lighttpd.net/lighttpd/lighttpd1.4.git src/lighttpd1.4
-    mkdir -p graphite/docker/etc/lighttpd/conf.d
+    mkdir -p docker/etc/lighttpd/conf.d
 
-    cp src/lighttpd1.4/doc/config/conf.d/mime.conf graphite/docker/etc/lighttpd/conf.d
-    cp src/lighttpd1.4/doc/config/conf.d/dirlisting.conf graphite/docker/etc/lighttpd/conf.d
+    cp docker/lighttpd1.4/doc/config/conf.d/mime.conf docker/etc/lighttpd/conf.d
+    cp docker/lighttpd1.4/doc/config/conf.d/dirlisting.conf docker/etc/lighttpd/conf.d
 
-    cat src/lighttpd1.4/doc/config/lighttpd.conf | \
+    cat docker/lighttpd1.4/doc/config/lighttpd.conf | \
     sed "s/^var.server_root.*$/var.server_root = \"\/var\/www\/localhost\"/" | \
     sed "s/^server.errorlog.*$/server.errorlog = \"\/dev\/stderr\"/" | \
+    sed "s/^server.document-root.*$/server.document-root = \"\/htdocs\"/" | \
     grep -v "server.use-ipv6" | \
     grep -v "debug.conf" \
-    > graphite/docker/etc/lighttpd/lighttpd.conf
+    > docker/etc/lighttpd/lighttpd.conf
 
     wget -O src/bootstrap-3.4.1-dist.zip https://github.com/twbs/bootstrap/releases/download/v3.4.1/bootstrap-3.4.1-dist.zip
     unzip src/bootstrap-3.4.1-dist.zip -d src/
