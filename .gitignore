@@ -129,10 +129,8 @@ dmypy.json
 .pyre/
 .DS_Store
 .*.swp
-docker/etc/lighttpd/lighttpd.conf
 docker/etc/lighttpd/conf.d/dirlisting.conf
 docker/etc/lighttpd/conf.d/mime.conf
-docker/bin/clabg
 docker/default/topology-data.json
 docker/bootstrap-3.4.1-dist
 docker/bin/envsubst
