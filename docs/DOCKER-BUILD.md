@@ -32,17 +32,6 @@
     cp graphite/examples/topology-data.json graphite/docker/default/
     ```
 
-2. Clone [webssh2](https://github.com/billchurch/WebSSH2)
-
-    ```Shell
-    mkdir -p src
-    git clone https://github.com/billchurch/webssh2.git src/webssh2
-
-    rm -rf graphite/docker/webssh2
-    mkdir -p graphite/docker/webssh2
-    cp -R src/webssh2/app/* graphite/docker/webssh2/
-    ```
-
 4. Build
 
     ```Shell

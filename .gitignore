@@ -134,7 +134,5 @@ docker/etc/lighttpd/conf.d/dirlisting.conf
 docker/etc/lighttpd/conf.d/mime.conf
 docker/bin/clabg
 docker/default/topology-data.json
-docker/webssh2/
-docker/node-data/
 docker/bootstrap-3.4.1-dist
 docker/bin/envsubst

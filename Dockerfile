@@ -40,14 +40,14 @@ RUN apk add --no-cache \
 ENV WEBSSH2=/usr/local/webssh2
 RUN mkdir -p ${WEBSSH2}
 WORKDIR ${WEBSSH2}
-COPY docker/webssh2/ ${WEBSSH2}/
+COPY docker/webssh2/app/ ${WEBSSH2}/
 COPY docker/webssh2.config.template ${WEBSSH2}/config.template
 # Add webssh2 user to run node.js
 RUN addgroup --system webssh2 \
   && adduser -S -G webssh2 -H -s /bin/sh -h ${WEBSSH2} webssh2 \
   && chown webssh2:webssh2 ${WEBSSH2} \
-  && npm install --production
-#  && npm audit fix
+  && npm install --production \
+  && npm audit fix
 
 ##########################################
 # RELEASE-IMAGE
