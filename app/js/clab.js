@@ -56,7 +56,7 @@ function getWebsshDeviceLink(n, a, i) {
 // The following sources of topology data use the same format as ContainerLab:
 // - ContainerLab: type=clab
 // - NetLab:       type=netlab
-// - NetBox by nr: type=nr-netbox
+// - Graphite:     type=graphite
 function convert_clab_to_cmt(c){
   var supported_types = ["clab", "netlab", "graphite"];
   if (c.hasOwnProperty("type") && supported_types.includes(c.type)) {
