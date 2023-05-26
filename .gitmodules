@@ -1,3 +1,6 @@
 [submodule "docker/node-data"]
 	path = docker/node-data
 	url = https://github.com/netreplica/node-data.git
+[submodule "docker/webssh2"]
+	path = docker/webssh2
+	url = https://github.com/billchurch/webssh2.git
