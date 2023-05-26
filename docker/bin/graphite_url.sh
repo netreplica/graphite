@@ -8,10 +8,14 @@ else
   GPORT="$1"
 fi
 
-if [ -n "$CLAB_SSH_CONNECTION" ]; then
-  GHOST=`echo $CLAB_SSH_CONNECTION | awk '{print $3}'`
+if [ -n "$CLAB_SSH_CONNECTION" ] && [ -z "$HOST_CONNECTION" ]; then
+  HOST_CONNECTION="$CLAB_SSH_CONNECTION"
+fi
+
+if [ -n "$HOST_CONNECTION" ]; then
+  GHOST=`echo $HOST_CONNECTION | awk '{print $3}'`
 else
-  GHOST=$HOSTNAME
+  GHOST="localhost"
 fi
 
 if sh -c 'curl --silent --connect-timeout 1 http://169.254.169.254/ >/dev/null'; then

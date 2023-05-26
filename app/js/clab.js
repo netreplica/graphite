@@ -53,22 +53,37 @@ function getWebsshDeviceLink(n, a, i) {
 }
 
 // Convert ContainerLab topology into CMT JSON topology
+// The following sources of topology data use the same format as ContainerLab:
+// - ContainerLab: type=clab
+// - NetLab:       type=netlab
+// - Graphite:     type=graphite
 function convert_clab_to_cmt(c){
-  if (c.hasOwnProperty("type") && c.type == "clab") {
+  var supported_types = ["clab", "netlab", "graphite"];
+  if (c.hasOwnProperty("type") && supported_types.includes(c.type)) {
     return convert_clab_topology_data_to_cmt(c);
   } else {
-    return convert_clab_graph_to_cmt(c);
+    return {"nodes": [], "links": [], "type": "", "source": "", "name": ""};
   }
 }
 
 // Convert ContainerLab topology-data.json export into CMT JSON topology
 function convert_clab_topology_data_to_cmt(c){
-  var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
+  var cmt = {"nodes": [], "links": [], "type": "", "source": "", "name": ""};
   var node_id_map = {};
 
   // topology name
   if (c.hasOwnProperty("name")) {
     cmt.name = c.name;
+  }
+
+  // topology type & source
+  if (c.hasOwnProperty("type")) {
+    cmt.type = c.type;
+  }
+
+  // topology source
+  if (c.hasOwnProperty("source")) {
+    cmt.source = c.source;
   }
 
   if (!c.hasOwnProperty("nodes")) {
@@ -192,67 +207,6 @@ function convert_clab_topology_data_to_cmt(c){
       "tgtIfName": tgt_i_name,
       "tgtIfMAC":  tgt_i_mac,
       "tgtDevice": tgt_d_name,
-    })
-  }
-  return cmt;
-}
-
-// Convert ContainerLab Graph JSON export into CMT JSON topology
-function convert_clab_graph_to_cmt(c){
-  var cmt = {"nodes": [], "links": [], "type": "clab", "name": ""};
-  var node_id_map = {};
-  for (var i =0; i < c.nodes.length; i++) {
-    var n = c.nodes[i];
-    var mgmtIPv4;
-    var mgmtIPv6;
-    var websshDeviceLink;
-    var websshDeviceLinkIPv6;
-    var icon = "router";
-    var level;
-    if (n.hasOwnProperty("ipv4_address")) {
-      mgmtIPv4 = n.ipv4_address;
-      websshDeviceLink = getWebsshDeviceLink(n.name, mgmtIPv4, i);
-    }
-    if (n.hasOwnProperty("ipv6_address")) {
-      mgmtIPv6 = n.ipv6_address;
-      websshDeviceLinkIPv6 = getWebsshDeviceLink(n.name, mgmtIPv6, i);
-    }
-    if (n.hasOwnProperty("labels")) {
-      if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
-        continue;
-      }
-      if (n.labels.hasOwnProperty("graph-icon")) {
-        icon = n.labels["graph-icon"];
-      }
-      if (n.labels.hasOwnProperty("graph-level")) {
-        level = n.labels["graph-level"];
-      }
-    }
-    node_id_map[n.name] = i;
-    cmt.nodes.push({
-      "id": i,
-      "name": n.name,
-      "websshDeviceLink": websshDeviceLink,
-      "websshDeviceLinkIPv6": websshDeviceLinkIPv6,
-      "kind": n.kind,
-      "image": n.image,
-      "group": n.group,
-      "mgmtIPv4": mgmtIPv4,
-      "mgmtIPv6": mgmtIPv6,
-      "icon": icon,
-      "layerSortPreference": level,
-    })
-  }
-  for (var i =0; i < c.links.length; i++) {
-    var l = c.links[i];
-    cmt.links.push({
-      "id": i,
-      "source": node_id_map[l["source"]],
-      "target": node_id_map[l["target"]],
-      "srcIfName": l["source_endpoint"],
-      "srcDevice": l["source"],
-      "tgtIfName": l["target_endpoint"],
-      "tgtDevice": l["target"],
     })
   }
   return cmt;

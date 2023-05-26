@@ -1575,7 +1575,7 @@
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
-    var topo_type = "default", topo_name = "default", topo_base = "/", topo_file = "default.json", topo_url;
+    var topo_type = "default", topo_name = "", topo_url;
     var showActionBar = false;
     if (url_params.has('type')) {
       topo_type = url_params.get('type');
@@ -1586,22 +1586,36 @@
     if (url_params.has('actionbar')) {
       showActionBar = true;
     }
-    switch (topo_type) {
-    case "clab": // Deprecated
-      topo_url = topo_base + "clab-" + topo_name + "/graph/" + topo_name + ".json";
-      break;
-    case "clabdata":
-      // NOTE on "clab-" prefix from https://containerlab.dev/manual/topo-def-file/#prefix
-      // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
-      topo_url = topo_base + "lab/clab-" + topo_name + "/" + "topology-data.json";
-      break;
-    default:
-      topo_url = topo_base + topo_name +"/" + topo_file;
+
+    if (topo_name.length > 0) {
+      switch (topo_type) {
+        case "clab":
+        case "clabdata":
+          // NOTE on "clab-" prefix from https://containerlab.dev/manual/topo-def-file/#prefix
+          // Even when you change the prefix, the lab directory is still uniformly named using the clab-<lab-name> pattern.
+          topo_url = "/lab/clab-" + topo_name + "/topology-data.json";
+          break;
+        case "graphite":
+          // topology data exported for graphite
+          topo_url = "/lab/" + topo_name + ".graphite.json";
+          break;
+        default:
+          topo_url = "/lab/" + topo_name;
+        }
+    } else {
+      topo_url = "/default/default.json";
     }
 
     // Load topology model
     var xmlhttp = new XMLHttpRequest();
     var topologyData;
+    var topologySources = {
+      "clab": "Containerlab Topology",
+      "netlab": "Netlab Topology",
+      "netbox": "NetBox Topology",
+      "graphite": "Topology",
+      "unknown": "Topology"
+    };
 
     xmlhttp.onreadystatechange = function() {
       // TODO handle errors
@@ -1614,9 +1628,16 @@
         default:
           topologyData = convert_clab_to_cmt(topo_data);
         }
-        if (topologyData.hasOwnProperty("type") && topologyData.type == "clab" && topologyData.hasOwnProperty("name")) {
-          document.title = topologyData.name + " - " + topologyData.type + "@" + window.location.hostname;
-          document.getElementById("topology-type").innerHTML = "Containerlab Topology";
+        if (!topologyData.hasOwnProperty("source") || topologyData.source.length == 0) {
+          if (topologyData.hasOwnProperty("type")) {
+            topologyData['source'] = topologyData.type; // mostly applicable to clab which doesn't export the source field
+          } else {
+            topologyData['source'] = "unknown";
+          }
+        }
+        if (topologyData.hasOwnProperty("source") && topologySources.hasOwnProperty(topologyData.source) && topologyData.hasOwnProperty("name")) {
+          document.title = topologyData.name + "@" + topologyData.source + " - " + window.location.hostname;
+          document.getElementById("topology-type").innerHTML = topologySources[topologyData.source];
           if (topologyData.name != "") {
             document.getElementById("topology-name").innerHTML = topologyData.name;
           } else {
@@ -1635,17 +1656,18 @@
           app.attach();
           app.device_data_autoupdate_on(); // start pulling additional data from the devices
         } else {
+          var notice_html = '<strong>There are no nodes in the <code><a class="alert-link" href="__topo_url__">topology data file</a></code>.</strong>'
           if (topologyData.type == "clab") {
             // data came from containerlab topology-data.json
-            var notice = document.createElement("div");
-            var notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
+            notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
             Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
-            notice.className = "alert alert-warning fade in";
-            notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
-            var topology_diagram = document.getElementById("topology-container");
-            topology_diagram.insertBefore(notice, topology_diagram.firstChild);
           }
-        }
+          var notice = document.createElement("div");
+          notice.className = "alert alert-warning fade in";
+          notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
+          var topology_diagram = document.getElementById("topology-container");
+          topology_diagram.insertBefore(notice, topology_diagram.firstChild);
+      }
       }
     };
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);

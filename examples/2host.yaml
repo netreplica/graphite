@@ -1,13 +1,8 @@
 name: 2host
-
-mgmt:
-  network: mgmt
-  ipv4_subnet: 172.22.0.0/24
-
 topology:
   kinds:
     linux:
-      image: netreplica/ubuntu-host:1.1
+      image: netreplica/ubuntu-host
       labels:
         graph-level: 3
         graph-icon: server
@@ -26,9 +21,10 @@ topology:
       kind: linux
       image: netreplica/graphite
       env:
-        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+        HOST_CONNECTION: ${SSH_CONNECTION}
       binds:
         - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+        - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
       ports:
         - 8080:80
       exec:

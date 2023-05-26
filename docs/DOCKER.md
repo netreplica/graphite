@@ -3,50 +3,79 @@
 ## Pre-requisites
 
 1. Docker
-2. Containerlab topology definition files as a source for visualization
+2. Topology data file(s) as a source for visualization, in one of supported formats
 
-## Running
+## Running with a single data file to visualize
 
-1. In a shell terminal, navigate to a directory with Containerlab topology definition files you'd like to visualize.
+1. In a shell terminal, initialize `env:TOPOLOGY` variable with a full path of the data file for visualization. For example, for the file `topology.json` in the current directory:
 
-2. Launch Graphite as a Docker container
+    ```Shell
+    TOPOLOGY="$(pwd)/topology.json"
+    ```
 
-```Shell
-CLABDIR=$(pwd)
-docker run -d -t \
-  -v "${CLABDIR}":/htdocs/lab \
-  -p 8080:80 \
-  --name graphite \
-  netreplica/graphite
-````
+2. Launch Graphite as a Docker container with the data file mounted as `/htdocs/default/default.json`:
 
-3. At this point you should be able to view Containerlab topologies in Graphite via the following URL: [`http://localhost:8080/graphite/index.html?type=clab&topo=<topology_name>`](http://localhost:8080/graphite/index.html?type=clab&topo=<topology_name>). Make sure to replace <topology_name> with a your topology name, and `localhost` with appropriate IP or FQDN in case you are not running the browser on the same host as Graphite container.
+    ```Shell
+    docker run -d -t --rm \
+        --mount type=bind,source="${TOPOLOGY}",target=/htdocs/default/default.json,readonly \
+        -p 8080:80 \
+        --name graphite \
+        netreplica/graphite:latest
+    ```
 
-## Environmental variables
+3. You should be able to see the visualization on [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/)
 
-You can use the following environmental variables with Graphite docker container:
+## Running with ability to visualize multiple data files
 
-```Shell
-GRAPHITE_DEFAULT_TYPE # Default type of topology data to visualize. Currently, only `clab` is supported
-GRAPHITE_DEFAULT_TOPO # Default topology to visualize when no specific topology is provided via the URL
-CLAB_SSH_CONNECTION   # Pass value of SSH_CONNECTION env var on the host when launching Graphite container
-                      # and use graphite_motd.sh script to see an URL you can open from your computer to connect to Graphite
+1. In a shell terminal, navigate to a directory with data files for visualization.
+
+2. Launch Graphite as a Docker container with the current directory mounted as `/htdocs/lab`:
+
+  ```Shell
+  docker run -d -t --rm \
+    -v "$(pwd)":/htdocs/lab:ro \
+    -p 8080:80 \
+    --name graphite \
+    netreplica/graphite:latest
+  ```
+
+3. To view a specific topology, use an URL in the following format, replacing `TOPOLOGY_TYPE` and `TOPOLOGY_NAME` according to the rules below.
+
+```
+http://localhost:8080/graphite/?type=TOPOLOGY_TYPE&topo=TOPOLOGY_NAME
 ```
 
-## Generating offline graphs - DEPRECATED
+## Topology types and names
 
-1. If you never exported Containerlab topology graphs into JSON, you can do that for all topologies in the folder at once with the following command:
+* `TOPOLOGY_TYPE`: tells where Graphite should look for the topology files
+* `TOPOLOGY_NAME`: determines the name of the topology file, depending on the `TOPOLOGY_TYPE`
+
+To find a location of the topology data file in the mounted directory, Graphite understands the following topology types:
+
+* Graphite `graphite`: `TOPOLOGY_NAME.graphite.json` file in the mounted directory
+* Containerlab `clab`: `topology-data.json` under `clab-TOPOLOGY_NAME` subfolders in the mounted directory
+* No type: `TOPOLOGY_NAME` file in the mounted directory
+
+## Default topology type and name
+
+If you launched Graphite with a directory mounted to visualize multiple data files and open the URL [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) without parameters, there is no topology shown – since Graphite doesn't know which one would you like to see. You can change that behavior via use of environmental variables:
 
 ```Shell
-docker exec -t graphite generate_all_offline_graphs.sh
-````
+GRAPHITE_DEFAULT_TYPE=graphite # Default topology type
+GRAPHITE_DEFAULT_TOPO=wan      # Default topology name
+docker run -d -t --rm \
+  -v "$(pwd)":/htdocs/lab:ro \
+  -e GRAPHITE_DEFAULT_TYPE="${GRAPHITE_DEFAULT_TYPE}" \
+  -e GRAPHITE_DEFAULT_TOPO="${GRAPHITE_DEFAULT_TOPO}" \
+  -p 8080:80 \
+  --name graphite \
+  netreplica/graphite:latest
+```
 
-  Alternatively, to export graph data for a specific topology, use
+## Graphite URL helper
 
-```Shell
-docker exec -t graphite generate_offline_graph.sh <topology_name>.yaml
-````
+If you're running Graphite on a remote host, or inside a VM, use this helper to show a URL with proper IP address instead of `localhost`. In this example we assumed you've mapped Graphite TCP port 80 to host port 8080. Change the port if needed.
 
-## Docker Image Build Instructions
-
-Follow this guide [DOCKER-BUILD.md](DOCKER-BUILD.md)
+  ```Shell
+  docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+  ```

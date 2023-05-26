@@ -15,8 +15,19 @@ if ! [ -e "${TOPO}" ] && [ -e "${DEFAULT_TOPO}" ] ; then
 fi
 
 # Topology location via environment variables – overrides default topology location
-if [ "${GRAPHITE_DEFAULT_TYPE}" == "clab" ] && [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
-  DEFAULT_TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+if [ -n "${GRAPHITE_DEFAULT_TOPO}" ]; then
+  case "${GRAPHITE_DEFAULT_TYPE}" in
+    clab)
+      DEFAULT_TOPO="${WWW_HOME}/lab/clab-${GRAPHITE_DEFAULT_TOPO}/topology-data.json"
+      ;;
+    graphite)
+      DEFAULT_TOPO="${WWW_HOME}/lab/${GRAPHITE_DEFAULT_TOPO}.graphite.json"
+      ;;
+    *)
+      DEFAULT_TOPO="${WWW_HOME}/lab/${GRAPHITE_DEFAULT_TOPO}"
+      ;;
+  esac
+
   # check if DEFAULT_TOPO exists
   if [ -e "${DEFAULT_TOPO}" ]; then
     # create a symlink to the default topology

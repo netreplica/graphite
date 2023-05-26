@@ -48,7 +48,7 @@ docker run -d -t --rm \
   netreplica/graphite:local
 ```
 
-5. A directory with lab subfolders is mounted, and a specific lab is selected via URL: http://localhost:8080/graphite/index.html?type=clabdata&topo=colo. Live device data may be be enabled – TODO check
+5. A directory with lab subfolders is mounted, and a specific lab is selected via URL: http://localhost:8080/graphite/index.html?type=clab&topo=colo. Live device data may be be enabled – TODO check
 
 ```
 docker run -d -t --rm \
@@ -58,7 +58,7 @@ docker run -d -t --rm \
   netreplica/graphite:local
 ```
 
-5. A directory with lab subfolders is mounted, and a default lab is pointed via env vars:: http://localhost:8080/graphite/index.html. A specific lab cab be selected via URL: http://localhost:8080/graphite/index.html?type=clabdata&topo=colo. Live device data may be be enabled – TODO check
+5. A directory with lab subfolders is mounted, and a default lab is pointed via env vars:: http://localhost:8080/graphite/index.html. A specific lab cab be selected via URL: http://localhost:8080/graphite/index.html?type=clab&topo=colo. Live device data may be be enabled – TODO check
 
 ```
 docker run -d -t --rm \
