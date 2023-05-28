@@ -1574,6 +1574,45 @@
       document.getElementById("nav-live").classList.remove("m-fadedOut");
     };
 
+    var dropZoneFile;
+
+    dropzone_set_text = function(text) {
+      var dropZoneText = document.getElementById('drop-zone-text');
+      dropZoneText.innerHTML = text;
+    };
+
+    dropzone_set_file = function(file) {
+      if (file != null) {
+        var dropZone = document.getElementById('drop-zone');
+        dropZoneFile = file;
+        dropzone_set_text(file.name);
+        dropZone.classList.add('active');
+      }
+    };
+
+    dropzone_onclick_handler = function(ev) {
+      var fileInput = document.getElementById('file-input');
+      fileInput.click();
+    };
+
+    dropzone_onchange_handler = function(ev) {
+      if (ev.target.files.length > 0) {
+        dropzone_set_file(ev.target.files[0]);
+      }
+    };
+
+    dropzone_submit_handler = function() {
+      var fileInput = document.getElementById('file-input');
+      if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        dropzone_set_file(file);
+        dropzone_read_file();
+      } else {
+        // Read file from drag and drop
+        dropzone_read_file();
+      }
+    };
+
     dropzone_dragover_handler = function(ev) {
       var dropZone = document.getElementById('drop-zone');
       dropZone.classList.add('highlight');
@@ -1591,16 +1630,13 @@
       dropZone.classList.remove('highlight');
       // Prevent default behavior (Prevent file from being opened)
       ev.preventDefault();
-      // Name of the dropped file
-      var filename = "";
-      var file;
       if (ev.dataTransfer.items) {
         // Use DataTransferItemList interface to access the file(s)
         if (ev.dataTransfer.items.length == 1) {
           // If dropped item aren't a file, reject them
           if (ev.dataTransfer.items[0].kind === 'file') {
-            file = ev.dataTransfer.items[0].getAsFile();
-            filename = file.name;
+            var file = ev.dataTransfer.items[0].getAsFile();
+            dropzone_set_file(file);
           }
         } else {
           dropzone_set_text('You can only drop one file at a time');
@@ -1608,44 +1644,44 @@
       } else {
         // Use DataTransfer interface to access the file(s)
         if (ev.dataTransfer.files.length == 1) {
-          file = ev.dataTransfer.files[0];
-          filename = file.name;
+          var file = ev.dataTransfer.files[0];
+          dropzone_set_file(file);
         } else {
           dropzone_set_text('You can only drop one file at a time');
         }
-      }
-      if (filename != "") {
-        dropzone_read_file(file);
-        dropzone_hide();
       }
       // Pass event to removeDragData for cleanup
       dropzone_cleanup(ev);
     };
 
-    dropzone_set_text = function(text) {
-      var dropZone = document.getElementById('drop-zone');
-      dropZone.innerHTML = '<p>' + text + '</p>';
-    };
-
     dropzone_show = function() {
       var dropZone = document.getElementById('drop-zone');
+      var dropForm = document.getElementById('drop-form');
       dropZone.classList.remove("m-fadeOut");
+      dropForm.classList.remove("m-fadeOut");
       dropZone.classList.add("m-fadeIn");
+      dropForm.classList.add("m-fadeIn");
     };
 
     dropzone_hide = function() {
       var dropZone = document.getElementById('drop-zone');
+      var dropForm = document.getElementById('drop-form');
       dropZone.classList.remove("m-fadeIn");
+      dropForm.classList.remove("m-fadeIn");
       dropZone.classList.add("m-fadeOut");
+      dropForm.classList.add("m-fadeOut");
     };
 
-    dropzone_read_file = function(file) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var topo_data = JSON.parse(e.target.result);
-        parse_topology_data(topo_data);
-      };
-      reader.readAsText(file);
+    dropzone_read_file = function() {
+      if (dropZoneFile != null) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var topo_data = JSON.parse(e.target.result);
+          dropzone_hide(); // TODO handle when parse fails
+          parse_topology_data(topo_data);
+        };
+        reader.readAsText(dropZoneFile);
+      }
     }
 
     dropzone_cleanup = function(ev) {

@@ -86,7 +86,7 @@
   background-color: #080808;
   border-color: #080808;
 }
-#qnavbar > div > ul > li > a {
+#navbar > div > ul > li > a {
   font-size: 14px;
 }
 #navbar > div > ul > li.active > a {
@@ -99,11 +99,12 @@
 .dropzone {
   text-align: center;
   cursor: pointer;
+  font-size: 18px;
 }
 .dropzone.m-fadeIn {
   border: 2px dashed #ccc;
   border-radius: 5px;
-  padding: 20px;
+  padding: 100px;
   margin: 20px;
   height: auto;
 }
@@ -120,5 +121,21 @@
   color: #999;
 }
 .dropzone.active {
-  border-color: #007bff;
+  border-color: #337ab7;
+}
+.dropform {
+  text-align: center;
+}
+.dropform.m-fadeOut {
+  padding: 0;
+  margin: 0;
+  height: 0;
+}
+.dropform.m-fadeIn {
+  padding-bottom: 20px;
+  margin: 0;
+  height: auto;
+}
+.btn-primary {
+  background-color: #337ab7;
 }

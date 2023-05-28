@@ -52,8 +52,12 @@
               </div>
             </div>
             <div class="panel-body" id="topology-container" style="padding: 0">
-              <div id="drop-zone" class="dropzone m-fadeOut" ondrop="dropzone_drop_handler(event);" ondragover="dropzone_dragover_handler(event);" ondragleave="dropzone_dragleave_handler(event);">
-                <p>Drag and drop a topology file here or click to upload</p>
+              <div id="drop-zone" class="dropzone m-fadeOut" ondrop="dropzone_drop_handler(event);" ondragover="dropzone_dragover_handler(event);" ondragleave="dropzone_dragleave_handler(event);" onclick="dropzone_onclick_handler(event);">
+                <p id="drop-zone-text">Drag and drop a topology file here or click to upload</p>
+              </div>
+              <div id="drop-form" class="form-group dropform m-fadeOut">
+                <input type="file" class="form-control" id="file-input" accept=".json" style="display: none;" onchange="dropzone_onchange_handler(event);" />
+                <button class="btn btn-primary" onclick="dropzone_submit_handler()">Submit</button>
               </div>
             </div>
             <div class="panel-footer">
