@@ -1624,6 +1624,12 @@
       dropZone.innerHTML = '<p>' + text + '</p>';
     };
 
+    dropzone_show = function() {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.remove("m-fadeOut");
+      dropZone.classList.add("m-fadeIn");
+    };
+
     dropzone_hide = function() {
       var dropZone = document.getElementById('drop-zone');
       dropZone.classList.remove("m-fadeIn");
@@ -1737,12 +1743,12 @@
 
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4) {
-        if (this.status == 404) {
-        }
-        else if (this.status == 200) {
+        if (this.status == 200) {
           var topo_data = JSON.parse(this.responseText);
           dropzone_hide();
           parse_topology_data(topo_data);
+        } else {
+            dropzone_show();
         }
       }
     };
