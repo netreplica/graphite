@@ -1,4 +1,4 @@
-<p align=center><img src=https://github.com/netreplica/graphite/blob/bd4cdec84048b6c4762a929ec37b7a21841c453d/images/netreplica.png  width="500px"/></p>
+[![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 
 ---
 # Netreplica Graphite
@@ -63,12 +63,6 @@ Follow [step-by-step reference](docs/CONTAINERLAB.md) to learn how to use Graphi
 ## Running Graphite as a standalone Docker container
 
 To be able to visualize multiple Containerlab topologies, including those that are not currently running, you can launch Graphite as a standalone container. Follow [the guide](docs/DOCKER.md) to learn how.
-
-## NANOG-84 Hackathon
-
-Graphite was conceived as part of [NANOG-84 Hackathon](https://www.nanog.org/events/nanog-84-hackathon/). Here is an original idea:
-
-![NANOG-84 Hackathon Idea](images/clab-graphite.png)
 
 ## Copyright notice
 
