@@ -1593,12 +1593,13 @@
       ev.preventDefault();
       // Name of the dropped file
       var filename = "";
+      var file;
       if (ev.dataTransfer.items) {
         // Use DataTransferItemList interface to access the file(s)
         if (ev.dataTransfer.items.length == 1) {
           // If dropped item aren't a file, reject them
           if (ev.dataTransfer.items[0].kind === 'file') {
-            var file = ev.dataTransfer.items[0].getAsFile();
+            file = ev.dataTransfer.items[0].getAsFile();
             filename = file.name;
           }
         } else {
@@ -1607,12 +1608,14 @@
       } else {
         // Use DataTransfer interface to access the file(s)
         if (ev.dataTransfer.files.length == 1) {
-          filename = ev.dataTransfer.files[0].name;
+          file = ev.dataTransfer.files[0];
+          filename = file.name;
         } else {
           dropzone_set_text('You can only drop one file at a time');
         }
       }
       if (filename != "") {
+        dropzone_read_file(file);
         dropzone_hide();
       }
       // Pass event to removeDragData for cleanup
@@ -1635,6 +1638,15 @@
       dropZone.classList.remove("m-fadeIn");
       dropZone.classList.add("m-fadeOut");
     };
+
+    dropzone_read_file = function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var topo_data = JSON.parse(e.target.result);
+        parse_topology_data(topo_data);
+      };
+      reader.readAsText(file);
+    }
 
     dropzone_cleanup = function(ev) {
       if (ev.dataTransfer.items) {
