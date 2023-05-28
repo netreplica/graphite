@@ -86,9 +86,11 @@
   background-color: #080808;
   border-color: #080808;
 }
-#navbar > ul > li.active > a {
+#qnavbar > div > ul > li > a {
+  font-size: 14px;
+}
+#navbar > div > ul > li.active > a {
   background-color: #222;
-  font-size: 16px;
 }
 .navbar-brand {
   padding-top: 5px;

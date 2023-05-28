@@ -15,18 +15,25 @@
   <body>
 
     <nav class="navbar navbar-inverse navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
+      <div id="navbar" class="container">
+        <div id="navbar-logo" class="navbar-header">
           <a class="navbar-brand" href="#"><img src="assets/netreplica-site-header.svg" width="120" height="40" alt="Netreplica Logo"></a>
         </div>
-        <div id="navbar">
+        <div  class="navbar-left">
           <ul class="nav navbar-nav">
-            <li id="navbar-auto-layout" class="active">
-              <a href="#" onClick="window.location.reload();">graphite</a>
+            <li class="active">
+              <a href="#" onClick="window.location.reload();">Diagram</a>
             </li>
           </ul>
-        </div><!--/.navbar -->
-      </div>
+        </div><!--/#navbar-left -->
+        <div class="navbar-right">
+          <ul class="nav navbar-nav">
+            <li id="navbar-help">
+              <a href="https://github.com/netreplica/graphite/blob/main/README.md" target="_blank">Help&nbsp;<span class="glyphicon glyphicon-new-window"></span></a>
+            </li>
+          </ul>
+        </div><!--/#navbar-right -->
+      </div><!--/#navbar -->
     </nav>
 
 
