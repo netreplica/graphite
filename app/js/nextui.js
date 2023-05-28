@@ -1602,22 +1602,22 @@
             filename = file.name;
           }
         } else {
-          console.log('Multiple files dropped');
+          dropzone_set_text('You can only drop one file at a time');
         }
       } else {
         // Use DataTransfer interface to access the file(s)
         if (ev.dataTransfer.files.length == 1) {
           filename = ev.dataTransfer.files[0].name;
         } else {
-          console.log('Multiple files dropped');
+          dropzone_set_text('You can only drop one file at a time');
         }
       }
       if (filename != "") {
-        dropzone_set_text(filename);
-        dropZone.classList.add('active');
+        dropZone.classList.remove("m-fadeIn");
+        dropZone.classList.add("m-fadeOut");
       }
       // Pass event to removeDragData for cleanup
-     // dropzone_cleanup(ev);
+     dropzone_cleanup(ev);
     }
 
     dropzone_set_text = function(text) {
@@ -1626,9 +1626,6 @@
     }
 
     dropzone_cleanup = function(ev) {
-      console.log('Removing drag data')
-      var dropZone = document.getElementById('drop-zone');
-
       if (ev.dataTransfer.items) {
         // Use DataTransferItemList interface to remove the drag data
         ev.dataTransfer.items.clear();
@@ -1636,8 +1633,6 @@
         // Use DataTransfer interface to remove the drag data
         ev.dataTransfer.clearData();
       }
-      dropZone.classList.remove("m-fadeIn");
-      dropZone.classList.add("m-fadeOut");
     }
 
     // Identify topology to load
