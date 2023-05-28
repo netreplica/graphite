@@ -82,3 +82,17 @@
 .popover {
   max-width: 400px;
 }
+.navbar-inverse {
+  background-color: #080808;
+  border-color: #080808;
+}
+#qnavbar > div > ul > li > a {
+  font-size: 14px;
+}
+#navbar > div > ul > li.active > a {
+  background-color: #222;
+}
+.navbar-brand {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
