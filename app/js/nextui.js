@@ -1584,9 +1584,11 @@
     dropzone_set_file = function(file) {
       if (file != null) {
         var dropZone = document.getElementById('drop-zone');
+        var dropZoneButton = document.getElementById('drop-form-button');
         dropZoneFile = file;
         dropzone_set_text(file.name);
         dropZone.classList.add('active');
+        dropZoneButton.classList.remove('disabled');
       }
     };
 

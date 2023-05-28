@@ -57,7 +57,7 @@
               </div>
               <div id="drop-form" class="form-group dropform m-fadeOut">
                 <input type="file" class="form-control" id="file-input" accept=".json" style="display: none;" onchange="dropzone_onchange_handler(event);" />
-                <button class="btn btn-primary" onclick="dropzone_submit_handler()">Submit</button>
+                <button id="drop-form-button" class="btn btn-primary disabled" onclick="dropzone_submit_handler()">Submit</button>
               </div>
             </div>
             <div class="panel-footer">
