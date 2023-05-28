@@ -1132,7 +1132,7 @@
         'toggle_link_label_types': function () {
           this.topologyApp().toggle_link_label_types();
         },
-        'toggle_auto_update': function () {
+        'toggle_device_props': function () {
           this.topologyApp().toggle_device_props();
         },
         'toggle_auto_update': function () {
@@ -1552,6 +1552,7 @@
       document.getElementById("nav-live").classList.remove("active");
       document.getElementById("nav-static").classList.add("active");
       app.label_types_static();
+      app.device_data_autoupdate_off(); // stop pulling additional data from the devices
     };
 
     label_types_live = function() {
@@ -1559,6 +1560,7 @@
           document.getElementById("nav-static").classList.remove("active");
           document.getElementById("nav-live").classList.add("active");
           app.label_types_live();
+          app.device_data_autoupdate_on(); // start pulling additional data from the devices
         }
     };
 
