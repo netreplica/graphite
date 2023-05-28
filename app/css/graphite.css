@@ -97,12 +97,20 @@
   padding-bottom: 5px;
 }
 .dropzone {
+  text-align: center;
+  cursor: pointer;
+}
+.dropzone.m-fadeIn {
   border: 2px dashed #ccc;
   border-radius: 5px;
-  text-align: center;
   padding: 20px;
   margin: 20px;
-  cursor: pointer;
+  height: auto;
+}
+.dropzone.m-fadeOut {
+  padding: 0;
+  margin: 0;
+  height: 0;
 }
 .dropzone.highlight {
   background-color: #f0f0f0;

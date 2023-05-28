@@ -1574,6 +1574,72 @@
       document.getElementById("nav-live").classList.remove("m-fadedOut");
     };
 
+    dropzone_dragover_handler = function(ev) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.add('highlight');
+      // Prevent default behavior (Prevent file from being opened)
+      ev.preventDefault();
+    }
+
+    dropzone_dragleave_handler = function(ev) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.remove('highlight');
+    }
+
+    dropzone_drop_handler = function(ev) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.remove('highlight');
+      // Prevent default behavior (Prevent file from being opened)
+      ev.preventDefault();
+      // Name of the dropped file
+      var filename = "";
+      if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        if (ev.dataTransfer.items.length == 1) {
+          // If dropped item aren't a file, reject them
+          if (ev.dataTransfer.items[0].kind === 'file') {
+            var file = ev.dataTransfer.items[0].getAsFile();
+            filename = file.name;
+          }
+        } else {
+          console.log('Multiple files dropped');
+        }
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        if (ev.dataTransfer.files.length == 1) {
+          filename = ev.dataTransfer.files[0].name;
+        } else {
+          console.log('Multiple files dropped');
+        }
+      }
+      if (filename != "") {
+        dropzone_set_text(filename);
+        dropZone.classList.add('active');
+      }
+      // Pass event to removeDragData for cleanup
+     // dropzone_cleanup(ev);
+    }
+
+    dropzone_set_text = function(text) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.innerHTML = '<p>' + text + '</p>';
+    }
+
+    dropzone_cleanup = function(ev) {
+      console.log('Removing drag data')
+      var dropZone = document.getElementById('drop-zone');
+
+      if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to remove the drag data
+        ev.dataTransfer.items.clear();
+      } else {
+        // Use DataTransfer interface to remove the drag data
+        ev.dataTransfer.clearData();
+      }
+      dropZone.classList.remove("m-fadeIn");
+      dropZone.classList.add("m-fadeOut");
+    }
+
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
@@ -1622,13 +1688,6 @@
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4) {
         if (this.status == 404) {
-          // Could not load topology data, provide a drop zone for the user to upload a file
-          var drop_zone = document.createElement("div");
-          drop_zone.id = "drop-zone";
-          drop_zone.className = "dropzone";
-          drop_zone.innerHTML = '<p>Drag and drop a topology file here or click to upload</p>';
-          var topology_diagram = document.getElementById("topology-container");
-          topology_diagram.insertBefore(drop_zone, topology_diagram.firstChild);
         }
         else if (this.status == 200) {
           var topo_data = JSON.parse(this.responseText);
