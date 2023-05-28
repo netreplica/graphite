@@ -96,3 +96,21 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
+.dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  text-align: center;
+  padding: 20px;
+  margin: 20px;
+  cursor: pointer;
+}
+.dropzone.highlight {
+  background-color: #f0f0f0;
+}
+.dropzone p {
+  margin: 0;
+  color: #999;
+}
+.dropzone.active {
+  border-color: #007bff;
+}
