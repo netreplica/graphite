@@ -5,7 +5,32 @@
 1. Docker
 2. Topology data file(s) as a source for visualization, in one of supported formats
 
+## Running in basic mode
+
+In this mode you'll manually upload topology data file(s) for visualization via the browser.
+
+1. Launch Graphite as a Docker container:
+
+    ```Shell
+    docker run -d -t --rm \
+        -p 8080:80 \
+        --name graphite \
+        netreplica/graphite:latest
+    ```
+
+2. Open Graphite web page on [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) and upload a topology data file in one of the supported formats.
+
+## Graphite URL helper
+
+If you're running Graphite on a remote host, or inside a VM, use this helper to show an URL with a proper IP address instead of `localhost`. In this example we assumed you've mapped Graphite TCP port 80 to host port 8080. Change the port if needed.
+
+  ```Shell
+  docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+  ```
+
 ## Running with a single data file to visualize
+
+It is possible to provide a default topology data file for visualization as a startup parameter for the container. This way, anyone who connects to the Graphite web page will see the default topology.
 
 1. In a shell terminal, initialize `env:TOPOLOGY` variable with a full path of the data file for visualization. For example, for the file `topology.json` in the current directory:
 
@@ -25,7 +50,9 @@
 
 3. You should be able to see the visualization on [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/)
 
-## Running with ability to visualize multiple data files
+## Selecting topology via Graphite URL
+
+Graphite is capable of opening topology data files from the filesystem of a host where it is running based on parameters provided via the URL.
 
 1. In a shell terminal, navigate to a directory with data files for visualization.
 
@@ -58,7 +85,7 @@ To find a location of the topology data file in the mounted directory, Graphite 
 
 ## Default topology type and name
 
-If you launched Graphite with a directory mounted to visualize multiple data files and open the URL [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) without parameters, there is no topology shown – since Graphite doesn't know which one would you like to see. You can change that behavior via use of environmental variables:
+If you launched Graphite with a directory mounted to visualize multiple data files and open the URL [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) without parameters, there is no topology shown – since Graphite doesn't know which one would you like to see. You can change that behavior via the use of environmental variables:
 
 ```Shell
 GRAPHITE_DEFAULT_TYPE=graphite # Default topology type
@@ -71,11 +98,3 @@ docker run -d -t --rm \
   --name graphite \
   netreplica/graphite:latest
 ```
-
-## Graphite URL helper
-
-If you're running Graphite on a remote host, or inside a VM, use this helper to show a URL with proper IP address instead of `localhost`. In this example we assumed you've mapped Graphite TCP port 80 to host port 8080. Change the port if needed.
-
-  ```Shell
-  docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
-  ```
