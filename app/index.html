@@ -22,7 +22,7 @@
         <div  class="navbar-left">
           <ul class="nav navbar-nav">
             <li class="active">
-              <a href="#" onClick="window.location.reload();">Diagram</a>
+              <a href="#">Diagram</a>
             </li>
           </ul>
         </div><!--/#navbar-left -->
@@ -46,12 +46,24 @@
                 <h3 class="panel-title">
                   <ul class="nav nav-pills">
                     <li role="presentation" class="disabled"><a id="topology-type" href="#">Topology</a></li>
-                    <li role="presentation" class="active"><a id="topology-name" href="#" onClick="window.location.reload();">unknown</a></li>
+                    <li role="presentation" class="active"><a id="topology-name" href="#" onclick="dropzone_onclick_handler(event);">Select...</a></li>
                   </ul>
                 </h3>
               </div>
             </div>
-            <div class="panel-body" id="topology-container" style="padding: 0"></div>
+            <div class="panel-body" id="topology-container" style="padding: 0">
+              <div id="alert-pane" class="alert alert-info m-fadeOut">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" onclick="alert_hide();">&times;</a>
+                <p id="alert-text">Loaded</p>
+              </div>
+              <div id="drop-zone" class="dropzone m-fadeOut" ondrop="dropzone_drop_handler(event);" ondragover="dropzone_dragover_handler(event);" ondragleave="dropzone_dragleave_handler(event);" onclick="dropzone_onclick_handler(event);">
+                <p id="drop-zone-text">Drag and drop a topology file here or click to upload</p>
+              </div>
+              <div id="drop-form" class="form-group dropform m-fadeOut">
+                <input type="file" class="form-control" id="file-input" accept=".json" style="display: none;" onchange="dropzone_onchange_handler(event);" />
+                <button id="drop-form-button" class="btn btn-primary disabled" onclick="dropzone_submit_handler()">Submit</button>
+              </div>
+            </div>
             <div class="panel-footer">
               <ul class="nav nav-pills">
                 <li role="presentation" class="disabled"><a href="#">Layout</a></li>

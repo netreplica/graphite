@@ -1525,6 +1525,11 @@
 
     var app; // TopologyApp
 
+    topology_set_name = function(name) {
+      var topologyName = document.getElementById('topology-name');
+      topologyName.innerHTML = name;
+    };
+
     // Alignment functions
     autolayout = function() {
         document.getElementById("nav-auto").className = "active";
@@ -1574,6 +1579,150 @@
       document.getElementById("nav-live").classList.remove("m-fadedOut");
     };
 
+    alert_show = function(severity, message) {
+      var alert = document.getElementById("alert-pane");
+      var alertText = document.getElementById("alert-text");
+      alert.className = "alert alert-" + severity;
+      alertText.innerHTML = message;
+      alert.classList.remove("m-fadeOut");
+      alert.classList.add("m-fadeIn");
+    };
+
+    alert_hide = function() {
+      var alert = document.getElementById("alert-pane");
+      alert.classList.remove("m-fadeIn");
+      alert.classList.add("m-fadeOut");
+    };
+
+    var dropZoneFile;
+
+    dropzone_set_text = function(text) {
+      var dropZoneText = document.getElementById('drop-zone-text');
+      dropZoneText.innerHTML = text;
+    };
+
+    dropzone_set_file = function(file) {
+      if (file != null) {
+        if (app != null) {
+          app.detach();
+          dropzone_show();
+        }
+        var dropZone = document.getElementById('drop-zone');
+        var dropZoneButton = document.getElementById('drop-form-button');
+        dropZoneFile = file;
+        dropzone_set_text(file.name);
+        topology_set_name("Select...");
+        dropZone.classList.add('active');
+        dropZoneButton.classList.remove('disabled');
+      }
+    };
+
+    dropzone_onclick_handler = function(ev) {
+      var fileInput = document.getElementById('file-input');
+      fileInput.click();
+    };
+
+    dropzone_onchange_handler = function(ev) {
+      if (ev.target.files.length > 0) {
+        dropzone_set_file(ev.target.files[0]);
+      }
+    };
+
+    dropzone_submit_handler = function() {
+      alert_hide();
+      var fileInput = document.getElementById('file-input');
+      if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        dropzone_set_file(file);
+        dropzone_read_file();
+      } else {
+        // Read file from drag and drop
+        dropzone_read_file();
+      }
+    };
+
+    dropzone_dragover_handler = function(ev) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.add('highlight');
+      // Prevent default behavior (Prevent file from being opened)
+      ev.preventDefault();
+    };
+
+    dropzone_dragleave_handler = function(ev) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.remove('highlight');
+    };
+
+    dropzone_drop_handler = function(ev) {
+      var dropZone = document.getElementById('drop-zone');
+      dropZone.classList.remove('highlight');
+      // Prevent default behavior (Prevent file from being opened)
+      ev.preventDefault();
+      if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        if (ev.dataTransfer.items.length == 1) {
+          // If dropped item aren't a file, reject them
+          if (ev.dataTransfer.items[0].kind === 'file') {
+            var file = ev.dataTransfer.items[0].getAsFile();
+            dropzone_set_file(file);
+          }
+        } else {
+          dropzone_set_text('You can only drop one file at a time');
+        }
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        if (ev.dataTransfer.files.length == 1) {
+          var file = ev.dataTransfer.files[0];
+          dropzone_set_file(file);
+        } else {
+          dropzone_set_text('You can only drop one file at a time');
+        }
+      }
+      // Pass event to removeDragData for cleanup
+      dropzone_cleanup(ev);
+    };
+
+    dropzone_show = function() {
+      var dropZone = document.getElementById('drop-zone');
+      var dropForm = document.getElementById('drop-form');
+      dropZone.classList.remove("m-fadeOut");
+      dropForm.classList.remove("m-fadeOut");
+      dropZone.classList.add("m-fadeIn");
+      dropForm.classList.add("m-fadeIn");
+    };
+
+    dropzone_hide = function() {
+      var dropZone = document.getElementById('drop-zone');
+      var dropForm = document.getElementById('drop-form');
+      dropZone.classList.remove("m-fadeIn");
+      dropForm.classList.remove("m-fadeIn");
+      dropZone.classList.add("m-fadeOut");
+      dropForm.classList.add("m-fadeOut");
+    };
+
+    dropzone_read_file = function() {
+      if (dropZoneFile != null) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          dropzone_hide();
+          if (!parse_json_topology(e.target.result)) {
+            dropzone_show();
+          }
+        };
+        reader.readAsText(dropZoneFile);
+      }
+    }
+
+    dropzone_cleanup = function(ev) {
+      if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to remove the drag data
+        ev.dataTransfer.items.clear();
+      } else {
+        // Use DataTransfer interface to remove the drag data
+        ev.dataTransfer.clearData();
+      }
+    };
+
     // Identify topology to load
     const queryString = window.location.search;
     const url_params = new URLSearchParams(queryString);
@@ -1619,62 +1768,79 @@
       "unknown": "Topology"
     };
 
-    xmlhttp.onreadystatechange = function() {
-      // TODO handle errors
-      if (this.readyState == 4 && this.status == 200) {
-        var topo_data = JSON.parse(this.responseText);
-        switch (topo_type) {
+    parse_topology_data = function(topo_data) {
+      switch (topo_type) {
         case "clab":
           topologyData = convert_clab_to_cmt(topo_data);
           break;
         default:
           topologyData = convert_clab_to_cmt(topo_data);
-        }
-        if (!topologyData.hasOwnProperty("source") || topologyData.source.length == 0) {
-          if (topologyData.hasOwnProperty("type")) {
-            topologyData['source'] = topologyData.type; // mostly applicable to clab which doesn't export the source field
-          } else {
-            topologyData['source'] = "unknown";
-          }
-        }
-        if (topologyData.hasOwnProperty("source") && topologySources.hasOwnProperty(topologyData.source) && topologyData.hasOwnProperty("name")) {
-          document.title = topologyData.name + "@" + topologyData.source + " - " + window.location.hostname;
-          document.getElementById("topology-type").innerHTML = topologySources[topologyData.source];
-          if (topologyData.name != "") {
-            document.getElementById("topology-name").innerHTML = topologyData.name;
-          } else {
-            document.getElementById("topology-name").innerHTML = topo_name;
-          }
-        }
-        if (topologyData.nodes.length > 0) {
-          // initialize a new application instance
-          app = new TopologyApp();
-          //assign the app to the <div>
-          app.container(document.getElementById('topology-container'));
-          app.init_with_cmt(topologyData);
-          if (showActionBar) {
-            app.add_action_bar();
-          }
-          app.attach();
-          app.device_data_autoupdate_on(); // start pulling additional data from the devices
-        } else {
-          var notice_html = '<strong>There are no nodes in the <code><a class="alert-link" href="__topo_url__">topology data file</a></code>.</strong>'
-          if (topologyData.type == "clab") {
-            // data came from containerlab topology-data.json
-            notice_html = '<strong>There are no nodes in <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by ContainerLab. Please check a template file used for export.</strong><br/>\
-            Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code>. If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
-          }
-          var notice = document.createElement("div");
-          notice.className = "alert alert-warning fade in";
-          notice.innerHTML = notice_html.replace("__topo_url__", topo_url);
-          var topology_diagram = document.getElementById("topology-container");
-          topology_diagram.insertBefore(notice, topology_diagram.firstChild);
       }
+      if (!topologyData.hasOwnProperty("source") || topologyData.source.length == 0) {
+        if (topologyData.hasOwnProperty("type")) {
+          topologyData['source'] = topologyData.type; // mostly applicable to clab which doesn't export the source field
+        } else {
+          topologyData['source'] = "unknown";
+        }
+      }
+      if (topologyData.hasOwnProperty("source") && topologySources.hasOwnProperty(topologyData.source) && topologyData.hasOwnProperty("name")) {
+        document.title = topologyData.name + "@" + topologyData.source + " - " + window.location.hostname;
+        document.getElementById("topology-type").innerHTML = topologySources[topologyData.source];
+        if (topologyData.name != "") {
+          topology_set_name(topologyData.name);
+        } else {
+          topology_set_name(topo_name);
+        }
+      }
+      if (topologyData.nodes.length > 0) {
+        // initialize a new application instance
+        app = new TopologyApp();
+        //assign the app to the <div>
+        app.container(document.getElementById('topology-container'));
+        app.init_with_cmt(topologyData);
+        if (showActionBar) {
+          app.add_action_bar();
+        }
+        app.attach();
+        app.device_data_autoupdate_on(); // start pulling additional data from the devices
+      } else {
+        var notice_html = '<strong>Error!</strong> There are no nodes defined in the provided topology data file.'
+        if (topologyData.type == "clab") {
+          // data came from containerlab topology-data.json
+          notice_html = '<strong>Error!</strong> There are no nodes in the <code><a class="alert-link" href="__topo_url__">topology-data.json</a></code> exported by Containerlab. Please check a template file used for export. \
+          Default template path is <code>/etc/containerlab/templates/export/auto.tmpl</code> If the file is missing or corrupted, you can replace it with <a class="alert-link" href="assets/auto.tmpl">this copy</a> and re-deploy the topology.'
+        }
+        notice_html = notice_html.replace("__topo_url__", topo_url);
+        alert_show("warning", notice_html);
+        dropzone_show();
+      }
+    };
+
+    parse_json_topology = function(topo) {
+      try {
+        parse_topology_data(JSON.parse(topo));
+        return true;
+      } catch (e) {
+        console.log(e);
+        alert_show("warning", "<strong>Error!</strong> Failed to parse topology data: " + e.message);
+        return false;
+      }
+    };
+
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          dropzone_hide();
+          if (!parse_json_topology(this.responseText)) {
+            dropzone_show();
+          }
+        } else {
+            dropzone_show();
+        }
       }
     };
     xmlhttp.open("GET", topo_url + '?nocache=' + (new Date()).getTime(), true);
     xmlhttp.send();
-
 })(nx);
 
 
