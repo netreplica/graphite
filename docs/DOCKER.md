@@ -20,6 +20,12 @@ In this mode you'll manually upload topology data file(s) for visualization via 
 
 2. Open Graphite web page on [`http://localhost:8080/graphite/`](http://localhost:8080/graphite/) and upload a topology data file in one of the supported formats.
 
+3. When finished, stop the container:
+
+    ```Shell
+    docker stop graphite
+    ```
+
 ## Graphite URL helper
 
 If you're running Graphite on a remote host, or inside a VM, use this helper to show an URL with a proper IP address instead of `localhost`. In this example we assumed you've mapped Graphite TCP port 80 to host port 8080. Change the port if needed.
