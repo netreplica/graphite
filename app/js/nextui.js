@@ -1688,9 +1688,10 @@
       if (dropZoneFile != null) {
         var reader = new FileReader();
         reader.onload = function(e) {
-          var topo_data = JSON.parse(e.target.result);
-          dropzone_hide(); // TODO handle when parse fails
-          parse_topology_data(topo_data);
+          dropzone_hide();
+          if (!parse_json_topology(e.target.result)) {
+            dropzone_show();
+          }
         };
         reader.readAsText(dropZoneFile);
       }
@@ -1801,12 +1802,23 @@
       }
     };
 
+    parse_json_topology = function(topo) {
+      try {
+        parse_topology_data(JSON.parse(topo));
+        return true;
+      } catch (e) {
+        console.log(e);
+        return false;
+      }
+    };
+
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4) {
         if (this.status == 200) {
-          var topo_data = JSON.parse(this.responseText);
           dropzone_hide();
-          parse_topology_data(topo_data);
+          if (!parse_json_topology(this.responseText)) {
+            dropzone_show();
+          }
         } else {
             dropzone_show();
         }
