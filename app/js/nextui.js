@@ -1525,6 +1525,11 @@
 
     var app; // TopologyApp
 
+    topology_set_name = function(name) {
+      var topologyName = document.getElementById('topology-name');
+      topologyName.innerHTML = name;
+    };
+
     // Alignment functions
     autolayout = function() {
         document.getElementById("nav-auto").className = "active";
@@ -1583,10 +1588,15 @@
 
     dropzone_set_file = function(file) {
       if (file != null) {
+        if (app != null) {
+          app.detach();
+          dropzone_show();
+        }
         var dropZone = document.getElementById('drop-zone');
         var dropZoneButton = document.getElementById('drop-form-button');
         dropZoneFile = file;
         dropzone_set_text(file.name);
+        topology_set_name("Select...");
         dropZone.classList.add('active');
         dropZoneButton.classList.remove('disabled');
       }
@@ -1760,9 +1770,9 @@
         document.title = topologyData.name + "@" + topologyData.source + " - " + window.location.hostname;
         document.getElementById("topology-type").innerHTML = topologySources[topologyData.source];
         if (topologyData.name != "") {
-          document.getElementById("topology-name").innerHTML = topologyData.name;
+          topology_set_name(topologyData.name);
         } else {
-          document.getElementById("topology-name").innerHTML = topo_name;
+          topology_set_name(topo_name);
         }
       }
       if (topologyData.nodes.length > 0) {
