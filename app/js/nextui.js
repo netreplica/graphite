@@ -1579,6 +1579,21 @@
       document.getElementById("nav-live").classList.remove("m-fadedOut");
     };
 
+    alert_show = function(severity, message) {
+      var alert = document.getElementById("alert-pane");
+      var alertText = document.getElementById("alert-text");
+      alert.className = "alert alert-" + severity;
+      alertText.innerHTML = message;
+      alert.classList.remove("m-fadeOut");
+      alert.classList.add("m-fadeIn");
+    };
+
+    alert_hide = function() {
+      var alert = document.getElementById("alert-pane");
+      alert.classList.remove("m-fadeIn");
+      alert.classList.add("m-fadeOut");
+    };
+
     var dropZoneFile;
 
     dropzone_set_text = function(text) {
@@ -1808,6 +1823,7 @@
         return true;
       } catch (e) {
         console.log(e);
+        alert_show("warning", "<strong>Error!</strong> Failed to parse topology data: " + e.message);
         return false;
       }
     };

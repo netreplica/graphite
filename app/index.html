@@ -52,6 +52,10 @@
               </div>
             </div>
             <div class="panel-body" id="topology-container" style="padding: 0">
+              <div id="alert-pane" class="alert alert-info m-fadeOut">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" onclick="alert_hide();">&times;</a>
+                <p id="alert-text">Loaded</p>
+              </div>
               <div id="drop-zone" class="dropzone m-fadeOut" ondrop="dropzone_drop_handler(event);" ondragover="dropzone_dragover_handler(event);" ondragleave="dropzone_dragleave_handler(event);" onclick="dropzone_onclick_handler(event);">
                 <p id="drop-zone-text">Drag and drop a topology file here or click to upload</p>
               </div>
