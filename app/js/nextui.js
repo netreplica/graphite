@@ -324,7 +324,37 @@
                           tag: 'span',
                           content: '{#node.model.image}',
                       }]
-                  }, {
+                    }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Group:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.group}',
+                      }]
+                    }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Role:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.role}',
+                      }]
+                      }, {
                       tag: 'div',
                       props: {
                           "style": "font-size:80%;"
@@ -355,6 +385,21 @@
                           content: '{#node.model.model}',
                       }]
                   }, {
+                    tag: 'div',
+                    props: {
+                        "style": "font-size:80%;"
+                    },
+                    content: [{
+                        tag: 'label',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'Platform:',
+                    }, {
+                        tag: 'span',
+                        content: '{#node.model.platform}',
+                    }]
+                  }, {
                       tag: 'div',
                       props: {
                           "style": "font-size:80%;"
@@ -369,21 +414,6 @@
                           tag: 'span',
                           content: '{#node.model.os_version}',
                       }]
-                }, {
-                    tag: 'div',
-                    props: {
-                        "style": "font-size:80%;"
-                    },
-                    content: [{
-                        tag: 'label',
-                        props: {
-                            "style": "padding-right: 5px"
-                        },
-                        content: 'Group:',
-                    }, {
-                        tag: 'span',
-                        content: '{#node.model.group}',
-                    }]
                 }, {
                     tag: 'div',
                     props: {

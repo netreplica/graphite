@@ -134,7 +134,6 @@ function convert_clab_topology_data_to_cmt(c){
       for (const [label, field] of Object.entries(node_labels_map)) {
         if (n.labels.hasOwnProperty(label)) {
           cmt_node[field] = n.labels[label];
-          console.log(label + ": " + n.labels[label]);
         }
       }
     }
