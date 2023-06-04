@@ -1,6 +1,6 @@
 # Labels
 
-When you click on a node in the topology diagram, details view pops up:
+When you click on a node in the topology diagram, a view pops up with node details:
 
 ![Node details](../images/labels.clab.png)
 
