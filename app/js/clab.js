@@ -116,6 +116,15 @@ function convert_clab_topology_data_to_cmt(c){
     cmt_node["name"] = node;
     cmt_node["icon"] = "router";
 
+    // node labels mapping to CMT fields
+    node_labels_map = {
+      "group": "group",
+      "role": "role",
+      "vendor": "vendor",
+      "model": "model",
+      "platform": "platform",
+    };
+
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
         continue; // do not visualize this node
@@ -126,12 +135,17 @@ function convert_clab_topology_data_to_cmt(c){
       if (n.labels.hasOwnProperty("graph-level")) {
         cmt_node["layerSortPreference"] = n.labels["graph-level"];
       }
+      for (const [label, field] of Object.entries(node_labels_map)) {
+        if (n.labels.hasOwnProperty(label)) {
+          cmt_node[field] = n.labels[label];
+          console.log(label + ": " + n.labels[label]);
+        }
+      }
     }
 
     cmt_node["fullname"] = n.longname;
     cmt_node["kind"]     = n.kind;
     cmt_node["image"]    = n.image;
-    cmt_node["group"]    = n.group;
 
     if (n.hasOwnProperty("mgmt-ipv4-address")) {
       cmt_node["mgmtIPv4"] = n["mgmt-ipv4-address"];
