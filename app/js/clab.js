@@ -118,6 +118,8 @@ function convert_clab_topology_data_to_cmt(c){
 
     // node labels mapping to CMT fields
     node_labels_map = {
+      "graph-icon": "icon",
+      "graph-level": "layerSortPreference",
       "group": "group",
       "role": "role",
       "vendor": "vendor",
@@ -128,12 +130,6 @@ function convert_clab_topology_data_to_cmt(c){
     if (n.hasOwnProperty("labels")) {
       if (n.labels.hasOwnProperty("graph-hide") && equals_true(n.labels["graph-hide"])) {
         continue; // do not visualize this node
-      }
-      if (n.labels.hasOwnProperty("graph-icon")) {
-        cmt_node["icon"] = n.labels["graph-icon"];
-      }
-      if (n.labels.hasOwnProperty("graph-level")) {
-        cmt_node["layerSortPreference"] = n.labels["graph-level"];
       }
       for (const [label, field] of Object.entries(node_labels_map)) {
         if (n.labels.hasOwnProperty(label)) {
