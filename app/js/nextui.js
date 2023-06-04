@@ -1367,12 +1367,14 @@
                     if (node_data.hasOwnProperty("hostname")) {
                       node.model().set('hostname', node_data["hostname"]);
                     }
+                    var platform = "";
                     if (node_data.hasOwnProperty("vendor")) {
-                      node.model().set('vendor', node_data["vendor"]);
+                      platform = node_data["vendor"];
                     }
                     if (node_data.hasOwnProperty("model")) {
-                      node.model().set('model', node_data["model"]);
+                      platform += " " + node_data["model"];
                     }
+                    node.model().set('platform', platform);
                     if (node_data.hasOwnProperty("os_version")) {
                       node.model().set('os_version', node_data["os_version"]);
                     }
