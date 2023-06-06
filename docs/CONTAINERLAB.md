@@ -53,7 +53,7 @@
 
 ## Improve visualization via custom labels in a ContainerLab YAML file
 
-The visualization we got on the previous step lacks hierarchy. Let's fix that by assigning nodes in the ContainerLab topology YAML file to different levels, using custom labels that Graphite understands.
+The visualization we got on the previous step lacks hierarchy. Let's fix that by assigning nodes in the ContainerLab topology YAML file to different levels, using custom labels that Graphite understands. Read [LABELS.md](LABELS.md) for a full list of labels supported by Graphite.
 
 1. Open the topology YAML file in the text editor and append the following lines to each `node1-*` definition.
 
@@ -101,7 +101,7 @@ The visualization we got on the previous step lacks hierarchy. Let's fix that by
 
 ## Changing visualization icons
 
-All the nodes in our visualization so far represented by the same "router" icon. Let's assume that nodes at tier-1 in our Clos topology can act as L2 switches, and we want to reflect that in the visualization. To achieve that, we can use custom label again, with a name `graph-icon`.
+All the nodes in our visualization so far represented by the same "router" icon. Let's assume that nodes at tier-1 in our Clos topology can act as L2 switches, and we want to reflect that in the visualization. To achieve that, we can use custom label again, with a name `graph-icon`.  See possible `graph-icon` values [here](LABELS.md#node-icons).
 
 
 1. Open the topology YAML file in the text editor and append the following line to each `node1-*` definition.
@@ -124,16 +124,6 @@ All the nodes in our visualization so far represented by the same "router" icon.
             graph-icon: switch
     ```
 
-      Possible graph-icon types are (from [Cisco DevNet NeXT UI API doc](https://developer.cisco.com/site/neXt/document/api-reference-manual/files/src_js_graphic_svg_Icons.js/#l11)):
-
-    | graph-icon | graph-icon | graph-icon |
-    |---|---|---|
-    |switch|router|wlc|
-    |server|phone|nexus5000|
-    |ipphone|host|camera|
-    |accesspoint|cloud|unlinked|
-    |firewall|hostgroup|wirelesshost|
-
 4. Redeploy the topology
 
     ```Shell
@@ -143,29 +133,3 @@ All the nodes in our visualization so far represented by the same "router" icon.
 3. Now refresh the web page in the browser, and click "Horizontal Layout". Now the bottom row of nodes uses "switch" icons.
 
     ![clos-3tier Graphite Topology Visualization with switch icons](../images/clos-3tier.clab.icons.png)
-
-## Using `port` visualization mode
-
-Some nodes that can be used within ContainerLab topology may not act as regular network devices. Examples of such nodes could be
-
-  * Linux hosts with disabled IP forwarding,
-  * Traffic Generators.
-
-If such node has multiple interfaces connected to the emulated topology, its visualization might not represent their role well. To address this, there is a special `port` visuzalization mode available in Graphite. With such mode enabled for a node, each its interface would be displayed as a separate icon with a name "interface-name@node-name". Below is an example of using `port` mode for `ixia-c-one` traffic generator, together with a "cloud" icon:
-
-```Yaml
-    ixia:
-      kind: keysight_ixia-c-one
-      image: ghcr.io/open-traffic-generator/ixia-c-one:0.0.1-2770
-      labels:
-        graph-icon: cloud
-        graph-mode: port
-  links:
-    - endpoints: ["pe-router:eth1","ce-router:eth1"]
-    - endpoints: ["pe-router:eth2","ixia:eth1"]
-    - endpoints: ["ce-router:eth2","ixia:eth2"]
-```
-
-The `ixia` node will be visualized as two icons `eth1@ixia` and `eth2@ixia`:
-
-![Ixia-c-one node visualized in port mode](/images/clab-graphite-ixia-ports-cloud.png)
