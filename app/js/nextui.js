@@ -324,7 +324,37 @@
                           tag: 'span',
                           content: '{#node.model.image}',
                       }]
-                  }, {
+                    }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Group:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.group}',
+                      }]
+                    }, {
+                      tag: 'div',
+                      props: {
+                          "style": "font-size:80%;"
+                      },
+                      content: [{
+                          tag: 'label',
+                          props: {
+                              "style": "padding-right: 5px"
+                          },
+                          content: 'Role:',
+                      }, {
+                          tag: 'span',
+                          content: '{#node.model.role}',
+                      }]
+                      }, {
                       tag: 'div',
                       props: {
                           "style": "font-size:80%;"
@@ -355,6 +385,21 @@
                           content: '{#node.model.model}',
                       }]
                   }, {
+                    tag: 'div',
+                    props: {
+                        "style": "font-size:80%;"
+                    },
+                    content: [{
+                        tag: 'label',
+                        props: {
+                            "style": "padding-right: 5px"
+                        },
+                        content: 'Platform:',
+                    }, {
+                        tag: 'span',
+                        content: '{#node.model.platform}',
+                    }]
+                  }, {
                       tag: 'div',
                       props: {
                           "style": "font-size:80%;"
@@ -369,21 +414,6 @@
                           tag: 'span',
                           content: '{#node.model.os_version}',
                       }]
-                }, {
-                    tag: 'div',
-                    props: {
-                        "style": "font-size:80%;"
-                    },
-                    content: [{
-                        tag: 'label',
-                        props: {
-                            "style": "padding-right: 5px"
-                        },
-                        content: 'Group:',
-                    }, {
-                        tag: 'span',
-                        content: '{#node.model.group}',
-                    }]
                 }, {
                     tag: 'div',
                     props: {
@@ -1337,12 +1367,14 @@
                     if (node_data.hasOwnProperty("hostname")) {
                       node.model().set('hostname', node_data["hostname"]);
                     }
+                    var platform = "";
                     if (node_data.hasOwnProperty("vendor")) {
-                      node.model().set('vendor', node_data["vendor"]);
+                      platform = node_data["vendor"];
                     }
                     if (node_data.hasOwnProperty("model")) {
-                      node.model().set('model', node_data["model"]);
+                      platform += " " + node_data["model"];
                     }
+                    node.model().set('platform', platform);
                     if (node_data.hasOwnProperty("os_version")) {
                       node.model().set('os_version', node_data["os_version"]);
                     }
