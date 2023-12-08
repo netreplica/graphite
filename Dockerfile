@@ -2,7 +2,7 @@
 # NODEDATA-IMAGE
 ##########################################
 
-FROM alpine:3.15 AS nodedata-image
+FROM alpine:3.19 AS nodedata-image
 # Install packages
 RUN apk add --no-cache \
   curl \
@@ -30,7 +30,7 @@ RUN python3 -m venv $VIRTUAL_ENV \
 # WEBSSH-IMAGE
 ##########################################
 
-FROM alpine:3.15 AS webssh-image
+FROM alpine:3.19 AS webssh-image
 
 RUN apk add --no-cache \
   npm \
@@ -53,7 +53,7 @@ RUN addgroup --system webssh2 \
 # RELEASE-IMAGE
 ##########################################
 
-FROM alpine:3.15 AS release-image
+FROM alpine:3.19 AS release-image
 
 ENV LIGHTTPD_VERSION=1.4.64-r0
 
