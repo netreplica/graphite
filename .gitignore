@@ -8,7 +8,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -134,3 +133,6 @@ docker/etc/lighttpd/conf.d/mime.conf
 docker/default/topology-data.json
 docker/bootstrap-3.4.1-dist
 docker/bin/envsubst
+
+# Node.js
+node_modules/

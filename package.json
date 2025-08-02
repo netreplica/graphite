@@ -1,0 +1,42 @@
+{
+  "name": "netreplica-graphite",
+  "version": "1.0.0",
+  "description": "Visualization for Network Topologies",
+  "main": "src/js/core/topology.js",
+  "scripts": {
+    "build": "npm run build:docker && npm run build:static",
+    "build:docker": "webpack --config build/webpack.docker.js",
+    "build:static": "webpack --config build/webpack.static.js",
+    "dev": "webpack serve --config build/webpack.dev.js",
+    "clean": "rm -rf dist/*",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netreplica/graphite.git"
+  },
+  "keywords": [
+    "network",
+    "topology",
+    "visualization",
+    "containerlab",
+    "netbox"
+  ],
+  "author": "Netreplica Team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.10.0",
+    "html-webpack-plugin": "^5.5.3",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "file-loader": "^6.2.0",
+    "clean-webpack-plugin": "^4.0.0"
+  },
+  "dependencies": {
+    "bootstrap": "^3.4.1"
+  }
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Graphite</title>
+    <!-- Bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="<%= bootstrapPath %>css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <!-- NextUI -->
+    <link rel="stylesheet" href="<%= nextuiPath %>css/next.min.css">
+    <link rel="stylesheet" href="css/graphite.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div id="navbar" class="container">
+        <div id="navbar-logo" class="navbar-header">
+          <a class="navbar-brand" href="https://netreplica.com?source=graphite" target="_blank"><img src="assets/netreplica-site-header.svg" width="120" height="40" alt="Netreplica Logo"></a>
+        </div>
+        <div  class="navbar-left">
+          <ul class="nav navbar-nav">
+            <li class="active">
+              <a href="#">Diagram</a>
+            </li>
+          </ul>
+        </div><!--/#navbar-left -->
+        <div class="navbar-right">
+          <ul class="nav navbar-nav">
+            <li id="navbar-help">
+              <a href="https://github.com/netreplica/graphite/blob/main/README.md" target="_blank">Help&nbsp;<span class="glyphicon glyphicon-new-window"></span></a>
+            </li>
+          </ul>
+        </div><!--/#navbar-right -->
+      </div><!--/#navbar -->
+    </nav>
+
+
+    <div id="topology-diagram" class="container">
+      <div class="row">
+        <div class="col-md-14">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  <ul class="nav nav-pills">
+                    <li role="presentation" class="disabled"><a id="topology-type" href="#">Topology</a></li>
+                    <li role="presentation" class="active"><a id="topology-name" href="#" onclick="dropzone_onclick_handler(event);">Select...</a></li>
+                  </ul>
+                </h3>
+              </div>
+            </div>
+            <div class="panel-body" id="topology-container" style="padding: 0">
+              <div id="alert-pane" class="alert alert-info m-fadeOut">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close" onclick="alert_hide();">&times;</a>
+                <p id="alert-text">Loaded</p>
+              </div>
+              <div id="drop-zone" class="dropzone m-fadeOut" ondrop="dropzone_drop_handler(event);" ondragover="dropzone_dragover_handler(event);" ondragleave="dropzone_dragleave_handler(event);" onclick="dropzone_onclick_handler(event);">
+                <p id="drop-zone-text">Drag and drop a topology file here or click to upload</p>
+              </div>
+              <div id="drop-form" class="form-group dropform m-fadeOut">
+                <input type="file" class="form-control" id="file-input" accept=".json" style="display: none;" onchange="dropzone_onchange_handler(event);" />
+                <button id="drop-form-button" class="btn btn-primary disabled" onclick="dropzone_submit_handler()">Submit</button>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <ul class="nav nav-pills">
+                <li role="presentation" class="disabled"><a href="#">Layout</a></li>
+                <li role="presentation" id="nav-auto" class="active"><a href="#" onClick='autolayout()'>Auto</a></li>
+                <li role="presentation" id="nav-horizontal"><a href="#" onClick='horizontal()'>Horizontal</a></li>
+                <li role="presentation" id="nav-vertical"><a href="#" onClick='vertical()'>Vertical</a></li>
+                <!-- below is aligned to the right -->
+                <li role="presentation" id="nav-live" class="m-fadedOut active pull-right"><a href="#" onClick='label_types_live()'>Live</a></li>
+                <li role="presentation" id="nav-static" class="m-fadedOut pull-right"><a href="#" onClick='label_types_static()'>Static</a></li>
+                <li role="presentation" id="nav-labels" class="m-fadedOut disabled pull-right"><a href="#">Labels</a></li>
+              </ul>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="footnote" class="container">
+      <div class="row">
+        <p class="text-muted pull-right"><a href="https://netreplica.com?source=graphite" target="_blank">netreplica.com</a></p>
+      </div>
+    </div>
+
+    <!-- Deployment Configuration -->
+    <script>
+      window.GRAPHITE_MODE = '<%= deploymentMode %>';
+    </script>
+    
+    <!-- Core Dependencies -->
+    <script src="<%= nextuiPath %>js/next.min.js"></script>
+    <script src="js/config/deployment.js"></script>
+    
+    <!-- Core Graphite Scripts -->
+    <script src="js/clab.js"></script>
+    <script src="js/topology.js"></script>
+    
+    <!-- Feature Modules (conditionally loaded) -->
+    <% if (deploymentMode === 'docker') { %>
+    <script src="js/features/liveData.js"></script>
+    <script src="js/features/webssh.js"></script>
+    <% } %>
+    
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+  </body>
+</html>
