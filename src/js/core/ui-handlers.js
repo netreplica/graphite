@@ -245,6 +245,10 @@ function parse_topology_data(topo_data) {
             console.log('⚙️ Initializing with static labels...');
             app.device_data_autoupdate_on(); // Initialize with static labels
             
+            // Initialize button states for new topology
+            update_layout_buttons('auto'); // Default to auto layout
+            update_label_buttons('static'); // Default to static labels
+            
             // Show success message
             alert_show('Topology loaded successfully: ' + (topologyData.name || 'Unnamed topology'));
             console.log('✅ Topology rendered successfully with', nodeCount, 'nodes');
@@ -336,9 +340,28 @@ function dropzone_drop_handler(ev) {
     dropzone_cleanup(ev);
 }
 
+// Layout button state management
+function update_layout_buttons(activeLayout) {
+    // Remove active class from all layout buttons
+    var layoutButtons = ['nav-auto', 'nav-horizontal', 'nav-vertical'];
+    layoutButtons.forEach(function(buttonId) {
+        var button = document.getElementById(buttonId);
+        if (button) {
+            button.classList.remove('active');
+        }
+    });
+    
+    // Add active class to the selected layout button
+    var activeButton = document.getElementById('nav-' + activeLayout);
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
+}
+
 // Layout control functions
 function autolayout() {
     console.log('Auto layout selected');
+    update_layout_buttons('auto');
     if (app && app.layout_auto) {
         app.layout_auto();
     }
@@ -346,6 +369,7 @@ function autolayout() {
 
 function horizontal() {
     console.log('Horizontal layout selected');
+    update_layout_buttons('horizontal');
     if (app && app.layout_horizontal) {
         app.layout_horizontal();
     }
@@ -353,13 +377,33 @@ function horizontal() {
 
 function vertical() {
     console.log('Vertical layout selected');
+    update_layout_buttons('vertical');
     if (app && app.layout_vertical) {
         app.layout_vertical();
     }
 }
 
+// Label button state management
+function update_label_buttons(activeLabel) {
+    // Remove active class from all label buttons
+    var labelButtons = ['nav-static', 'nav-live'];
+    labelButtons.forEach(function(buttonId) {
+        var button = document.getElementById(buttonId);
+        if (button) {
+            button.classList.remove('active');
+        }
+    });
+    
+    // Add active class to the selected label button
+    var activeButton = document.getElementById('nav-' + activeLabel);
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
+}
+
 function label_types_live() {
     console.log('Live labels selected');
+    update_label_buttons('live');
     if (app && app.label_types_live) {
         app.label_types_live();
     }
@@ -367,6 +411,7 @@ function label_types_live() {
 
 function label_types_static() {
     console.log('Static labels selected');
+    update_label_buttons('static');
     if (app && app.label_types_static) {
         app.label_types_static();
     }
