@@ -1,0 +1,30 @@
+# Node modules
+node_modules/
+npm-debug.log
+
+# Build artifacts  
+dist/
+
+# Development files
+.git/
+.gitignore
+*.md
+!BUILD.md
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test/
+tests/
+*.test.js
+
+# Documentation
+docs/
+images/
+examples/

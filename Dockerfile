@@ -27,6 +27,27 @@ RUN python3 -m venv $VIRTUAL_ENV \
   && pip install -e .
 
 ##########################################
+# GRAPHITE-BUILD-IMAGE
+##########################################
+
+FROM alpine:3.15 AS graphite-build-image
+
+RUN apk add --no-cache \
+  npm \
+  && rm -rf /var/cache/apk/*
+
+# Build Graphite application
+WORKDIR /build
+COPY package.json package-lock.json ./
+COPY build/ ./build/
+COPY src/ ./src/
+COPY docker/ ./docker/
+
+# Install dependencies and build Docker version
+RUN npm ci --production=false \
+  && npm run build:docker
+
+##########################################
 # WEBSSH-IMAGE
 ##########################################
 
@@ -100,8 +121,8 @@ COPY docker/default/ $WWW_HOME/lab/default/
 # Scripts and binaries
 COPY docker/bin/ /usr/local/bin/
 
-# Graphite app
-COPY app/ ${WWW_HOME}/graphite/
+# Graphite app - use built artifacts from build stage
+COPY --from=graphite-build-image /build/dist/docker/ ${WWW_HOME}/graphite/
 
 # Ports to listen
 EXPOSE 80/tcp
