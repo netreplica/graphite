@@ -135,29 +135,127 @@ function parse_json_topology(topo) {
     }
 }
 
-// Main topology parsing function (placeholder - should be implemented with actual topology rendering)
-function parse_topology_data(data) {
-    console.log('Parsing topology data:', data);
+// Main topology parsing function - renders topology using TopologyApp
+function parse_topology_data(topo_data) {
+    console.log('Parsing topology data:', topo_data);
     
     // Basic validation
-    if (!data || typeof data !== 'object') {
+    if (!topo_data || typeof topo_data !== 'object') {
         throw new Error('Invalid topology data');
     }
     
-    // Check for basic topology structure
-    if (!data.nodes && !data.links) {
+    // Convert topology data to CMT format if needed
+    var topologyData;
+    if (typeof convert_clab_to_cmt === 'function') {
+        topologyData = convert_clab_to_cmt(topo_data);
+    } else {
+        // Fallback: assume data is already in correct format
+        topologyData = topo_data;
+    }
+    
+    // Ensure we have the required structure
+    if (!topologyData.nodes && !topologyData.links) {
         throw new Error('Topology must contain nodes or links');
     }
     
-    // Show success message
-    alert_show('Topology loaded successfully: ' + (data.name || 'Unnamed topology'));
-    topology_set_name(data.name || 'Loaded topology');
+    // Set defaults if missing
+    if (!topologyData.hasOwnProperty("source") || topologyData.source.length == 0) {
+        if (topologyData.hasOwnProperty("type")) {
+            topologyData['source'] = topologyData.type;
+        } else {
+            topologyData['source'] = "unknown";
+        }
+    }
     
-    // TODO: Implement actual NextUI topology rendering
-    // This is where the GraphiteTopology class would be instantiated
-    // and the topology would be rendered to the DOM
+    // Update UI elements
+    var topologySources = {
+        "clab": "Containerlab Topology",
+        "netlab": "Netlab Topology", 
+        "netbox": "NetBox Topology",
+        "graphite": "Topology",
+        "test": "Test Topology",
+        "unknown": "Topology"
+    };
     
-    console.log('Topology data parsed successfully');
+    if (topologyData.hasOwnProperty("source") && topologySources.hasOwnProperty(topologyData.source)) {
+        var topologyTypeElement = document.getElementById("topology-type");
+        if (topologyTypeElement) {
+            topologyTypeElement.innerHTML = topologySources[topologyData.source];
+        }
+        
+        if (topologyData.name && topologyData.name != "") {
+            topology_set_name(topologyData.name);
+        }
+    }
+    
+    // Check if we have nodes to render
+    var nodeCount = 0;
+    if (topologyData.nodes) {
+        if (Array.isArray(topologyData.nodes)) {
+            nodeCount = topologyData.nodes.length;
+        } else if (typeof topologyData.nodes === 'object') {
+            nodeCount = Object.keys(topologyData.nodes).length;
+        }
+    }
+    
+    if (nodeCount > 0) {
+        // Check if NextUI is available
+        if (typeof nx === 'undefined') {
+            throw new Error('NextUI library (nx) is not loaded. Cannot render topology.');
+        }
+        
+        // Check if TopologyApp is available
+        if (typeof TopologyApp === 'undefined') {
+            throw new Error('TopologyApp class is not available. Check topology-app.js loading.');
+        }
+        
+        console.log('🚀 Starting topology rendering with', nodeCount, 'nodes...');
+        console.log('📊 Topology data:', topologyData);
+        
+        // Initialize TopologyApp and render topology
+        if (app) {
+            console.log('🔄 Detaching existing topology app...');
+            app.detach();
+            // Remove topology-active class from container
+            var existingContainer = document.getElementById('topology-container');
+            if (existingContainer) {
+                existingContainer.classList.remove('topology-active');
+            }
+        }
+        
+        try {
+            console.log('🏗️ Creating new TopologyApp instance...');
+            app = new TopologyApp();
+            
+            var container = document.getElementById('topology-container');
+            if (!container) {
+                throw new Error('topology-container element not found in DOM');
+            }
+            
+            console.log('📦 Setting container and initializing with CMT data...');
+            app.container(container);
+            app.init_with_cmt(topologyData);
+            
+            console.log('🎨 Attaching topology to DOM...');
+            app.attach();
+            
+            // Mark container as having active topology for CSS styling
+            container.classList.add('topology-active');
+            
+            console.log('⚙️ Initializing with static labels...');
+            app.device_data_autoupdate_on(); // Initialize with static labels
+            
+            // Show success message
+            alert_show('Topology loaded successfully: ' + (topologyData.name || 'Unnamed topology'));
+            console.log('✅ Topology rendered successfully with', nodeCount, 'nodes');
+        } catch (renderError) {
+            console.error('❌ Topology rendering failed:', renderError);
+            throw new Error('Failed to render topology: ' + renderError.message);
+        }
+    } else {
+        throw new Error('No nodes found in topology data');
+    }
+    
     return true;
 }
 
@@ -241,27 +339,37 @@ function dropzone_drop_handler(ev) {
 // Layout control functions
 function autolayout() {
     console.log('Auto layout selected');
-    // TODO: Implement auto layout logic
+    if (app && app.layout_auto) {
+        app.layout_auto();
+    }
 }
 
 function horizontal() {
     console.log('Horizontal layout selected');
-    // TODO: Implement horizontal layout logic
+    if (app && app.layout_horizontal) {
+        app.layout_horizontal();
+    }
 }
 
 function vertical() {
     console.log('Vertical layout selected');
-    // TODO: Implement vertical layout logic
+    if (app && app.layout_vertical) {
+        app.layout_vertical();
+    }
 }
 
 function label_types_live() {
     console.log('Live labels selected');
-    // TODO: Implement live label switching
+    if (app && app.label_types_live) {
+        app.label_types_live();
+    }
 }
 
 function label_types_static() {
     console.log('Static labels selected');
-    // TODO: Implement static label switching
+    if (app && app.label_types_static) {
+        app.label_types_static();
+    }
 }
 
 // Initialize UI when DOM is loaded

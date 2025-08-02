@@ -151,3 +151,20 @@
   font-size: 16px;
   font-weight: 500;
 }
+
+/* Topology container styles */
+#topology-container {
+  min-height: 600px;
+  position: relative;
+}
+
+#topology-container.topology-active {
+  min-height: 700px;
+  height: 700px;
+}
+
+/* Ensure NextUI topology has proper dimensions */
+#topology-container .n-topology {
+  width: 100% !important;
+  height: 100% !important;
+}
