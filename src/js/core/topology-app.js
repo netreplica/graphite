@@ -116,27 +116,60 @@
 
             layout_auto: function() {
                 console.log('Auto layout selected');
-                // TODO: Implement layout switching once basic rendering works
+                this.currentLayout = 'auto';
+                if (this.topology && this.topology.activateLayout) {
+                    this.detach();
+                    this.topology.activateLayout('force');
+                    this.attach();
+                }
             },
 
             layout_horizontal: function () {
                 console.log('Horizontal layout selected');
-                // TODO: Implement layout switching once basic rendering works
+                if (this.currentLayout === 'vertical') {
+                    return;
+                }
+                this.currentLayout = 'vertical';
+                if (this.topology && this.topology.getLayout && this.topology.activateLayout) {
+                    var layout = this.topology.getLayout('hierarchicalLayout');
+                    if (layout) {
+                        layout.direction('vertical');
+                        layout.levelBy(function(node, model) {
+                            return model.get('layerSortPreference') || 1;
+                        });
+                        this.topology.activateLayout('hierarchicalLayout');
+                    }
+                }
             },
 
             layout_vertical: function () {
                 console.log('Vertical layout selected');
-                // TODO: Implement layout switching once basic rendering works
+                if (this.currentLayout === 'horizontal') {
+                    return;
+                }
+                this.currentLayout = 'horizontal';
+                if (this.topology && this.topology.getLayout && this.topology.activateLayout) {
+                    var layout = this.topology.getLayout('hierarchicalLayout');
+                    if (layout) {
+                        layout.direction('horizontal');
+                        layout.levelBy(function(node, model) {
+                            return model.get('layerSortPreference') || 1;
+                        });
+                        this.topology.activateLayout('hierarchicalLayout');
+                    }
+                }
             },
 
             label_types_static: function() {
                 console.log('Static labels selected');
-                // TODO: Implement label switching once basic rendering works
+                this.currentLabelType = 'static';
+                // TODO: Implement label switching once custom nodes are working
             },
 
             label_types_live: function() {
-                console.log('Live labels selected');
-                // TODO: Implement label switching once basic rendering works
+                console.log('Live labels selected');  
+                this.currentLabelType = 'live';
+                // TODO: Implement label switching once custom nodes are working
             },
 
             // Auto-update functionality (simplified for static mode)
