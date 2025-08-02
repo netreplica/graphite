@@ -27,18 +27,26 @@ var app = null;
 function alert_hide() {
     var alertPane = document.getElementById('alert-pane');
     if (alertPane) {
-        alertPane.classList.add('m-fadeOut');
         alertPane.classList.remove('m-fadeIn');
+        alertPane.classList.add('m-fadeOut');
     }
 }
 
-function alert_show(message) {
+function alert_show(severity, message) {
+    // Support both alert_show(message) and alert_show(severity, message) calling patterns
+    if (typeof severity === 'string' && typeof message === 'undefined') {
+        message = severity;
+        severity = 'info'; // default to info
+    }
+
     var alertPane = document.getElementById('alert-pane');
     var alertText = document.getElementById('alert-text');
     if (alertPane && alertText) {
+        // Set the alert type for proper styling (success=green, info=blue, warning=yellow, danger=red)
+        alertPane.className = 'alert alert-' + severity;
         alertText.innerHTML = message;
         alertPane.classList.remove('m-fadeOut');
-        alertPane.classList.add('m-fadeIn');
+        alertPane.classList.add("m-fadeIn");
     }
 }
 
@@ -130,7 +138,7 @@ function parse_json_topology(topo) {
         return true;
     } catch (e) {
         console.log('Error parsing JSON topology:', e);
-        alert_show('Error parsing topology file: ' + e.message);
+        alert_show('warning', 'Error! ' + e.message);
         return false;
     }
 }
@@ -138,12 +146,12 @@ function parse_json_topology(topo) {
 // Main topology parsing function - renders topology using TopologyApp
 function parse_topology_data(topo_data) {
     console.log('Parsing topology data:', topo_data);
-    
+
     // Basic validation
     if (!topo_data || typeof topo_data !== 'object') {
         throw new Error('Invalid topology data');
     }
-    
+
     // Convert topology data to CMT format if needed
     var topologyData;
     if (typeof convert_clab_to_cmt === 'function') {
@@ -152,12 +160,12 @@ function parse_topology_data(topo_data) {
         // Fallback: assume data is already in correct format
         topologyData = topo_data;
     }
-    
+
     // Ensure we have the required structure
     if (!topologyData.nodes && !topologyData.links) {
         throw new Error('Topology must contain nodes or links');
     }
-    
+
     // Set defaults if missing
     if (!topologyData.hasOwnProperty("source") || topologyData.source.length == 0) {
         if (topologyData.hasOwnProperty("type")) {
@@ -166,28 +174,28 @@ function parse_topology_data(topo_data) {
             topologyData['source'] = "unknown";
         }
     }
-    
+
     // Update UI elements
     var topologySources = {
         "clab": "Containerlab Topology",
-        "netlab": "Netlab Topology", 
+        "netlab": "Netlab Topology",
         "netbox": "NetBox Topology",
         "graphite": "Topology",
         "test": "Test Topology",
         "unknown": "Topology"
     };
-    
+
     if (topologyData.hasOwnProperty("source") && topologySources.hasOwnProperty(topologyData.source)) {
         var topologyTypeElement = document.getElementById("topology-type");
         if (topologyTypeElement) {
             topologyTypeElement.innerHTML = topologySources[topologyData.source];
         }
-        
+
         if (topologyData.name && topologyData.name != "") {
             topology_set_name(topologyData.name);
         }
     }
-    
+
     // Check if we have nodes to render
     var nodeCount = 0;
     if (topologyData.nodes) {
@@ -197,21 +205,21 @@ function parse_topology_data(topo_data) {
             nodeCount = Object.keys(topologyData.nodes).length;
         }
     }
-    
+
     if (nodeCount > 0) {
         // Check if NextUI is available
         if (typeof nx === 'undefined') {
             throw new Error('NextUI library (nx) is not loaded. Cannot render topology.');
         }
-        
+
         // Check if TopologyApp is available
         if (typeof TopologyApp === 'undefined') {
             throw new Error('TopologyApp class is not available. Check topology-app.js loading.');
         }
-        
+
         console.log('🚀 Starting topology rendering with', nodeCount, 'nodes...');
         console.log('📊 Topology data:', topologyData);
-        
+
         // Initialize TopologyApp and render topology
         if (app) {
             console.log('🔄 Detaching existing topology app...');
@@ -222,44 +230,44 @@ function parse_topology_data(topo_data) {
                 existingContainer.classList.remove('topology-active');
             }
         }
-        
+
         try {
             console.log('🏗️ Creating new TopologyApp instance...');
             app = new TopologyApp();
-            
+
             var container = document.getElementById('topology-container');
             if (!container) {
                 throw new Error('topology-container element not found in DOM');
             }
-            
+
             console.log('📦 Setting container and initializing with CMT data...');
             app.container(container);
             app.init_with_cmt(topologyData);
-            
+
             console.log('🎨 Attaching topology to DOM...');
             app.attach();
-            
+
             // Mark container as having active topology for CSS styling
             container.classList.add('topology-active');
-            
+
             console.log('⚙️ Initializing with static labels...');
             app.device_data_autoupdate_on(); // Initialize with static labels
-            
+
             // Initialize button states for new topology
             update_layout_buttons('auto'); // Default to auto layout
             update_label_buttons('static'); // Default to static labels
-            
+
             // Show success message
-            alert_show('Topology loaded successfully: ' + (topologyData.name || 'Unnamed topology'));
+            alert_show('success', 'Topology loaded successfully: ' + (topologyData.name || 'Unnamed topology'));
             console.log('✅ Topology rendered successfully with', nodeCount, 'nodes');
         } catch (renderError) {
             console.error('❌ Topology rendering failed:', renderError);
             throw new Error('Failed to render topology: ' + renderError.message);
         }
     } else {
-        throw new Error('No nodes found in topology data');
+        throw new Error('There are no nodes defined in the provided topology data file.');
     }
-    
+
     return true;
 }
 
@@ -311,10 +319,10 @@ function dropzone_drop_handler(ev) {
     if (dropZone) {
         dropZone.classList.remove('highlight');
     }
-    
+
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
-    
+
     if (ev.dataTransfer.items) {
         // Use DataTransferItemList interface to access the file(s)
         if (ev.dataTransfer.items.length == 1) {
@@ -335,7 +343,7 @@ function dropzone_drop_handler(ev) {
             dropzone_set_text('You can only drop one file at a time');
         }
     }
-    
+
     // Pass event to cleanup function
     dropzone_cleanup(ev);
 }
@@ -350,7 +358,7 @@ function update_layout_buttons(activeLayout) {
             button.classList.remove('active');
         }
     });
-    
+
     // Add active class to the selected layout button
     var activeButton = document.getElementById('nav-' + activeLayout);
     if (activeButton) {
@@ -393,7 +401,7 @@ function update_label_buttons(activeLabel) {
             button.classList.remove('active');
         }
     });
-    
+
     // Add active class to the selected label button
     var activeButton = document.getElementById('nav-' + activeLabel);
     if (activeButton) {
@@ -420,10 +428,10 @@ function label_types_static() {
 // Initialize UI when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Graphite UI initialized');
-    
+
     // Show dropzone by default
     dropzone_show();
-    
+
     // Set initial state
     topology_set_name('Select...');
     alert_hide();
