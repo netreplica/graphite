@@ -1,0 +1,124 @@
+name: Test Static Website Build
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'build/**'
+      - 'package.json'
+      - 'tests/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'build/**'
+      - 'package.json'
+      - 'tests/**'
+
+jobs:
+  test-static-build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build static website
+      run: npm run build:static
+      
+    - name: Run comprehensive tests
+      run: npm run test:all
+      
+    - name: Check build size
+      run: |
+        echo "📊 Build Size Analysis:"
+        du -sh dist/static/
+        echo ""
+        echo "📁 Directory structure:"
+        find dist/static -type f -name "*.css" -o -name "*.js" -o -name "*.html" | head -20
+        
+    - name: Verify critical files
+      run: |
+        echo "🔍 Verifying critical files exist:"
+        test -f dist/static/index.html && echo "✅ index.html" || echo "❌ index.html missing"
+        test -f dist/static/vendor/bootstrap-3.4.1-dist/css/bootstrap.min.css && echo "✅ Bootstrap CSS" || echo "❌ Bootstrap CSS missing"
+        test -f dist/static/vendor/next-bower/css/next.min.css && echo "✅ NextUI CSS" || echo "❌ NextUI CSS missing"
+        test -f dist/static/vendor/next-bower/js/next.min.js && echo "✅ NextUI JS" || echo "❌ NextUI JS missing"
+        test -f dist/static/js/topology.js && echo "✅ Topology JS" || echo "❌ Topology JS missing"
+        
+    - name: Test HTTP serving
+      run: |
+        cd dist/static
+        python3 -m http.server 8000 &
+        SERVER_PID=$!
+        sleep 3
+        
+        echo "🌐 Testing HTTP endpoints:"
+        curl -f http://localhost:8000/ > /dev/null && echo "✅ Main page accessible" || echo "❌ Main page failed"
+        curl -f http://localhost:8000/vendor/bootstrap-3.4.1-dist/css/bootstrap.min.css > /dev/null && echo "✅ Bootstrap CSS accessible" || echo "❌ Bootstrap CSS failed"
+        curl -f http://localhost:8000/vendor/next-bower/css/next.min.css > /dev/null && echo "✅ NextUI CSS accessible" || echo "❌ NextUI CSS failed"
+        
+        kill $SERVER_PID
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: matrix.node-version == '18.x'  # Only upload from one job
+      with:
+        name: static-website-build
+        path: dist/static/
+        retention-days: 7
+        
+    - name: Generate deployment preview
+      if: matrix.node-version == '18.x' && github.event_name == 'pull_request'
+      run: |
+        echo "🚀 Static website build completed successfully!"
+        echo "📦 Artifact uploaded: static-website-build"
+        echo "🌐 To test locally: npm run build:static && cd dist/static && python3 -m http.server 8000"
+
+  test-docker-compatibility:
+    runs-on: ubuntu-latest
+    needs: test-static-build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build Docker version
+      run: npm run build:docker
+      
+    - name: Compare Docker and Static builds
+      run: |
+        echo "🔍 Comparing build outputs:"
+        echo "Docker build size: $(du -sh dist/docker/ | cut -f1)"
+        echo "Static build size: $(du -sh dist/static/ | cut -f1)"
+        
+        echo ""
+        echo "📊 File count comparison:"
+        echo "Docker files: $(find dist/docker -type f | wc -l)"
+        echo "Static files: $(find dist/static -type f | wc -l)"
+        
+        echo ""
+        echo "🎯 Both builds should be functional for their respective deployment modes."

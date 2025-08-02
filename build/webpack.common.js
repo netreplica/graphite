@@ -50,10 +50,8 @@ module.exports = {
         },
         {
           from: path.resolve(__dirname, '../src/js/core'),
-          to: 'js',
-          globOptions: {
-            ignore: ['**/topology.js'] // Exclude main entry file
-          }
+          to: 'js'
+          // Copy all core files including topology.js
         }
       ]
     })

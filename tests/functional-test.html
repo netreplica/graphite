@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Graphite Static Website - Functional Tests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-pass { background-color: #d4edda; border-color: #c3e6cb; }
+        .test-fail { background-color: #f8d7da; border-color: #f5c6cb; }
+        .test-pending { background-color: #fff3cd; border-color: #ffeaa7; }
+        .test-result {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .pass { background-color: #28a745; color: white; }
+        .fail { background-color: #dc3545; color: white; }
+        .pending { background-color: #ffc107; color: black; }
+        #test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .graphite-embed {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .file-upload-test {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Graphite Static Website - Functional Tests</h1>
+        <p>This page tests the functional aspects of the static Graphite website.</p>
+        
+        <div id="test-results">
+            <h3>Test Results</h3>
+            <div id="results-summary">Tests not started...</div>
+        </div>
+
+        <!-- Test 1: Dependency Loading -->
+        <div class="test-section test-pending" id="test-dependencies">
+            <h3>1. Dependency Loading <span class="test-result pending" id="result-dependencies">PENDING</span></h3>
+            <p>Testing if all CSS and JavaScript dependencies load correctly.</p>
+            <ul id="dependency-list">
+                <li>Bootstrap CSS: <span id="bootstrap-css">⏳</span></li>
+                <li>NextUI CSS: <span id="nextui-css">⏳</span></li>
+                <li>NextUI JS: <span id="nextui-js">⏳</span></li>
+                <li>Graphite CSS: <span id="graphite-css">⏳</span></li>
+                <li>Core JavaScript: <span id="core-js">⏳</span></li>
+            </ul>
+        </div>
+
+        <!-- Test 2: Deployment Configuration -->
+        <div class="test-section test-pending" id="test-config">
+            <h3>2. Deployment Configuration <span class="test-result pending" id="result-config">PENDING</span></h3>
+            <p>Testing if the deployment is correctly configured for static mode.</p>
+            <ul id="config-list">
+                <li>Deployment Mode: <span id="deployment-mode">⏳</span></li>
+                <li>Feature Flags: <span id="feature-flags">⏳</span></li>
+                <li>Asset Paths: <span id="asset-paths">⏳</span></li>
+            </ul>
+        </div>
+
+        <!-- Test 3: UI Elements -->
+        <div class="test-section test-pending" id="test-ui">
+            <h3>3. UI Elements <span class="test-result pending" id="result-ui">PENDING</span></h3>
+            <p>Testing if key UI elements are present and functional.</p>
+            <ul id="ui-list">
+                <li>Navigation Bar: <span id="navbar">⏳</span></li>
+                <li>Topology Container: <span id="topology-container">⏳</span></li>
+                <li>Drop Zone: <span id="drop-zone">⏳</span></li>
+                <li>File Input: <span id="file-input">⏳</span></li>
+                <li>Layout Controls: <span id="layout-controls">⏳</span></li>
+            </ul>
+        </div>
+
+        <!-- Test 4: File Upload Functionality -->
+        <div class="test-section test-pending" id="test-upload">
+            <h3>4. File Upload Test <span class="test-result pending" id="result-upload">MANUAL</span></h3>
+            <p>Manual test: Try uploading a JSON topology file using the interface below.</p>
+            <div class="file-upload-test">
+                <p>Use the embedded Graphite interface below to test file upload functionality:</p>
+                <iframe src="../index.html" class="graphite-embed" id="graphite-frame"></iframe>
+                <p><small>The interface should show a drag-and-drop area for JSON files.</small></p>
+            </div>
+        </div>
+
+        <!-- Test 5: NextUI Integration -->
+        <div class="test-section test-pending" id="test-nextui">
+            <h3>5. NextUI Integration <span class="test-result pending" id="result-nextui">PENDING</span></h3>
+            <p>Testing if NextUI library is properly integrated and functional.</p>
+            <ul id="nextui-list">
+                <li>NextUI Global Object: <span id="nextui-global">⏳</span></li>
+                <li>Topology Classes: <span id="topology-classes">⏳</span></li>
+                <li>Graph Components: <span id="graph-components">⏳</span></li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button onclick="runAllTests()" style="padding: 10px 20px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 5px;">
+                🚀 Run All Tests
+            </button>
+            <button onclick="resetTests()" style="padding: 10px 20px; font-size: 16px; background: #6c757d; color: white; border: none; border-radius: 5px; margin-left: 10px;">
+                🔄 Reset Tests
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Test framework
+        let testResults = {
+            dependencies: false,
+            config: false,
+            ui: false,
+            nextui: false
+        };
+
+        function updateTestResult(testId, passed, details = '') {
+            const element = document.getElementById(`result-${testId}`);
+            const section = document.getElementById(`test-${testId}`);
+            
+            if (passed) {
+                element.textContent = 'PASS';
+                element.className = 'test-result pass';
+                section.className = 'test-section test-pass';
+                testResults[testId] = true;
+            } else {
+                element.textContent = 'FAIL';
+                element.className = 'test-result fail';
+                section.className = 'test-section test-fail';
+                testResults[testId] = false;
+            }
+            
+            updateSummary();
+        }
+
+        function updateStatus(elementId, status, message = '') {
+            const element = document.getElementById(elementId);
+            if (status === 'pass') {
+                element.innerHTML = '✅ PASS' + (message ? ` - ${message}` : '');
+            } else if (status === 'fail') {
+                element.innerHTML = '❌ FAIL' + (message ? ` - ${message}` : '');
+            } else {
+                element.innerHTML = '⏳ PENDING';
+            }
+        }
+
+        function updateSummary() {
+            const passed = Object.values(testResults).filter(r => r === true).length;
+            const total = Object.keys(testResults).length;
+            const failed = total - passed;
+            
+            document.getElementById('results-summary').innerHTML = 
+                `<strong>Results:</strong> ${passed}/${total} tests passed` + 
+                (failed > 0 ? ` (${failed} failed)` : ' 🎉');
+        }
+
+        // Test 1: Dependencies
+        function testDependencies() {
+            console.log('Testing dependencies...');
+            
+            // Test Bootstrap CSS
+            const bootstrapTest = document.createElement('div');
+            bootstrapTest.className = 'container'; // Bootstrap class
+            document.body.appendChild(bootstrapTest);
+            const hasBootstrap = window.getComputedStyle(bootstrapTest).marginLeft !== '0px' || 
+                                 window.getComputedStyle(bootstrapTest).marginRight !== '0px';
+            document.body.removeChild(bootstrapTest);
+            updateStatus('bootstrap-css', hasBootstrap ? 'pass' : 'fail');
+
+            // Test for NextUI CSS (check if next.min.css loaded)
+            const stylesheets = Array.from(document.styleSheets);
+            const nextuiCSS = stylesheets.some(sheet => 
+                sheet.href && sheet.href.includes('next.min.css'));
+            updateStatus('nextui-css', nextuiCSS ? 'pass' : 'fail');
+
+            // Test Graphite CSS
+            const graphiteCSS = stylesheets.some(sheet => 
+                sheet.href && sheet.href.includes('graphite.css'));
+            updateStatus('graphite-css', graphiteCSS ? 'pass' : 'fail');
+
+            // Test for core JavaScript (check if functions exist)
+            const coreJSLoaded = typeof dropzone_onclick_handler === 'function' ||
+                               typeof window.dropzone_onclick_handler === 'function';
+            updateStatus('core-js', coreJSLoaded ? 'pass' : 'fail');
+
+            // Test NextUI JS (check for nx global)
+            const nextuiJSLoaded = typeof nx !== 'undefined' && nx !== null;
+            updateStatus('nextui-js', nextuiJSLoaded ? 'pass' : 'fail');
+
+            const allDepsPass = hasBootstrap && nextuiCSS && graphiteCSS && nextuiJSLoaded;
+            updateTestResult('dependencies', allDepsPass);
+        }
+
+        // Test 2: Configuration
+        function testConfiguration() {
+            console.log('Testing configuration...');
+            
+            // Test deployment mode
+            const deploymentMode = window.GRAPHITE_MODE;
+            const correctMode = deploymentMode === 'static';
+            updateStatus('deployment-mode', correctMode ? 'pass' : 'fail', 
+                        `Mode: ${deploymentMode || 'undefined'}`);
+
+            // Test deployment config object
+            const hasConfig = typeof window.DEPLOYMENT_CONFIG !== 'undefined';
+            const staticFeatures = hasConfig && 
+                                  !window.DEPLOYMENT_CONFIG.features.webssh &&
+                                  !window.DEPLOYMENT_CONFIG.features.liveData;
+            updateStatus('feature-flags', staticFeatures ? 'pass' : 'fail');
+
+            // Test asset paths
+            const hasStaticPaths = hasConfig && 
+                                  window.DEPLOYMENT_CONFIG.paths.assets === './';
+            updateStatus('asset-paths', hasStaticPaths ? 'pass' : 'fail');
+
+            const allConfigPass = correctMode && staticFeatures && hasStaticPaths;
+            updateTestResult('config', allConfigPass);
+        }
+
+        // Test 3: UI Elements
+        function testUIElements() {
+            console.log('Testing UI elements...');
+            
+            // Test navbar
+            const navbar = document.getElementById('navbar');
+            updateStatus('navbar', navbar ? 'pass' : 'fail');
+
+            // Test topology container
+            const topoContainer = document.getElementById('topology-diagram');
+            updateStatus('topology-container', topoContainer ? 'pass' : 'fail');
+
+            // Test drop zone
+            const dropZone = document.getElementById('drop-zone');
+            updateStatus('drop-zone', dropZone ? 'pass' : 'fail');
+
+            // Test file input
+            const fileInput = document.getElementById('file-input');
+            const correctFileInput = fileInput && fileInput.accept === '.json';
+            updateStatus('file-input', correctFileInput ? 'pass' : 'fail');
+
+            // Test layout controls
+            const layoutControls = document.getElementById('nav-auto') && 
+                                  document.getElementById('nav-horizontal') &&
+                                  document.getElementById('nav-vertical');
+            updateStatus('layout-controls', layoutControls ? 'pass' : 'fail');
+
+            const allUIPass = navbar && topoContainer && dropZone && correctFileInput && layoutControls;
+            updateTestResult('ui', allUIPass);
+        }
+
+        // Test 5: NextUI Integration
+        function testNextUIIntegration() {
+            console.log('Testing NextUI integration...');
+            
+            // Test NextUI global object
+            const hasNX = typeof nx !== 'undefined' && nx !== null;
+            updateStatus('nextui-global', hasNX ? 'pass' : 'fail');
+
+            // Test topology classes
+            const hasTopologyClasses = hasNX && 
+                                       typeof nx.graphic !== 'undefined' &&
+                                       typeof nx.graphic.Topology !== 'undefined';
+            updateStatus('topology-classes', hasTopologyClasses ? 'pass' : 'fail');
+
+            // Test graph components
+            const hasGraphComponents = hasTopologyClasses &&
+                                      typeof nx.graphic.Topology.Node !== 'undefined';
+            updateStatus('graph-components', hasGraphComponents ? 'pass' : 'fail');
+
+            const allNextUIPass = hasNX && hasTopologyClasses && hasGraphComponents;
+            updateTestResult('nextui', allNextUIPass);
+        }
+
+        // Main test runner
+        function runAllTests() {
+            console.log('Starting functional tests...');
+            
+            // Reset all tests first
+            resetTests();
+            
+            // Run tests with delays to allow for loading
+            setTimeout(() => testDependencies(), 100);
+            setTimeout(() => testConfiguration(), 200);
+            setTimeout(() => testUIElements(), 300);
+            setTimeout(() => testNextUIIntegration(), 400);
+        }
+
+        function resetTests() {
+            testResults = {
+                dependencies: false,
+                config: false,
+                ui: false,
+                nextui: false
+            };
+            
+            // Reset all status indicators
+            const statusElements = [
+                'bootstrap-css', 'nextui-css', 'nextui-js', 'graphite-css', 'core-js',
+                'deployment-mode', 'feature-flags', 'asset-paths',
+                'navbar', 'topology-container', 'drop-zone', 'file-input', 'layout-controls',
+                'nextui-global', 'topology-classes', 'graph-components'
+            ];
+            
+            statusElements.forEach(id => updateStatus(id, 'pending'));
+            
+            // Reset test sections
+            ['dependencies', 'config', 'ui', 'nextui'].forEach(testId => {
+                document.getElementById(`result-${testId}`).textContent = 'PENDING';
+                document.getElementById(`result-${testId}`).className = 'test-result pending';
+                document.getElementById(`test-${testId}`).className = 'test-section test-pending';
+            });
+            
+            updateSummary();
+        }
+
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+
+    <!-- Load dependencies for testing -->
+    <script src="../vendor/next-bower/js/next.min.js"></script>
+    <script src="../js/config/deployment.js"></script>
+    <script src="../js/clab.js"></script>
+    <script src="../js/topology.js"></script>
+    <link rel="stylesheet" href="../vendor/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../vendor/next-bower/css/next.min.css">
+    <link rel="stylesheet" href="../css/graphite.css">
+</body>
+</html>

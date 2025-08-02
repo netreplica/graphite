@@ -6,10 +6,15 @@
   "scripts": {
     "build": "npm run build:docker && npm run build:static",
     "build:docker": "webpack --config build/webpack.docker.js",
-    "build:static": "webpack --config build/webpack.static.js",
+    "build:static": "npm run prebuild:static && webpack --config build/webpack.static.js",
+    "prebuild:static": "node build/download-dependencies.js",
     "dev": "webpack serve --config build/webpack.dev.js",
     "clean": "rm -rf dist/*",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test:static",
+    "test:static": "node tests/static-validation.js",
+    "test:quick": "tests/quick-validation.sh",
+    "test:functional": "echo \"Open tests/functional-test.html in your browser to run functional tests\"",
+    "test:all": "npm run test:static && npm run test:quick"
   },
   "repository": {
     "type": "git",

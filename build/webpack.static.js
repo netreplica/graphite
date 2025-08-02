@@ -34,21 +34,22 @@ module.exports = merge(common, {
           from: path.resolve(__dirname, '../src/js/config'),
           to: 'js/config'
         },
-        // Copy NextUI and Bootstrap for local serving
+        // Copy Bootstrap for local serving
         {
-          from: path.resolve(__dirname, '../docker/bootstrap-3.4.1-dist'),
-          to: 'vendor/bootstrap-3.4.1-dist'
+          from: path.resolve(__dirname, '../docker/bootstrap-3.4.1-dist/**'),
+          to: 'vendor/[path][name][ext]',
+          context: path.resolve(__dirname, '../docker')
         }
       ]
     }),
     
-    // Copy NextUI dependency (need to clone it first)
+    // Download NextUI dependency if not available
     new CopyWebpackPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, '../docker/next-bower'),
           to: 'vendor/next-bower',
-          noErrorOnMissing: true // In case next-bower is not available yet
+          noErrorOnMissing: true // Will be downloaded in pre-build step
         }
       ]
     })
